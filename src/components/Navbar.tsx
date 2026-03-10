@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Lang } from "@/i18n/translations";
 import { Menu, X } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const langs: { code: Lang; label: string }[] = [
   { code: "ru", label: "RU" },
@@ -17,6 +17,12 @@ const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
+  // ключевая логика
+  const isHeroTop = isHome && !scrolled;
 
   const navItems = [
     { key: "nav.home", href: "/" },
@@ -50,8 +56,9 @@ const Navbar = () => {
         {/* Logo */}
         <NavLink
           to="/"
-          className={`font-display text-xl font-semibold tracking-wide transition-colors
-          ${!scrolled ? "text-white" : "text-foreground"}`}
+          className={`font-display text-xl font-semibold tracking-wide transition-colors ${
+            isHeroTop ? "text-white" : "text-foreground"
+          }`}
         >
           Karolina Beauty Studio
         </NavLink>
@@ -66,7 +73,7 @@ const Navbar = () => {
                 `text-sm font-medium transition-colors ${
                   isActive
                     ? "text-primary"
-                    : !scrolled
+                    : isHeroTop
                     ? "text-white/90 hover:text-white"
                     : "text-muted-foreground hover:text-primary"
                 }`
@@ -96,7 +103,9 @@ const Navbar = () => {
 
         {/* Mobile menu button */}
         <button
-          className={`md:hidden ${!scrolled ? "text-white" : "text-foreground"}`}
+          className={`md:hidden ${
+            isHeroTop ? "text-white" : "text-foreground"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
