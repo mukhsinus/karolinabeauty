@@ -1,3 +1,4 @@
+// src/i18n/LanguageContext.tsx
 import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import translations, { Lang } from "./translations";
 

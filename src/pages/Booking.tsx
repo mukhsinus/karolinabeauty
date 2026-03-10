@@ -5,10 +5,16 @@ import Footer from "@/components/Footer";
 
 const Booking = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
+
       <Navbar />
-      <BookingSection />
+
+      <main className="flex-1">
+        <BookingSection />
+      </main>
+
       <Footer />
+
     </div>
   );
 };
