@@ -1,12 +1,14 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import galleryLashes from "@/assets/gallery-lashes.jpg";
+import galleryNails from "@/assets/gallery-nails.jpg";
 import galleryBrows from "@/assets/gallery-brows.jpg";
 import gallerySalon from "@/assets/gallery-salon.jpg";
 import galleryDepilation from "@/assets/gallery-depilation.jpg";
 
 const images = [
   { src: galleryLashes, alt: "Lash extensions" },
+  { src: galleryNails, alt: "Nail art" },
   { src: galleryBrows, alt: "Brow styling" },
   { src: gallerySalon, alt: "Salon interior" },
   { src: galleryDepilation, alt: "Beauty treatments" },
