@@ -32,7 +32,6 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -51,7 +50,8 @@ const Navbar = () => {
         {/* Logo */}
         <NavLink
           to="/"
-          className="font-display text-xl font-semibold text-foreground tracking-wide"
+          className={`font-display text-xl font-semibold tracking-wide transition-colors
+          ${!scrolled ? "text-white" : "text-foreground"}`}
         >
           Karolina Beauty Studio
         </NavLink>
@@ -66,6 +66,8 @@ const Navbar = () => {
                 `text-sm font-medium transition-colors ${
                   isActive
                     ? "text-primary"
+                    : !scrolled
+                    ? "text-white/90 hover:text-white"
                     : "text-muted-foreground hover:text-primary"
                 }`
               }
@@ -94,7 +96,7 @@ const Navbar = () => {
 
         {/* Mobile menu button */}
         <button
-          className="md:hidden text-foreground"
+          className={`md:hidden ${!scrolled ? "text-white" : "text-foreground"}`}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
