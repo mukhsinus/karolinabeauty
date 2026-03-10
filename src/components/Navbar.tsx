@@ -31,7 +31,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <a href="#home" className="font-display text-xl font-semibold text-foreground tracking-wide">
-          Beauty Studio
+          Karolina Beauty Studio
         </a>
 
         {/* Desktop nav */}
