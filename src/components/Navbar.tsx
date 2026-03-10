@@ -1,7 +1,10 @@
-import { useState } from "react";
+// src/components/Navbar.tsx
+
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Lang } from "@/i18n/translations";
 import { Menu, X } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const langs: { code: Lang; label: string }[] = [
   { code: "ru", label: "RU" },
@@ -11,39 +14,64 @@ const langs: { code: Lang; label: string }[] = [
 
 const Navbar = () => {
   const { t, lang, setLang } = useLanguage();
+
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const navItems = [
-    { key: "nav.home", href: "#home" },
-    { key: "nav.services", href: "#services" },
-    { key: "nav.gallery", href: "#gallery" },
-    { key: "nav.booking", href: "#booking" },
-    { key: "nav.contacts", href: "#contacts" },
+    { key: "nav.home", href: "/" },
+    { key: "nav.services", href: "/services" },
+    { key: "nav.gallery", href: "/gallery" },
+    { key: "nav.booking", href: "/booking" },
+    { key: "nav.contacts", href: "/contacts" },
   ];
 
-  const scrollTo = (href: string) => {
-    setIsOpen(false);
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const closeMobile = () => setIsOpen(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-card/80 backdrop-blur-lg border-b border-border shadow-sm"
+          : "bg-transparent border-transparent"
+      }`}
+    >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <a href="#home" className="font-display text-xl font-semibold text-foreground tracking-wide">
-          Karolina Beauty Studio
-        </a>
 
-        {/* Desktop nav */}
+        {/* Logo */}
+        <NavLink
+          to="/"
+          className="font-display text-xl font-semibold text-foreground tracking-wide"
+        >
+          Karolina Beauty Studio
+        </NavLink>
+
+        {/* Desktop navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <button
+            <NavLink
               key={item.key}
-              onClick={() => scrollTo(item.href)}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              to={item.href}
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors ${
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-primary"
+                }`
+              }
             >
               {t(item.key)}
-            </button>
+            </NavLink>
           ))}
         </div>
 
@@ -71,20 +99,30 @@ const Navbar = () => {
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
+
       </div>
 
       {/* Mobile menu */}
       {isOpen && (
         <div className="md:hidden bg-card border-b border-border px-4 pb-4 animate-fade-in">
+
           {navItems.map((item) => (
-            <button
+            <NavLink
               key={item.key}
-              onClick={() => scrollTo(item.href)}
-              className="block w-full text-left py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              to={item.href}
+              onClick={closeMobile}
+              className={({ isActive }) =>
+                `block py-3 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-primary"
+                }`
+              }
             >
               {t(item.key)}
-            </button>
+            </NavLink>
           ))}
+
           <div className="flex items-center gap-1 mt-3 bg-secondary rounded-full px-1 py-0.5 w-fit">
             {langs.map((l) => (
               <button
@@ -100,6 +138,7 @@ const Navbar = () => {
               </button>
             ))}
           </div>
+
         </div>
       )}
     </nav>

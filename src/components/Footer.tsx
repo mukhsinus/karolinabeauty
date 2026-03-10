@@ -1,3 +1,4 @@
+// src/components/Footer.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const Footer = () => {

@@ -1,3 +1,4 @@
+// src/components/GallerySection.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import galleryLashes from "@/assets/gallery-lashes.jpg";

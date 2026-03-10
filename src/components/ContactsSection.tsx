@@ -1,3 +1,4 @@
+// src/components/ContactsSection.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Clock, Instagram } from "lucide-react";

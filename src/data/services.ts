@@ -1,3 +1,4 @@
+// src/data/services.ts
 export interface ServiceItem {
   id: string;
   nameKey: string;
