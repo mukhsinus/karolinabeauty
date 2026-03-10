@@ -3,11 +3,11 @@
 import { useState, useMemo, useEffect } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { serviceCategories, getAllServices } from "@/data/services"
-
+import { fetchAvailability, createBooking } from "@/lib/api"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check } from "lucide-react"
+import { Check, Calendar, Clock, User, MapPin } from "lucide-react"
 
-interface Booking {
+interface BookingState {
   service: string
   date: string
   time: string
@@ -15,420 +15,610 @@ interface Booking {
   phone: string
 }
 
-const API_URL = "http://localhost:4000"
-
-const formatPrice = (price:number)=>
-price.toLocaleString("ru-RU")
-
-const getNextDays=(count:number)=>{
-
-const days:string[]=[]
-const today=new Date()
-
-for(let i=1;i<=count;i++){
-
-const d=new Date(today)
-d.setDate(today.getDate()+i)
-
-days.push(d.toISOString().split("T")[0])
-
+interface Branch {
+  id: string
+  name: string
+  address: string
 }
 
-return days
+const branches: Branch[] = [
+  {
+    id: "branch_center",
+    name: "Karolina Beauty Center",
+    address: "Ташкент • Центр"
+  },
+  {
+    id: "branch_chilanzar",
+    name: "Karolina Beauty Chilanzar",
+    address: "Ташкент • Чиланзар"
+  }
+]
 
+const formatPrice = (price: number) =>
+  price.toLocaleString("ru-RU")
+
+const getNextDays = (count: number) => {
+  const days: string[] = []
+  const today = new Date()
+
+  for (let i = 1; i <= count; i++) {
+    const d = new Date(today)
+    d.setDate(today.getDate() + i)
+    days.push(d.toISOString().split("T")[0])
+  }
+
+  return days
 }
 
-const generateTimeSlots=(date:string)=>{
+const generateTimeSlots = (date: string) => {
+  const d = new Date(date)
 
-const d=new Date(date)
+  const isWeekend =
+    d.getDay() === 0 ||
+    d.getDay() === 6
 
-const isWeekend=
-d.getDay()===0||
-d.getDay()===6
+  const start = isWeekend ? 10 : 9
+  const end = isWeekend ? 22 : 21
 
-const start=isWeekend?10:9
-const end=isWeekend?22:21
+  const slots: string[] = []
 
-const slots:string[]=[]
+  for (let h = start; h < end; h++) {
+    slots.push(`${String(h).padStart(2, "0")}:00`)
+    slots.push(`${String(h).padStart(2, "0")}:30`)
+  }
 
-for(let h=start;h<end;h++){
-
-slots.push(`${String(h).padStart(2,"0")}:00`)
-slots.push(`${String(h).padStart(2,"0")}:30`)
-
+  return slots
 }
 
-return slots
+export default function BookingSection() {
 
-}
+  const { t } = useLanguage()
 
-export default function BookingSection(){
+  const services = getAllServices()
 
-const {t}=useLanguage()
+  const [branchId, setBranchId] = useState<string | null>(null)
 
-const services=getAllServices()
+  const [category, setCategory] = useState(serviceCategories[0].id)
 
-const [category,setCategory]=useState(serviceCategories[0].id)
+  const [booking, setBooking] = useState<BookingState>({
+    service: "",
+    date: "",
+    time: "",
+    name: "",
+    phone: ""
+  })
 
-const [step,setStep]=useState(0)
+  const [bookedSlots, setBookedSlots] = useState<string[]>([])
+  const [confirmed, setConfirmed] = useState(false)
 
-const [booking,setBooking]=useState<Booking>({
-service:"",
-date:"",
-time:"",
-name:"",
-phone:""
-})
+  const dates = useMemo(() => getNextDays(14), [])
 
-const [bookedSlots,setBookedSlots]=useState<string[]>([])
-const [confirmed,setConfirmed]=useState(false)
+  const timeSlots = useMemo(() => {
+    if (!booking.date) return []
+    return generateTimeSlots(booking.date)
+  }, [booking.date])
 
-const dates=useMemo(()=>getNextDays(14),[])
+  const categoryData = serviceCategories.find(
+    c => c.id === category
+  )
 
-const timeSlots=useMemo(()=>{
+  const selectedService = services.find(
+    s => s.id === booking.service
+  )
 
-if(!booking.date) return []
+  useEffect(() => {
 
-return generateTimeSlots(booking.date)
+    if (!branchId || !booking.date) return
 
-},[booking.date])
+    const load = async () => {
 
-const categoryData=serviceCategories.find(c=>c.id===category)
+      try {
 
-const selectedService=services.find(
-s=>s.id===booking.service
-)
+        const data = await fetchAvailability(
+          branchId,
+          booking.date
+        )
 
-useEffect(()=>{
+        setBookedSlots(data)
 
-if(!booking.date) return
+      } catch (error) {
 
-const load=async()=>{
+        console.error("availability error", error)
 
-try{
+      }
 
-const res=await fetch(
-`${API_URL}/availability?date=${booking.date}`
-)
+    }
 
-const data=await res.json()
+    load()
 
-setBookedSlots(data)
+  }, [branchId, booking.date])
 
-}catch(e){
+  const handleConfirm = async () => {
 
-console.error(e)
+    if (!selectedService || !branchId) return
 
-}
+    try {
 
-}
+      await createBooking({
+        branchId,
+        serviceId: selectedService.id,
+        serviceName: selectedService.nameKey,
+        serviceDuration: selectedService.duration,
+        price: selectedService.price,
+        date: booking.date,
+        time: booking.time,
+        name: booking.name,
+        phone: booking.phone
+      })
 
-load()
+      setConfirmed(true)
 
-},[booking.date])
+    } catch (error: any) {
 
-const handleConfirm=async()=>{
+      alert(error.message)
 
-try{
+    }
 
-const res=await fetch(`${API_URL}/bookings`,{
+  }
 
-method:"POST",
+  const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short"
+    })
 
-headers:{
-"Content-Type":"application/json"
-},
+  if (confirmed) {
 
-body:JSON.stringify({
+    return (
 
-serviceId:booking.service,
-serviceName:selectedService?.nameKey,
-price:selectedService?.price,
+      <section className="py-32">
 
-date:booking.date,
-time:booking.time,
+        <div className="max-w-xl mx-auto text-center">
 
-name:booking.name,
-phone:booking.phone
+          <Check
+            className="mx-auto mb-6 text-primary"
+            size={42}
+          />
 
-})
+          <h3 className="text-3xl font-display mb-3">
+            {t("booking.success")}
+          </h3>
 
-})
+          <p className="text-muted-foreground">
+            {t("booking.success_message")}
+          </p>
 
-if(!res.ok){
+        </div>
 
-const data=await res.json()
-alert(data.message)
-return
+      </section>
 
-}
+    )
 
-setConfirmed(true)
+  }
 
-}catch(e){
+  return (
 
-alert("Server error")
+    <section className="py-24">
 
-}
+      <div className="max-w-6xl mx-auto px-4">
 
-}
+        <h2 className="text-center text-5xl font-display mb-16">
+          {t("booking.title")}
+        </h2>
 
-const formatDate=(d:string)=>
+        {/* BRANCH SELECTOR */}
 
-new Date(d).toLocaleDateString(undefined,{
-weekday:"short",
-month:"short",
-day:"numeric"
-})
+        <div className="mb-16">
 
-if(confirmed){
+          <h3 className="text-xl font-display mb-6 flex items-center gap-2">
+            <MapPin size={18}/>
+            {t("booking.select_branch")}
+          </h3>
 
-return(
+          <div className="grid md:grid-cols-2 gap-4">
 
-<section className="py-32">
+            {branches.map(branch => (
 
-<div className="max-w-xl mx-auto text-center">
+              <button
+                key={branch.id}
 
-<Check className="mx-auto mb-6 text-primary" size={42}/>
+                onClick={() => {
+                  setBranchId(branch.id)
+                  setBooking(b => ({
+                    ...b,
+                    service: "",
+                    date: "",
+                    time: ""
+                  }))
+                }}
 
-<h3 className="text-3xl font-display mb-3">
-{t("booking.success")}
-</h3>
+                className={`p-6 border rounded-2xl text-left transition hover:shadow-md
+                ${branchId === branch.id
+                  ? "border-primary bg-primary/5"
+                  : "border-border"}`}
 
-<p className="text-muted-foreground">
-{t("booking.success_message")}
-</p>
+              >
 
-</div>
+                <div className="font-semibold">
+                  {branch.name}
+                </div>
 
-</section>
+                <div className="text-sm text-muted-foreground mt-1">
+                  {branch.address}
+                </div>
 
-)
+              </button>
 
-}
+            ))}
 
-return(
+          </div>
 
-<section className="py-28">
+        </div>
 
-<div className="max-w-5xl mx-auto px-4">
+        {/* CATEGORY TABS */}
 
-<h2 className="text-center text-5xl font-display mb-16">
-{t("booking.title")}
-</h2>
+        {branchId && (
 
-{/* CATEGORY TABS */}
+        <div className="flex justify-center gap-3 flex-wrap mb-14">
 
-<div className="flex justify-center gap-3 mb-12 flex-wrap">
+          {serviceCategories.map(cat => (
 
-{serviceCategories.map(cat=>(
+            <button
+              key={cat.id}
 
-<button
-key={cat.id}
+              onClick={() => {
 
-onClick={()=>{
+                setCategory(cat.id)
 
-setCategory(cat.id)
-setBooking(b=>({...b,service:""}))
+                setBooking(b => ({
+                  ...b,
+                  service: "",
+                  date: "",
+                  time: ""
+                }))
 
-}}
+              }}
 
-className={`px-6 py-3 rounded-full border text-sm transition
-${category===cat.id
-?"bg-primary text-white border-primary"
-:"border-border hover:border-primary"}`}
+              className={`px-6 py-3 rounded-full border text-sm transition
+              ${category === cat.id
+                ? "bg-primary text-white border-primary"
+                : "border-border hover:border-primary"}`}
 
->
+            >
 
-{cat.icon} {t(cat.nameKey)}
+              {cat.icon} {t(cat.nameKey)}
 
-</button>
+            </button>
 
-))}
+          ))}
 
-</div>
+        </div>
 
-{/* SERVICES */}
+        )}
 
-<div className="grid md:grid-cols-2 gap-4 mb-16">
+        {/* MAIN GRID */}
 
-{categoryData?.services.map(service=>(
+        {branchId && (
 
-<button
-key={service.id}
+        <div className="grid lg:grid-cols-[1fr,320px] gap-14">
 
-onClick={()=>setBooking(b=>({
-...b,
-service:service.id
-}))}
+          {/* LEFT CONTENT */}
 
-className={`p-6 rounded-2xl border text-left transition
-hover:shadow-lg
-${booking.service===service.id
-?"border-primary bg-primary/5"
-:"border-border"}`}
+          <div>
 
->
+            {/* SERVICES */}
 
-<div className="flex justify-between">
+            <AnimatePresence mode="wait">
 
-<div className="font-medium">
-{t(service.nameKey)}
-</div>
+              <motion.div
+                key={category}
 
-<div className="text-primary">
-{formatPrice(service.price)}
-</div>
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
 
-</div>
+                className="grid md:grid-cols-2 gap-4 mb-14"
+              >
 
-</button>
+                {categoryData?.services.map(service => (
 
-))}
+                  <button
+                    key={service.id}
 
-</div>
+                    onClick={() =>
+                      setBooking(b => ({
+                        ...b,
+                        service: service.id
+                      }))
+                    }
 
-{/* DATE */}
+                    className={`p-5 rounded-2xl border text-left transition hover:shadow-md
+                    ${booking.service === service.id
+                      ? "border-primary bg-primary/5"
+                      : "border-border"}`}
 
-{booking.service && (
+                  >
 
-<>
+                    <div className="flex justify-between items-center">
 
-<h3 className="text-xl font-display mb-4">
-{t("booking.select_date")}
-</h3>
+                      <div className="font-medium">
+                        {t(service.nameKey)}
+                      </div>
 
-<div className="grid grid-cols-3 md:grid-cols-7 gap-3 mb-16">
+                      <div className="text-primary text-sm">
+                        {formatPrice(service.price)}
+                      </div>
 
-{dates.map(date=>(
+                    </div>
 
-<button
-key={date}
+                  </button>
 
-onClick={()=>setBooking(b=>({
-...b,
-date,
-time:""
-}))}
+                ))}
 
-className={`p-4 rounded-xl border
-${booking.date===date
-?"border-primary bg-primary/10"
-:"border-border"}`}
+              </motion.div>
 
->
+            </AnimatePresence>
 
-{formatDate(date)}
+            {/* DATE */}
 
-</button>
+            {booking.service && (
 
-))}
+            <>
 
-</div>
+              <div className="flex items-center gap-2 mb-4">
 
-</>
+                <Calendar size={18}/>
 
-)}
+                <h3 className="text-xl font-display">
+                  {t("booking.select_date")}
+                </h3>
 
-{/* TIME */}
+              </div>
 
-{booking.date && (
+              <div className="grid grid-cols-7 gap-2 mb-14">
 
-<>
+                {dates.map(date => (
 
-<h3 className="text-xl font-display mb-4">
-{t("booking.select_time")}
-</h3>
+                  <button
+                    key={date}
 
-<div className="grid grid-cols-4 md:grid-cols-6 gap-3 mb-16">
+                    onClick={() =>
+                      setBooking(b => ({
+                        ...b,
+                        date,
+                        time: ""
+                      }))
+                    }
 
-{timeSlots.map(time=>{
+                    className={`p-3 rounded-xl border text-sm
+                    ${booking.date === date
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-primary"}`}
 
-const isBooked=
-bookedSlots.includes(`${booking.date}-${time}`)
+                  >
 
-return(
+                    {formatDate(date)}
 
-<button
-key={time}
+                  </button>
 
-disabled={isBooked}
+                ))}
 
-onClick={()=>setBooking(b=>({
-...b,
-time
-}))}
+              </div>
 
-className={`py-3 rounded-xl border
-${isBooked
-?"opacity-30"
-:booking.time===time
-?"border-primary bg-primary/10"
-:"border-border hover:border-primary"}`}
+            </>
 
->
+            )}
 
-{time}
+            {/* TIME */}
 
-</button>
+            {booking.date && (
 
-)
+            <>
 
-})}
+              <div className="flex items-center gap-2 mb-4">
 
-</div>
+                <Clock size={18}/>
 
-</>
+                <h3 className="text-xl font-display">
+                  {t("booking.select_time")}
+                </h3>
 
-)}
+              </div>
 
-{/* FORM */}
+              <div className="grid grid-cols-4 md:grid-cols-6 gap-3 mb-14">
 
-{booking.time && (
+                {timeSlots.map(time => {
 
-<div className="max-w-md">
+                  const isBooked =
+                    bookedSlots.includes(`${booking.date}-${time}`)
 
-<h3 className="text-xl font-display mb-4">
-{t("booking.details")}
-</h3>
+                  return (
 
-<div className="space-y-4">
+                    <button
+                      key={time}
 
-<input
-type="text"
-placeholder={t("booking.name")}
-value={booking.name}
-onChange={e=>setBooking(b=>({...b,name:e.target.value}))}
-className="w-full border rounded-xl px-4 py-3"
-/>
+                      disabled={isBooked}
 
-<input
-type="tel"
-placeholder={t("booking.phone")}
-value={booking.phone}
-onChange={e=>setBooking(b=>({...b,phone:e.target.value}))}
-className="w-full border rounded-xl px-4 py-3"
-/>
+                      onClick={() =>
+                        setBooking(b => ({
+                          ...b,
+                          time
+                        }))
+                      }
 
-<button
-onClick={handleConfirm}
-className="w-full bg-primary text-white py-3 rounded-full mt-4"
->
+                      className={`py-3 rounded-xl border text-sm
+                      ${isBooked
+                        ? "opacity-30"
+                        : booking.time === time
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary"}`}
 
-{t("booking.confirm_booking")}
+                    >
 
-</button>
+                      {time}
 
-</div>
+                    </button>
 
-</div>
+                  )
 
-)}
+                })}
 
-</div>
+              </div>
 
-</section>
+            </>
 
-)
+            )}
+
+            {/* DETAILS */}
+
+            {booking.time && (
+
+            <div className="max-w-md">
+
+              <div className="flex items-center gap-2 mb-4">
+
+                <User size={18}/>
+
+                <h3 className="text-xl font-display">
+                  {t("booking.details")}
+                </h3>
+
+              </div>
+
+              <div className="space-y-4">
+
+                <input
+                  type="text"
+                  placeholder={t("booking.name")}
+                  value={booking.name}
+
+                  onChange={e =>
+                    setBooking(b => ({
+                      ...b,
+                      name: e.target.value
+                    }))
+                  }
+
+                  className="w-full border rounded-xl px-4 py-3"
+                />
+
+                <input
+                  type="tel"
+                  placeholder={t("booking.phone")}
+                  value={booking.phone}
+
+                  onChange={e =>
+                    setBooking(b => ({
+                      ...b,
+                      phone: e.target.value
+                    }))
+                  }
+
+                  className="w-full border rounded-xl px-4 py-3"
+                />
+
+                <button
+                  onClick={handleConfirm}
+                  className="w-full bg-primary text-white py-3 rounded-full"
+                >
+                  {t("booking.confirm_booking")}
+                </button>
+
+              </div>
+
+            </div>
+
+            )}
+
+          </div>
+
+          {/* SUMMARY */}
+
+          <div className="lg:sticky lg:top-28 h-fit bg-card border rounded-2xl p-6">
+
+            <h3 className="font-display text-lg mb-6">
+              {t("booking.summary")}
+            </h3>
+
+            <div className="space-y-4 text-sm">
+
+              <div>
+
+                <div className="text-muted-foreground">
+                  {t("booking.branch")}
+                </div>
+
+                <div className="font-medium">
+                  {branches.find(b => b.id === branchId)?.name || "—"}
+                </div>
+
+              </div>
+
+              <div>
+
+                <div className="text-muted-foreground">
+                  {t("booking.service")}
+                </div>
+
+                <div className="font-medium">
+                  {selectedService ? t(selectedService.nameKey) : "—"}
+                </div>
+
+              </div>
+
+              <div>
+
+                <div className="text-muted-foreground">
+                  {t("booking.date")}
+                </div>
+
+                <div>
+                  {booking.date ? formatDate(booking.date) : "—"}
+                </div>
+
+              </div>
+
+              <div>
+
+                <div className="text-muted-foreground">
+                  {t("booking.time")}
+                </div>
+
+                <div>
+                  {booking.time || "—"}
+                </div>
+
+              </div>
+
+              {selectedService && (
+
+              <div className="pt-4 border-t">
+
+                <div className="text-muted-foreground">
+                  {t("booking.price")}
+                </div>
+
+                <div className="text-primary text-lg font-semibold">
+                  {formatPrice(selectedService.price)}
+                </div>
+
+              </div>
+
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+
+        )}
+
+      </div>
+
+    </section>
+
+  )
 
 }

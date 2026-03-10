@@ -1,54 +1,92 @@
 // backend/src/models/booking.js
+
 import mongoose from "mongoose";
 
-const BookingSchema = new mongoose.Schema({
-  serviceId: {
-    type: String,
-    required: true,
-  },
+const BookingSchema = new mongoose.Schema(
+  {
+    branchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Branch",
+      required: true,
+      index: true,
+    },
 
-  serviceName: {
-    type: String,
-    required: true,
-  },
+    serviceId: {
+      type: String,
+      required: true,
+      index: true,
+    },
 
-  price: {
-    type: Number,
-    required: true,
-  },
+    serviceName: {
+      type: String,
+      required: true,
+    },
 
-  date: {
-    type: String,
-    required: true,
-  },
+    serviceDuration: {
+      type: Number,
+      required: true,
+    },
 
-  time: {
-    type: String,
-    required: true,
-  },
+    price: {
+      type: Number,
+      required: true,
+    },
 
-  name: {
-    type: String,
-    required: true,
-    minlength: 2,
-  },
+    date: {
+      type: String,
+      required: true,
+      index: true,
+    },
 
-  phone: {
-    type: String,
-    required: true,
-  },
+    time: {
+      type: String,
+      required: true,
+      index: true,
+    },
 
-  status: {
-    type: String,
-    default: "confirmed",
-  },
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      trim: true,
+    },
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-BookingSchema.index({ date: 1, time: 1 }, { unique: true });
+    status: {
+      type: String,
+      enum: ["confirmed", "cancelled", "completed"],
+      default: "confirmed",
+      index: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+/*
+IMPORTANT INDEX
+
+Теперь уникальность записи определяется:
+
+branchId + date + time
+
+Это позволяет:
+
+филиал A → 14:00
+филиал B → 14:00
+
+оба слота валидны
+*/
+
+BookingSchema.index(
+  { branchId: 1, date: 1, time: 1 },
+  { unique: true }
+);
 
 export default mongoose.model("Booking", BookingSchema);

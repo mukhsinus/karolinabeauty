@@ -1,11 +1,32 @@
-// backend/src/controllers/availability.controller.js
-import Booking from "../models/Booking.js";
+// backend/src/controllers/booking.controller.js
+
+import Booking from "../src/models/booking.js";
+
+/*
+POST /bookings
+
+Body:
+{
+  branchId,
+  serviceId,
+  serviceName,
+  serviceDuration,
+  price,
+  date,
+  time,
+  name,
+  phone
+}
+*/
 
 export const createBooking = async (req, res) => {
   try {
+
     const {
+      branchId,
       serviceId,
       serviceName,
+      serviceDuration,
       price,
       date,
       time,
@@ -13,13 +34,34 @@ export const createBooking = async (req, res) => {
       phone,
     } = req.body;
 
-    if (!serviceId || !date || !time || !name || !phone) {
+    // basic validation
+    if (
+      !branchId ||
+      !serviceId ||
+      !serviceName ||
+      !serviceDuration ||
+      !price ||
+      !date ||
+      !time ||
+      !name ||
+      !phone
+    ) {
       return res.status(400).json({
         message: "Missing required fields",
       });
     }
 
-    const existing = await Booking.findOne({ date, time });
+    /*
+    Проверяем занятость слота
+    ТОЛЬКО в рамках филиала
+    */
+
+    const existing = await Booking.findOne({
+      branchId,
+      date,
+      time,
+      status: { $ne: "cancelled" }
+    });
 
     if (existing) {
       return res.status(409).json({
@@ -28,26 +70,35 @@ export const createBooking = async (req, res) => {
     }
 
     const booking = await Booking.create({
+      branchId,
       serviceId,
       serviceName,
+      serviceDuration,
       price,
       date,
       time,
       name,
       phone,
+      status: "confirmed"
     });
 
-    res.status(201).json(booking);
-  } catch (err) {
-    console.error(err);
+    return res.status(201).json(booking);
 
-    if (err.code === 11000) {
+  } catch (error) {
+
+    console.error("create booking error:", error);
+
+    /*
+    Mongo duplicate key protection
+    */
+
+    if (error.code === 11000) {
       return res.status(409).json({
         message: "Slot already booked",
       });
     }
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server error",
     });
   }
