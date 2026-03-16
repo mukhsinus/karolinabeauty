@@ -50,14 +50,14 @@ const ServicesSection = () => {
 
         {/* CATEGORY TABS */}
 
-        <div className="flex flex-wrap justify-center gap-3 mb-20">
+        <div className="flex gap-3 overflow-x-auto pb-2 mb-20 whitespace-nowrap no-scrollbar">
 
           {serviceCategories.map((cat) => (
 
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`shrink-0 flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === cat.id
                   ? "bg-primary text-white shadow-lg"
                   : "bg-secondary text-muted-foreground hover:text-foreground"
@@ -65,7 +65,7 @@ const ServicesSection = () => {
             >
 
               <span className="mr-2">
-                {cat.icon}
+                <cat.icon size={18} className="mr-2" />
               </span>
 
               {t(cat.nameKey)}

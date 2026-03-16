@@ -288,7 +288,7 @@ export default function BookingSection() {
 
             >
 
-              <cat.icon size={16} />
+              <cat.icon size={18} className="mr-2" />
               <span>{t(cat.nameKey)}</span>
 
             </button>
