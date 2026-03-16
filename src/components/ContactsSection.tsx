@@ -7,10 +7,29 @@ const ContactsSection = () => {
   const { t } = useLanguage();
 
   const items = [
-    { icon: <MapPin size={20} />, label: t("contacts.address"), value: "Tashkent, Uzbekistan" },
+
+    {
+      icon: <MapPin size={20} />,
+      label: "Chilanzar",
+      value: `Метро Дружба Народов
+  Фурката 15/1`,
+      href: "https://maps.google.com/?q=Furkat+15/1+Tashkent"
+    },
+
+    {
+      icon: <MapPin size={20} />,
+      label: "Yunusabad",
+      value: `Юнусабад 14 квартал
+  дом 1`,
+      href: "https://maps.google.com/?q=Yunusabad+14+kvartal+1+dom"
+    },
+
     { icon: <Phone size={20} />, label: t("contacts.phone"), value: "+998 90 123 45 67" },
-    { icon: <Instagram size={20} />, label: t("contacts.instagram"), value: "@beautystudio", href: "https://instagram.com/beautystudio" },
+
+    { icon: <Instagram size={20} />, label: t("contacts.instagram"), value: "@karolinabeautyroom", href: "https://instagram.com/karolinabeautyroom" },
+
     { icon: <Clock size={20} />, label: t("contacts.working_hours"), value: `${t("booking.weekdays")}\n${t("booking.weekends")}` },
+
   ];
 
   return (
@@ -27,7 +46,7 @@ const ContactsSection = () => {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
           {items.map((item, i) => (
             <motion.div
               key={i}
