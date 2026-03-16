@@ -183,9 +183,14 @@ const Footer = () => {
             © {new Date().getFullYear()} Karolina Beauty Studio. {t("footer.rights")}
           </p>
 
-          <p className="text-xs opacity-70">
+          <a
+            href="https://vantalab.uz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs opacity-70 hover:opacity-100 hover:text-primary transition-all underline-offset-4 hover:underline"
+          >
             Developed with care
-          </p>
+          </a>
 
         </div>
 
