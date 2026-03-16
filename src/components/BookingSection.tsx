@@ -261,7 +261,7 @@ export default function BookingSection() {
 
         {branchId && (
 
-        <div className="flex justify-center gap-3 flex-wrap mb-14">
+        <div className="flex gap-3 overflow-x-auto pb-2 mb-14 whitespace-nowrap">
 
           {serviceCategories.map(cat => (
 
@@ -281,14 +281,15 @@ export default function BookingSection() {
 
               }}
 
-              className={`px-6 py-3 rounded-full border text-sm transition
+              className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
               ${category === cat.id
-                ? "bg-primary text-white border-primary"
-                : "border-border hover:border-primary"}`}
+              ? "bg-primary text-white border-primary shadow-sm"
+              : "bg-white border-border hover:border-primary hover:shadow-sm"}`}
 
             >
 
-              {cat.icon} {t(cat.nameKey)}
+              <cat.icon size={16} />
+              <span>{t(cat.nameKey)}</span>
 
             </button>
 
@@ -334,10 +335,10 @@ export default function BookingSection() {
                       }))
                     }
 
-                    className={`p-5 rounded-2xl border text-left transition hover:shadow-md
+                    className={`p-6 rounded-2xl border bg-white text-left transition-all
                     ${booking.service === service.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border"}`}
+                      ? "border-primary shadow-sm"
+                      : "border-border hover:border-primary hover:shadow-sm"}`}
 
                   >
 

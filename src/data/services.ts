@@ -1,5 +1,15 @@
 // src/data/services.ts
 
+import {
+  Sparkles,
+  Scissors,
+  Flower2,
+  Eye,
+  Droplets,
+  Wand2,
+  Syringe
+} from "lucide-react"
+
 export interface ServiceItem {
   id: string
   nameKey: string
@@ -17,7 +27,7 @@ export interface ServiceGroup {
 export interface ServiceCategory {
   id: string
   nameKey: string
-  icon: string
+  icon: any
   groups: ServiceGroup[]
 }
 
@@ -28,7 +38,7 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "lashes",
     nameKey: "services.lashes",
-    icon: "✨",
+    icon: Sparkles,
     groups: [
 
       {
@@ -81,7 +91,7 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "nails",
     nameKey: "services.nails",
-    icon: "💅",
+    icon: Scissors,
     groups: [
 
       {
@@ -129,7 +139,7 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "brows",
     nameKey: "services.brows",
-    icon: "🪶",
+    icon: Eye,
     groups: [
 
       {
@@ -159,9 +169,8 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "depilation",
     nameKey: "services.depilation",
-    icon: "🌸",
+    icon: Flower2,
     groups: [
-
       {
         id: "depilation_main",
         titleKey: "services.depilation_main",
@@ -179,7 +188,6 @@ export const serviceCategories: ServiceCategory[] = [
           { id: "upper_lip", nameKey: "services.upper_lip", price: 30000, duration: 15 },
         ],
       },
-
     ],
   },
 
@@ -188,7 +196,7 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "hair",
     nameKey: "services.hair",
-    icon: "💇‍♀️",
+    icon: Wand2,
     groups: [
 
       {
@@ -228,9 +236,8 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "permanent",
     nameKey: "services.permanent",
-    icon: "🖊",
+    icon: Syringe,
     groups: [
-
       {
         id: "permanent_makeup",
         titleKey: "services.permanent_makeup",
@@ -240,7 +247,6 @@ export const serviceCategories: ServiceCategory[] = [
           { id: "interlash", nameKey: "services.interlash", price: 800000, duration: 120 },
         ],
       },
-
     ],
   },
 
@@ -249,9 +255,8 @@ export const serviceCategories: ServiceCategory[] = [
   {
     id: "removal",
     nameKey: "services.removal",
-    icon: "🧴",
+    icon: Droplets,
     groups: [
-
       {
         id: "permanent_removal",
         titleKey: "services.permanent_removal",
@@ -260,7 +265,6 @@ export const serviceCategories: ServiceCategory[] = [
           { id: "remover_removal", nameKey: "services.remover_removal", price: 300000, duration: 60 },
         ],
       },
-
     ],
   },
 
