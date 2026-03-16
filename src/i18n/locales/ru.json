@@ -176,5 +176,9 @@
   "booking.success": "Запись подтверждена",
   "booking.success_message": "Мы свяжемся с вами для подтверждения.",
 
-  "booking.details": "Ваши данные"
+  "booking.details": "Ваши данные",
+
+  "contacts.address": "Адрес",
+  "contacts.instagram": "Instagram",
+  "contacts.working_hours": "Часы работы"
 }

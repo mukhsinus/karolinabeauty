@@ -174,5 +174,9 @@
   "booking.success": "Yozilish tasdiqlandi",
   "booking.success_message": "Tasdiqlash uchun siz bilan bog‘lanamiz.",
 
-  "booking.details": "Ma'lumotlaringiz"
+  "booking.details": "Ma'lumotlaringiz",
+
+  "contacts.address": "Manzil",
+  "contacts.instagram": "Instagram",
+  "contacts.working_hours": "Ish vaqti"
 }

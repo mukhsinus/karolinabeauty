@@ -175,5 +175,9 @@
     "booking.success": "Booking confirmed",
     "booking.success_message": "We will contact you shortly.",
 
-    "booking.details": "Your details"
+    "booking.details": "Your details",
+
+    "contacts.address": "Address",
+    "contacts.instagram": "Instagram",
+    "contacts.working_hours": "Working hours"
 }
