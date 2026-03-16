@@ -1,0 +1,59 @@
+{
+  "nav.home": "Главная",
+  "nav.services": "Услуги",
+  "nav.gallery": "Галерея",
+  "nav.booking": "Запись",
+  "nav.contacts": "Контакты",
+  "nav.prices": "Цены",
+
+  "hero.title": "Студия красоты",
+  "hero.tagline": "Ваша красота — наше искусство",
+  "hero.book": "Записаться",
+  "hero.services": "Смотреть услуги",
+
+  "services.title": "Наши услуги",
+  "services.subtitle": "Премиальные процедуры красоты",
+  "services.book": "Записаться",
+  "services.from": "от",
+  "services.currency": "сум",
+
+  "gallery.title": "Наши работы",
+  "gallery.subtitle": "Посмотрите красоту, которую мы создаём",
+  "gallery.view_all": "Смотреть галерею",
+
+  "home.popular.title": "Популярные услуги",
+  "home.popular.subtitle": "Самые востребованные процедуры",
+
+  "home.popular.lashes.title": "Классическое наращивание",
+  "home.popular.lashes.desc": "Натуральный эффект и долговечный результат",
+
+  "home.popular.lamination.title": "Ламинирование ресниц",
+  "home.popular.lamination.desc": "Красивый изгиб и питание ресниц",
+
+  "home.popular.manicure.title": "Маникюр + покрытие",
+  "home.popular.manicure.desc": "Идеальная форма и стойкое покрытие",
+
+  "home.locations.title": "Наши салоны",
+  "home.locations.subtitle": "Выберите ближайший салон",
+  "home.locations.hours": "График работы",
+  "home.locations.route": "Маршрут",
+
+  "home.cta.title": "Готовы к идеальному образу?",
+  "home.cta.subtitle": "Запишитесь прямо сейчас",
+
+  "branches.friendship": "Метро Дружба Народов",
+  "branches.friendship.address": "ул. Фурката 15/1",
+  "branches.friendship.landmark": "Ориентир: Usmanov Dental Clinic",
+
+  "branches.yunusabad": "Юнусабад 14 квартал",
+  "branches.yunusabad.address": "дом 1",
+  "branches.yunusabad.landmark": "Ориентир: Корзинка Петушок",
+
+  "booking.weekdays": "Пн–Пт: 09:00 — 21:00",
+  "booking.weekends": "Сб–Вс: 10:00 — 22:00",
+
+  "contacts.title": "Контакты",
+  "contacts.phone": "Позвонить",
+
+  "footer.rights": "Все права защищены"
+}

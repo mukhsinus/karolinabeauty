@@ -1,0 +1,59 @@
+{
+  "nav.home": "Home",
+  "nav.services": "Services",
+  "nav.gallery": "Gallery",
+  "nav.booking": "Booking",
+  "nav.contacts": "Contacts",
+  "nav.prices": "Prices",
+
+  "hero.title": "Beauty Studio",
+  "hero.tagline": "Your beauty is our art",
+  "hero.book": "Book Appointment",
+  "hero.services": "View services",
+
+  "services.title": "Our Services",
+  "services.subtitle": "Premium beauty treatments",
+  "services.book": "Book now",
+  "services.from": "from",
+  "services.currency": "UZS",
+
+  "gallery.title": "Our Work",
+  "gallery.subtitle": "See the beauty we create",
+  "gallery.view_all": "View gallery",
+
+  "home.popular.title": "Popular services",
+  "home.popular.subtitle": "Our clients' most requested treatments",
+
+  "home.popular.lashes.title": "Classic eyelash extension",
+  "home.popular.lashes.desc": "Natural look and long-lasting result",
+
+  "home.popular.lamination.title": "Lash lamination",
+  "home.popular.lamination.desc": "Beautiful curl and lash nutrition",
+
+  "home.popular.manicure.title": "Manicure + coating",
+  "home.popular.manicure.desc": "Perfect shape and durable coating",
+
+  "home.locations.title": "Our salons",
+  "home.locations.subtitle": "Choose the nearest location",
+  "home.locations.hours": "Working hours",
+  "home.locations.route": "Route",
+
+  "home.cta.title": "Ready for the perfect look?",
+  "home.cta.subtitle": "Book your beauty treatment now",
+
+  "branches.friendship": "Friendship of Peoples metro",
+  "branches.friendship.address": "Furkat street 15/1",
+  "branches.friendship.landmark": "Near Usmanov Dental Clinic",
+
+  "branches.yunusabad": "Yunusabad 14 quarter",
+  "branches.yunusabad.address": "House 1",
+  "branches.yunusabad.landmark": "Near Korzinka Petushok",
+
+  "booking.weekdays": "Weekdays: 09:00 — 21:00",
+  "booking.weekends": "Weekends: 10:00 — 22:00",
+
+  "contacts.title": "Contact us",
+  "contacts.phone": "Call",
+
+  "footer.rights": "All rights reserved"
+}

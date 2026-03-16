@@ -1,16 +1,15 @@
-// src/pages/Home.tsx
 
-import StickyBookingButton from "@/components/StickyBookingButton"
 import Navbar from "@/components/Navbar"
 import HeroSection from "@/components/HeroSection"
 import Footer from "@/components/Footer"
+import { useLanguage } from "@/i18n/LanguageContext"
 
 const branches = [
 
   {
-    name: "Метро Дружба Народов",
-    address: "ул. Фурката 15/1",
-    landmark: "Ориентир: рядом с Usmanov Dental Clinic",
+    nameKey: "branches.friendship",
+    addressKey: "branches.friendship.address",
+    landmarkKey: "branches.friendship.landmark",
     phone: "+998901234567",
 
     mapImage:
@@ -21,9 +20,9 @@ const branches = [
   },
 
   {
-    name: "Юнусабад 14 квартал",
-    address: "14 квартал, дом 1",
-    landmark: "Ориентир: Корзинка Петушок",
+    nameKey: "branches.yunusabad",
+    addressKey: "branches.yunusabad.address",
+    landmarkKey: "branches.yunusabad.landmark",
     phone: "+998901234567",
 
     mapImage:
@@ -37,16 +36,15 @@ const branches = [
 
 const Home = () => {
 
+  const { t } = useLanguage()
+
   return (
 
     <div className="min-h-screen bg-background">
 
       <Navbar />
 
-      {/* HERO */}
-
       <HeroSection />
-
 
       {/* POPULAR SERVICES */}
 
@@ -57,38 +55,38 @@ const Home = () => {
           <div className="text-center mb-14 md:mb-16">
 
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
-              Популярные услуги
+              {t("home.popular.title")}
             </h2>
 
             <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-              Самые востребованные процедуры наших клиентов
+              {t("home.popular.subtitle")}
             </p>
 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
-            {/* CARD */}
+            {/* SERVICE */}
 
             <div className="bg-card p-7 md:p-8 rounded-3xl border border-border hover:shadow-xl transition flex flex-col">
 
               <h3 className="font-display text-xl mb-3">
-                Классическое наращивание
+                {t("home.popular.lashes.title")}
               </h3>
 
               <p className="text-muted-foreground text-sm mb-6 flex-grow">
-                Натуральный эффект, идеальный объём и долговечный результат
+                {t("home.popular.lashes.desc")}
               </p>
 
               <div className="text-primary font-semibold text-lg mb-6">
-                200 000 сум
+                200 000 {t("services.currency")}
               </div>
 
               <a
                 href="/booking"
                 className="inline-block text-center bg-primary text-white px-6 py-3 rounded-full text-sm font-medium"
               >
-                Записаться
+                {t("services.book")}
               </a>
 
             </div>
@@ -97,22 +95,22 @@ const Home = () => {
             <div className="bg-card p-7 md:p-8 rounded-3xl border border-border hover:shadow-xl transition flex flex-col">
 
               <h3 className="font-display text-xl mb-3">
-                Ламинирование ресниц
+                {t("home.popular.lamination.title")}
               </h3>
 
               <p className="text-muted-foreground text-sm mb-6 flex-grow">
-                Подчёркнутый изгиб и питание ресниц
+                {t("home.popular.lamination.desc")}
               </p>
 
               <div className="text-primary font-semibold text-lg mb-6">
-                100 000 сум
+                100 000 {t("services.currency")}
               </div>
 
               <a
                 href="/booking"
                 className="inline-block text-center bg-primary text-white px-6 py-3 rounded-full text-sm font-medium"
               >
-                Записаться
+                {t("services.book")}
               </a>
 
             </div>
@@ -121,22 +119,22 @@ const Home = () => {
             <div className="bg-card p-7 md:p-8 rounded-3xl border border-border hover:shadow-xl transition flex flex-col">
 
               <h3 className="font-display text-xl mb-3">
-                Маникюр + покрытие
+                {t("home.popular.manicure.title")}
               </h3>
 
               <p className="text-muted-foreground text-sm mb-6 flex-grow">
-                Идеальная форма и стойкое покрытие
+                {t("home.popular.manicure.desc")}
               </p>
 
               <div className="text-primary font-semibold text-lg mb-6">
-                170 000 сум
+                170 000 {t("services.currency")}
               </div>
 
               <a
                 href="/booking"
                 className="inline-block text-center bg-primary text-white px-6 py-3 rounded-full text-sm font-medium"
               >
-                Записаться
+                {t("services.book")}
               </a>
 
             </div>
@@ -157,11 +155,11 @@ const Home = () => {
           <div className="text-center mb-14 md:mb-16">
 
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
-              Наши салоны
+              {t("home.locations.title")}
             </h2>
 
             <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-              Выберите ближайший салон и постройте маршрут
+              {t("home.locations.subtitle")}
             </p>
 
           </div>
@@ -172,7 +170,7 @@ const Home = () => {
             {branches.map((branch) => (
 
               <div
-                key={branch.name}
+                key={branch.nameKey}
                 className="bg-card rounded-3xl overflow-hidden border border-border shadow-card"
               >
 
@@ -185,7 +183,7 @@ const Home = () => {
 
                   <img
                     src={branch.mapImage}
-                    alt={branch.name}
+                    alt={t(branch.nameKey)}
                     className="w-full h-[240px] md:h-[340px] object-cover group-hover:scale-[1.02] transition-transform duration-300"
                   />
 
@@ -195,30 +193,28 @@ const Home = () => {
                 <div className="p-6 md:p-8">
 
                   <h3 className="font-display text-lg md:text-xl font-semibold mb-2">
-                    {branch.name}
+                    {t(branch.nameKey)}
                   </h3>
 
                   <p className="text-sm mb-1">
-                    {branch.address}
+                    {t(branch.addressKey)}
                   </p>
 
                   <p className="text-sm text-muted-foreground mb-4">
-                    {branch.landmark}
+                    {t(branch.landmarkKey)}
                   </p>
 
 
                   <div className="text-muted-foreground text-sm space-y-1 mb-6">
 
-                    <p>График работы</p>
+                    <p>{t("home.locations.hours")}</p>
 
-                    <p>Пн–Пт: 09:00 — 21:00</p>
+                    <p>{t("booking.weekdays")}</p>
 
-                    <p>Сб–Вс: 10:00 — 22:00</p>
+                    <p>{t("booking.weekends")}</p>
 
                   </div>
 
-
-                  {/* ACTION BUTTONS */}
 
                   <div className="flex flex-col sm:flex-row gap-3">
 
@@ -228,14 +224,14 @@ const Home = () => {
                       rel="noopener noreferrer"
                       className="flex-1 text-center bg-primary text-white px-5 py-3 rounded-full text-sm font-medium"
                     >
-                      Маршрут
+                      {t("home.locations.route")}
                     </a>
 
                     <a
                       href={`tel:${branch.phone}`}
                       className="flex-1 text-center border border-border px-5 py-3 rounded-full text-sm font-medium hover:bg-secondary"
                     >
-                      Позвонить
+                      {t("contacts.phone")}
                     </a>
 
                   </div>
@@ -245,6 +241,7 @@ const Home = () => {
               </div>
 
             ))}
+
 
           </div>
 
@@ -260,18 +257,18 @@ const Home = () => {
         <div className="max-w-3xl mx-auto px-4 text-center">
 
           <h2 className="font-display text-3xl md:text-5xl font-semibold mb-6">
-            Готовы к идеальному образу?
+            {t("home.cta.title")}
           </h2>
 
           <p className="text-muted-foreground text-base md:text-lg mb-10">
-            Запишитесь на процедуру прямо сейчас и доверьте свою красоту профессионалам Karolina Beauty
+            {t("home.cta.subtitle")}
           </p>
 
           <a
             href="/booking"
             className="inline-block bg-primary text-white px-8 md:px-10 py-4 rounded-full text-base md:text-lg font-medium hover:shadow-lg transition"
           >
-            Записаться онлайн
+            {t("hero.book")}
           </a>
 
         </div>
@@ -279,7 +276,7 @@ const Home = () => {
       </section>
 
 
-      <StickyBookingButton />
+
 
       <Footer />
 

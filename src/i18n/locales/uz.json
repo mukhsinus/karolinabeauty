@@ -1,0 +1,58 @@
+{
+  "nav.home": "Bosh sahifa",
+  "nav.services": "Xizmatlar",
+  "nav.gallery": "Galereya",
+  "nav.booking": "Yozilish",
+  "nav.contacts": "Aloqa",
+  "nav.prices": "Narxlar",
+
+  "hero.title": "Go'zallik studiyasi",
+  "hero.tagline": "Sizning go'zalligingiz — bizning san'atimiz",
+  "hero.book": "Yozilish",
+  "hero.services": "Xizmatlarni ko'rish",
+
+  "services.title": "Bizning xizmatlar",
+  "services.subtitle": "Premium go'zallik muolajalari",
+  "services.book": "Yozilish",
+  "services.from": "dan",
+  "services.currency": "so'm",
+
+  "gallery.title": "Bizning ishlar",
+  "gallery.subtitle": "Har kuni yaratayotgan go'zallik",
+  "gallery.view_all": "Galereyani ko'rish",
+
+  "home.popular.title": "Mashhur xizmatlar",
+  "home.popular.subtitle": "Mijozlarimiz eng ko'p tanlaydigan xizmatlar",
+
+  "home.popular.lashes.title": "Klassik kiprik uzaytirish",
+  "home.popular.lashes.desc": "Tabiiy ko'rinish va uzoq muddatli natija",
+
+  "home.popular.lamination.title": "Kiprik laminatsiyasi",
+  "home.popular.lamination.desc": "Chiroyli bukilish va kiprik parvarishi",
+
+  "home.popular.manicure.title": "Manikyur + qoplama",
+  "home.popular.manicure.desc": "Mukammal shakl va mustahkam qoplama",
+
+  "home.locations.title": "Bizning salonlar",
+  "home.locations.subtitle": "Eng yaqin salonni tanlang",
+  "home.locations.hours": "Ish vaqti",
+  "home.locations.route": "Yo'nalish",
+
+  "home.cta.title": "Mukammal obrazga tayyormisiz?",
+  "home.cta.subtitle": "Hozir yoziling",
+
+  "branches.friendship": "Do'stlik metro",
+  "branches.friendship.address": "Furqat ko'chasi 15/1",
+  "branches.friendship.landmark": "Usmanov Dental yonida",
+
+  "branches.yunusabad": "Yunusobod 14 kvartal",
+  "branches.yunusabad.address": "1-uy",
+  "branches.yunusabad.landmark": "Korzinka Petushok yonida",
+
+  "booking.weekdays": "Dushanba–Juma: 09:00 — 21:00",
+  "booking.weekends": "Shanba–Yakshanba: 10:00 — 22:00",
+
+  "contacts.phone": "Qo'ng'iroq",
+
+  "footer.rights": "Barcha huquqlar himoyalangan"
+}
