@@ -136,7 +136,7 @@ const Footer = () => {
               className="flex items-center gap-2 text-muted-foreground"
             >
               <Phone size={18} />
-              +998901234567
+              Phone
             </a>
 
             <a
