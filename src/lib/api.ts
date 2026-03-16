@@ -1,25 +1,38 @@
 // src/lib/api.ts
 
-const API_URL = "http://localhost:4000"
+const API_URL = "http://localhost:4000/api"
 
 /*
 GET availability
 */
 
+
+export const fetchServices = async () => {
+  const res = await fetch(`${API_URL}/services`)
+  if (!res.ok) {
+    throw new Error("Failed to load services")
+  }
+  // The backend returns the array directly, not { data: ... }
+  return res.json()
+}
+
+
+
 export const fetchAvailability = async (
   branchId: string,
   date: string
 ) => {
-
   const res = await fetch(
     `${API_URL}/availability?branchId=${branchId}&date=${date}`
   )
-
   if (!res.ok) {
     throw new Error("Failed to load availability")
   }
-
-  return res.json()
+  const json = await res.json();
+  // Defensive: if backend returns { data: [...] }, return just the array
+  if (json && Array.isArray(json.data)) return json.data;
+  if (Array.isArray(json)) return json;
+  return [];
 }
 
 /*

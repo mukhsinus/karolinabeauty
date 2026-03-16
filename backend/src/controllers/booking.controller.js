@@ -1,105 +1,75 @@
 // backend/src/controllers/booking.controller.js
-
-import Booking from "../src/models/booking.js";
-
-/*
-POST /bookings
-
-Body:
-{
-  branchId,
-  serviceId,
-  serviceName,
-  serviceDuration,
-  price,
-  date,
-  time,
-  name,
-  phone
-}
-*/
+import { createBooking as createBookingService } from "../services/booking.service.js"
+import { notifyNewBooking } from "../telegram/bot.js"
 
 export const createBooking = async (req, res) => {
+
   try {
 
     const {
       branchId,
       serviceId,
-      serviceName,
-      serviceDuration,
-      price,
       date,
       time,
       name,
       phone,
-    } = req.body;
+      notes
+    } = req.body
 
-    // basic validation
-    if (
-      !branchId ||
-      !serviceId ||
-      !serviceName ||
-      !serviceDuration ||
-      !price ||
-      !date ||
-      !time ||
-      !name ||
-      !phone
-    ) {
+    if (!branchId || !serviceId || !date || !time || !name || !phone) {
       return res.status(400).json({
-        message: "Missing required fields",
-      });
+        success: false,
+        message: "Missing required fields"
+      })
     }
 
-    /*
-    Проверяем занятость слота
-    ТОЛЬКО в рамках филиала
-    */
-
-    const existing = await Booking.findOne({
-      branchId,
-      date,
-      time,
-      status: { $ne: "cancelled" }
-    });
-
-    if (existing) {
-      return res.status(409).json({
-        message: "Slot already booked",
-      });
-    }
-
-    const booking = await Booking.create({
+    const booking = await createBookingService({
       branchId,
       serviceId,
-      serviceName,
-      serviceDuration,
-      price,
       date,
       time,
       name,
       phone,
-      status: "confirmed"
-    });
+      notes
+    })
 
-    return res.status(201).json(booking);
+    await notifyNewBooking(booking)
+
+    return res.status(201).json({
+      success: true,
+      data: booking
+    })
 
   } catch (error) {
 
-    console.error("create booking error:", error);
+    console.error("createBooking controller error:", error)
 
-    /*
-    Mongo duplicate key protection
-    */
+    if (error.code === "BRANCH_NOT_FOUND") {
+      return res.status(404).json({
+        success: false,
+        message: "Branch not found"
+      })
+    }
 
-    if (error.code === 11000) {
+    if (error.code === "SERVICE_NOT_AVAILABLE") {
+      return res.status(400).json({
+        success: false,
+        message: "Service not available"
+      })
+    }
+
+    if (error.code === "SLOT_BOOKED") {
       return res.status(409).json({
-        message: "Slot already booked",
-      });
+        success: false,
+        message: "Time slot already booked"
+      })
     }
 
     return res.status(500).json({
-      message: "Server error",
-    });
+      success: false,
+      message: "Internal server error"
+    })
+
   }
-};
+
+}

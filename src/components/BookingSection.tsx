@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
-import { serviceCategories, getAllServices } from "@/data/services"
+import { useServices } from "@/hooks/useServices"
 import { fetchAvailability, createBooking } from "@/lib/api"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Calendar, Clock, User, MapPin } from "lucide-react"
@@ -23,14 +23,14 @@ interface Branch {
 
 const branches: Branch[] = [
   {
-    id: "branch_center",
-    nameKey: "branch.center.name",
-    addressKey: "branch.center.address"
-  },
-  {
-    id: "branch_chilanzar",
+    id: "69b8571b54756438915bc8cf",
     nameKey: "branch.chilanzar.name",
     addressKey: "branch.chilanzar.address"
+  },
+  {
+    id: "69b8571b54756438915bc8d0",
+    nameKey: "branch.center.name",
+    addressKey: "branch.center.address"
   }
 ]
 
@@ -74,11 +74,18 @@ export default function BookingSection() {
   const formatPrice = (price: number) =>
     price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")
 
-  const services = getAllServices()
+  const { services } = useServices()
+
 
   const [branchId, setBranchId] = useState<string | null>(null)
 
-  const [category, setCategory] = useState(serviceCategories[0].id)
+  const [category, setCategory] = useState("")
+
+  useEffect(() => {
+    if (services.length && !category) {
+      setCategory(services[0].id)
+    }
+  }, [services, category])
 
   const [booking, setBooking] = useState<BookingState>({
     service: "",
@@ -98,16 +105,22 @@ export default function BookingSection() {
     return generateTimeSlots(booking.date)
   }, [booking.date])
 
-  const categoryData = serviceCategories.find(
+  const categoryData = services?.find(
     c => c.id === category
   )
 
   const categoryServices =
     categoryData?.groups?.flatMap(g => g.services) || []
 
-  const selectedService = services.find(
+  const allServices = (services || []).flatMap(c =>
+    c.groups.flatMap(g => g.services)
+  )
+
+  const selectedService = allServices.find(
     s => s.id === booking.service
   )
+
+  const branch = branches.find(b => b.id === branchId)
 
   useEffect(() => {
 
@@ -144,7 +157,7 @@ export default function BookingSection() {
 
       await createBooking({
         branchId,
-        serviceId: selectedService.id,
+        serviceId: selectedService._id, // Use MongoDB ObjectId
         serviceName: selectedService.nameKey,
         serviceDuration: selectedService.duration,
         price: selectedService.price,
@@ -263,7 +276,7 @@ export default function BookingSection() {
 
         <div className="flex gap-3 overflow-x-auto pb-2 mb-14 whitespace-nowrap">
 
-          {serviceCategories.map(cat => (
+          {(services || []).map(cat => (
 
             <button
               key={cat.id}
@@ -552,7 +565,7 @@ export default function BookingSection() {
                 </div>
 
                 <div className="font-medium">
-                  {branches.find(b => b.id === branchId)?.nameKey ? t(branches.find(b => b.id === branchId)?.nameKey) : t("common.empty")}
+                  {branch ? t(branch.nameKey) : t("common.empty")}
                 </div>
 
               </div>
