@@ -6,24 +6,37 @@ import HeroSection from "@/components/HeroSection"
 import Footer from "@/components/Footer"
 
 const branches = [
-  {
-    name: "Юнусабад 13 квартал",
-    mapImage:
-      "https://static-maps.yandex.ru/1.x/?ll=69.2787,41.3612&size=650,450&z=15&l=map&pt=69.2787,41.3612,pm2rdm",
-    mapLink:
-      "https://yandex.ru/maps/?rtext=~41.3612,69.2787&rtt=auto",
-  },
+
   {
     name: "Метро Дружба Народов",
+    address: "ул. Фурката 15/1",
+    landmark: "Ориентир: рядом с Usmanov Dental Clinic",
+
     mapImage:
-      "https://static-maps.yandex.ru/1.x/?ll=69.2045,41.2992&size=650,450&z=15&l=map&pt=69.2045,41.2992,pm2rdm",
+      "https://static-maps.yandex.ru/1.x/?ll=69.2045,41.2992&size=650,450&z=16&l=map&pt=69.2045,41.2992,pm2rdm",
+
     mapLink:
-      "https://yandex.ru/maps/?rtext=~41.2992,69.2045&rtt=auto",
+      "https://yandex.ru/maps/?text=Ташкент%20Фурката%2015/1"
   },
+
+  {
+    name: "Юнусабад 14 квартал",
+    address: "14 квартал, дом 1",
+    landmark: "Ориентир: Корзинка Петушок",
+
+    mapImage:
+      "https://static-maps.yandex.ru/1.x/?ll=69.2787,41.3612&size=650,450&z=16&l=map&pt=69.2787,41.3612,pm2rdm",
+
+    mapLink:
+      "https://yandex.ru/maps/?text=Ташкент%20Юнусабад%2014%20квартал%201"
+  }
+
 ]
 
 const Home = () => {
+
   return (
+
     <div className="min-h-screen bg-background">
 
       <Navbar />
@@ -171,11 +184,19 @@ const Home = () => {
 
                 <div className="p-8">
 
-                  <h3 className="font-display text-xl font-semibold mb-3">
+                  <h3 className="font-display text-xl font-semibold mb-2">
                     {branch.name}
                   </h3>
 
-                  <div className="text-muted-foreground text-sm space-y-1">
+                  <p className="text-sm text-foreground mb-1">
+                    {branch.address}
+                  </p>
+
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {branch.landmark}
+                  </p>
+
+                  <div className="text-muted-foreground text-sm space-y-1 mb-4">
 
                     <p>График работы</p>
 
@@ -189,7 +210,7 @@ const Home = () => {
                     href={branch.mapLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block mt-6 text-sm font-medium text-primary hover:underline"
+                    className="inline-block mt-2 text-sm font-medium text-primary hover:underline"
                   >
                     Построить маршрут
                   </a>
@@ -236,6 +257,7 @@ const Home = () => {
       <Footer />
 
     </div>
+
   )
 }
 
