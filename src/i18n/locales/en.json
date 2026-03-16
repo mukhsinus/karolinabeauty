@@ -55,5 +55,100 @@
   "contacts.title": "Contact us",
   "contacts.phone": "Call",
 
-  "footer.rights": "All rights reserved"
+  "footer.rights": "All rights reserved",
+
+
+    "services.basic_master": "Basic master",
+    "services.top_master_regina": "Top master — Regina",
+    "services.premium_master_karolina": "Premium master — Karolina",
+
+    "services.classic_extension": "Classic eyelash extension",
+    "services.led_extension": "LED eyelash extension",
+    "services.colored_lashes": "Colored lashes",
+    "services.lash_removal": "Lash removal",
+
+    "services.classic": "Classic",
+    "services.lashes_2_3d": "2–3D volume",
+    "services.author_effect": "Signature effect",
+    "services.lashes_4_6d": "4–6D volume",
+
+    "services.lash_lamination": "Lash lamination",
+    "services.lash_lamination_plus": "Lamination + coloring + vitamins",
+
+    "services.promo": "Promotion",
+
+    "services.lashes": "Lashes",
+    "services.nails": "Nails",
+    "services.brows": "Brows",
+    "services.depilation": "Depilation",
+    "services.hair": "Hair",
+    "services.permanent": "Permanent",
+    "services.removal": "Removal",
+
+    "services.manicure_pedicure": "Manicure & Pedicure",
+    "services.manicure": "Manicure",
+    "services.manicure_plus": "Manicure + strengthening + coating",
+    "services.pedicure": "Pedicure",
+    "services.pedicure_plus": "Pedicure + coating",
+    "services.combo_four_hands": "4-hands combo",
+    "services.combo_promo": "Promo combo",
+
+    "services.japanese": "Japanese care",
+    "services.japanese_manicure": "Japanese manicure",
+    "services.japanese_pedicure": "Japanese pedicure",
+    "services.japanese_combo": "Japanese combo",
+
+    "services.extra_services": "Extra services",
+    "services.nail_removal": "Removal",
+    "services.designs": "Designs",
+    "services.french": "French",
+    "services.vtirka": "Chrome powder",
+    "services.nail_repair": "Nail repair",
+    "services.paraffin_spa": "Paraffin SPA",
+    "services.smart_oil_spa": "Smart oil SPA",
+
+    "services.brows_basic": "Brows",
+    "services.brow_architecture": "Brow architecture",
+    "services.brow_styling": "Long-term brow styling",
+    "services.brow_coloring": "Brow coloring",
+    "services.muslim_lightening": "Muslim lightening",
+
+    "services.karolina_brows": "Brows — Karolina",
+
+    "services.depilation_main": "Depilation",
+    "services.promo_depilation": "Promo: deep bikini + armpits + legs to knee",
+    "services.deep_bikini": "Deep bikini",
+    "services.armpits": "Armpits",
+    "services.legs_to_knee": "Legs to knee",
+    "services.full_legs": "Full legs",
+    "services.arms_to_elbow": "Arms to elbow",
+    "services.full_arms": "Full arms",
+    "services.face": "Face",
+    "services.stomach": "Stomach",
+    "services.back": "Back",
+    "services.upper_lip": "Upper lip",
+
+    "services.hair_natural": "Natural hair + work",
+    "services.hair_40_45": "Natural hair 40–45 cm",
+    "services.hair_50_55": "Natural hair 50–55 cm",
+    "services.hair_60_65": "Natural hair 60–65 cm",
+    "services.hair_70_75": "Natural hair 70–75 cm",
+    "services.hair_80_85": "Natural hair 80–85 cm",
+
+    "services.hair_bioprotein": "Bioprotein hair + work",
+    "services.bio_60_70": "Bioprotein 60–70 cm",
+    "services.bio_80_90": "Bioprotein 80–90 cm",
+
+    "services.hair_extension_work": "Hair extension (work only)",
+    "services.hair_100g_work": "Hair extension 100g (work only)",
+
+    "services.permanent_makeup": "Permanent makeup",
+    "services.permanent_lips": "Permanent lips",
+    "services.permanent_brows": "Permanent brows",
+    "services.interlash": "Interlash",
+
+    "services.permanent_removal": "Permanent removal",
+    "services.laser_removal": "Laser removal",
+    "services.remover_removal": "Remover removal"
+
 }

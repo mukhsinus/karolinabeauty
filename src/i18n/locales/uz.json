@@ -54,5 +54,99 @@
 
   "contacts.phone": "Qo'ng'iroq",
 
-  "footer.rights": "Barcha huquqlar himoyalangan"
+  "footer.rights": "Barcha huquqlar himoyalangan",
+
+
+  "services.basic_master": "Oddiy usta",
+  "services.top_master_regina": "TOP usta — Regina",
+  "services.premium_master_karolina": "Premium usta — Karolina",
+
+  "services.classic_extension": "Klassik kiprik uzaytirish",
+  "services.led_extension": "LED kiprik uzaytirish",
+  "services.colored_lashes": "Rangli kipriklar",
+  "services.lash_removal": "Kiprik olib tashlash",
+
+  "services.classic": "Klassika",
+  "services.lashes_2_3d": "2–3D hajm",
+  "services.author_effect": "Muallif effekti",
+  "services.lashes_4_6d": "4–6D hajm",
+
+  "services.lash_lamination": "Kiprik laminatsiyasi",
+  "services.lash_lamination_plus": "Laminatsiya + bo'yash + vitaminlar",
+
+  "services.promo": "Aksiya",
+
+  "services.lashes": "Kipriklar",
+  "services.nails": "Tirnoqlar",
+  "services.brows": "Qoshlar",
+  "services.depilation": "Depilatsiya",
+  "services.hair": "Sochlar",
+  "services.permanent": "Permanent makiyaj",
+  "services.removal": "Olib tashlash",
+
+  "services.manicure_pedicure": "Manikyur va pedikyur",
+  "services.manicure": "Manikyur",
+  "services.manicure_plus": "Manikyur + mustahkamlash + qoplama",
+  "services.pedicure": "Pedikyur",
+  "services.pedicure_plus": "Pedikyur + qoplama",
+  "services.combo_four_hands": "4 qo‘l kombo",
+  "services.combo_promo": "Aksiya kombo",
+
+  "services.japanese": "Yapon parvarishi",
+  "services.japanese_manicure": "Yapon manikyuri",
+  "services.japanese_pedicure": "Yapon pedikyuri",
+  "services.japanese_combo": "Yapon kombo",
+
+  "services.extra_services": "Qo‘shimcha xizmatlar",
+  "services.nail_removal": "Olib tashlash",
+  "services.designs": "Dizaynlar",
+  "services.french": "French",
+  "services.vtirka": "Vtirka",
+  "services.nail_repair": "Tirnoq ta'mirlash",
+  "services.paraffin_spa": "Parafin SPA",
+  "services.smart_oil_spa": "Smart oil SPA",
+
+  "services.brows_basic": "Qoshlar",
+  "services.brow_architecture": "Qosh arxitekturasi",
+  "services.brow_styling": "Uzoq muddatli qosh shakllantirish",
+  "services.brow_coloring": "Qosh bo‘yash",
+  "services.muslim_lightening": "Muslim oqartirish",
+
+  "services.karolina_brows": "Karolina qosh",
+
+  "services.depilation_main": "Depilatsiya",
+  "services.promo_depilation": "Aksiya: chuqur bikini + qo‘ltiq osti + tizzagacha oyoq",
+  "services.deep_bikini": "Chuqur bikini",
+  "services.armpits": "Qo‘ltiq osti",
+  "services.legs_to_knee": "Tizzagacha oyoq",
+  "services.full_legs": "To‘liq oyoq",
+  "services.arms_to_elbow": "Tirsakkacha qo‘l",
+  "services.full_arms": "To‘liq qo‘l",
+  "services.face": "Yuz",
+  "services.stomach": "Qorin",
+  "services.back": "Orqa",
+  "services.upper_lip": "Yuqori lab",
+
+  "services.hair_natural": "Tabiiy soch + ish",
+  "services.hair_40_45": "Tabiiy soch 40–45 sm",
+  "services.hair_50_55": "Tabiiy soch 50–55 sm",
+  "services.hair_60_65": "Tabiiy soch 60–65 sm",
+  "services.hair_70_75": "Tabiiy soch 70–75 sm",
+  "services.hair_80_85": "Tabiiy soch 80–85 sm",
+
+  "services.hair_bioprotein": "Bioprotein soch",
+  "services.bio_60_70": "Bioprotein 60–70 sm",
+  "services.bio_80_90": "Bioprotein 80–90 sm",
+
+  "services.hair_extension_work": "Soch uzaytirish (faqat ish)",
+  "services.hair_100g_work": "Soch uzaytirish 100 g (faqat ish)",
+
+  "services.permanent_makeup": "Permanent makiyaj",
+  "services.permanent_lips": "Lab permanent",
+  "services.permanent_brows": "Qosh permanent",
+  "services.interlash": "Kirpik oralig‘i",
+
+  "services.permanent_removal": "Permanent olib tashlash",
+  "services.laser_removal": "Lazer bilan olib tashlash",
+  "services.remover_removal": "Remover bilan olib tashlash"
 }

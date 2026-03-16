@@ -37,7 +37,7 @@ const ServicesSection = () => {
           className="text-center mb-24"
         >
 
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-foreground mb-6">
+          <h2 className="font-display text-4xl md:text-5xl font-semibold mb-6">
             {t("services.title")}
           </h2>
 
@@ -106,54 +106,42 @@ const ServicesSection = () => {
 
                   <motion.div
                     key={service.id}
-
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
 
-                    transition={{
-                      delay: index * 0.05
-                    }}
-
-                    className="group relative bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+                    className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
                   >
 
-                    {/* SERVICE NAME */}
+                    {/* NAME */}
 
-                    <div className="mb-8">
+                    <p className="text-lg font-medium mb-8">
+                      {t(service.nameKey)}
+                    </p>
 
-                      <p className="text-lg font-medium text-foreground leading-snug">
-                        {t(service.nameKey)}
-                      </p>
-
-                    </div>
-
-
-                    {/* PRICE + CTA */}
+                    {/* PRICE */}
 
                     <div className="flex items-center justify-between">
 
                       <span className="text-primary font-semibold text-2xl">
 
                         {service.isFrom && (
-                          <span className="text-muted-foreground text-sm font-normal mr-1">
+                          <span className="text-muted-foreground text-sm mr-1">
                             {t("services.from")}
                           </span>
                         )}
 
                         {formatPrice(service.price)}
 
-                        <span className="text-xs text-muted-foreground font-normal ml-1">
+                        <span className="text-xs text-muted-foreground ml-1">
                           {t("services.currency")}
                         </span>
 
                       </span>
 
-
-                      {/* BOOK BUTTON */}
-
                       <a
                         href="/booking"
-                        className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-sm font-medium text-primary"
+                        className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
                       >
                         {t("services.book")}
                       </a>
@@ -171,20 +159,6 @@ const ServicesSection = () => {
           ))}
 
         </motion.div>
-
-
-        {/* BOTTOM CTA */}
-
-        <div className="text-center mt-28">
-
-          <a
-            href="/services"
-            className="inline-block border border-primary text-primary px-10 py-4 rounded-full text-sm font-medium hover:bg-primary hover:text-white transition-all duration-300"
-          >
-            {t("nav.prices")}
-          </a>
-
-        </div>
 
       </div>
 

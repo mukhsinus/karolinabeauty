@@ -55,5 +55,100 @@
   "contacts.title": "Контакты",
   "contacts.phone": "Позвонить",
 
-  "footer.rights": "Все права защищены"
+  "footer.rights": "Все права защищены",
+
+
+  "services.basic_master": "Обычный мастер",
+  "services.top_master_regina": "ТОП мастер — Регина",
+  "services.premium_master_karolina": "Премиум мастер — Каролина",
+
+  "services.classic_extension": "Классическое наращивание",
+  "services.led_extension": "LED наращивание",
+  "services.colored_lashes": "Цветные ресницы",
+  "services.lash_removal": "Снятие ресниц",
+
+  "services.classic": "Классика",
+  "services.lashes_2_3d": "2–3D объём",
+  "services.author_effect": "Авторский эффект",
+  "services.lashes_4_6d": "4–6D объём",
+
+  "services.lash_lamination": "Ламинирование ресниц",
+  "services.lash_lamination_plus": "Ламинирование + окрашивание + витамины",
+
+  "services.promo": "Акция",
+
+  "services.lashes": "Ресницы",
+  "services.nails": "Ногти",
+  "services.brows": "Брови",
+  "services.depilation": "Депиляция",
+  "services.hair": "Волосы",
+  "services.permanent": "Перманент",
+  "services.removal": "Удаление",
+
+
+  "services.manicure_pedicure": "Маникюр и педикюр",
+  "services.manicure": "Маникюр",
+  "services.manicure_plus": "Маникюр + укрепление + покрытие",
+  "services.pedicure": "Педикюр",
+  "services.pedicure_plus": "Педикюр + покрытие",
+  "services.combo_four_hands": "Комбо 4 руки",
+  "services.combo_promo": "Комбо по акции",
+
+  "services.japanese": "Японский уход",
+  "services.japanese_manicure": "Японский маникюр",
+  "services.japanese_pedicure": "Японский педикюр",
+  "services.japanese_combo": "Японское комбо",
+
+  "services.extra_services": "Дополнительные услуги",
+  "services.nail_removal": "Снятие",
+  "services.designs": "Дизайны",
+  "services.french": "Френч",
+  "services.vtirka": "Втирка",
+  "services.nail_repair": "Ремонт ногтя",
+  "services.paraffin_spa": "Парафин SPA",
+  "services.smart_oil_spa": "Smart oil SPA",
+
+  "services.brows_basic": "Брови",
+  "services.brow_architecture": "Архитектура бровей",
+  "services.brow_styling": "Долговременная укладка бровей",
+  "services.brow_coloring": "Окрашивание бровей",
+  "services.muslim_lightening": "Мусульманское осветление",
+
+  "services.karolina_brows": "Брови — Каролина",
+
+  "services.depilation_main": "Депиляция",
+  "services.promo_depilation": "Акция: глубокое бикини + подмышки + ноги до колена",
+  "services.deep_bikini": "Глубокое бикини",
+  "services.armpits": "Подмышки",
+  "services.legs_to_knee": "Ноги до колена",
+  "services.full_legs": "Полные ноги",
+  "services.arms_to_elbow": "Руки до локтя",
+  "services.full_arms": "Полные руки",
+  "services.face": "Лицо",
+  "services.stomach": "Живот",
+  "services.back": "Спина",
+  "services.upper_lip": "Верхняя губа",
+
+  "services.hair_natural": "Натуральные волосы + работа",
+  "services.hair_40_45": "Натуральные волосы 40–45 см",
+  "services.hair_50_55": "Натуральные волосы 50–55 см",
+  "services.hair_60_65": "Натуральные волосы 60–65 см",
+  "services.hair_70_75": "Натуральные волосы 70–75 см",
+  "services.hair_80_85": "Натуральные волосы 80–85 см",
+
+  "services.hair_bioprotein": "Биопротеин волосы + работа",
+  "services.bio_60_70": "Биопротеин 60–70 см",
+  "services.bio_80_90": "Биопротеин 80–90 см",
+
+  "services.hair_extension_work": "Наращивание волос (только работа)",
+  "services.hair_100g_work": "Наращивание волос 100 г (только работа)",
+
+  "services.permanent_makeup": "Перманентный макияж",
+  "services.permanent_lips": "Перманент губ",
+  "services.permanent_brows": "Перманент бровей",
+  "services.interlash": "Межресничка",
+
+  "services.permanent_removal": "Удаление перманента",
+  "services.laser_removal": "Удаление лазером",
+  "services.remover_removal": "Удаление ремувером"
 }
