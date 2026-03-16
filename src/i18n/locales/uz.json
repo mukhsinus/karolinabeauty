@@ -148,5 +148,31 @@
 
   "services.permanent_removal": "Permanent olib tashlash",
   "services.laser_removal": "Lazer bilan olib tashlash",
-  "services.remover_removal": "Remover bilan olib tashlash"
+  "services.remover_removal": "Remover bilan olib tashlash",
+
+  "branch.center.name": "Karolina Beauty Center",
+  "branch.center.address": "Toshkent • Markaz",
+
+  "branch.chilanzar.name": "Karolina Beauty Chilanzar",
+  "branch.chilanzar.address": "Toshkent • Chilonzor",
+
+  "common.empty": "—",
+
+  "booking.title": "Onlayn yozilish",
+  "booking.select_branch": "Salon tanlang",
+  "booking.select_date": "Sanani tanlang",
+  "booking.select_time": "Vaqtni tanlang",
+  "booking.summary": "Yozuv tafsilotlari",
+  "booking.branch": "Salon",
+  "booking.service": "Xizmat",
+  "booking.date": "Sana",
+  "booking.time": "Vaqt",
+  "booking.price": "Narxi",
+  "booking.name": "Ismingiz",
+  "booking.phone": "Telefon",
+  "booking.confirm_booking": "Yozilishni tasdiqlash",
+  "booking.success": "Yozilish tasdiqlandi",
+  "booking.success_message": "Tasdiqlash uchun siz bilan bog‘lanamiz.",
+
+  "booking.details": "Ma'lumotlaringiz"
 }

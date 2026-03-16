@@ -17,25 +17,22 @@ interface BookingState {
 
 interface Branch {
   id: string
-  name: string
-  address: string
+  nameKey: string
+  addressKey: string
 }
 
 const branches: Branch[] = [
   {
     id: "branch_center",
-    name: "Karolina Beauty Center",
-    address: "Ташкент • Центр"
+    nameKey: "branch.center.name",
+    addressKey: "branch.center.address"
   },
   {
     id: "branch_chilanzar",
-    name: "Karolina Beauty Chilanzar",
-    address: "Ташкент • Чиланзар"
+    nameKey: "branch.chilanzar.name",
+    addressKey: "branch.chilanzar.address"
   }
 ]
-
-const formatPrice = (price: number) =>
-  price.toLocaleString("ru-RU")
 
 const getNextDays = (count: number) => {
   const days: string[] = []
@@ -72,7 +69,10 @@ const generateTimeSlots = (date: string) => {
 
 export default function BookingSection() {
 
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
+
+  const formatPrice = (price: number) =>
+    price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")
 
   const services = getAllServices()
 
@@ -102,7 +102,6 @@ export default function BookingSection() {
     c => c.id === category
   )
 
-  /* 🔧 FIX: новая архитектура services */
   const categoryServices =
     categoryData?.groups?.flatMap(g => g.services) || []
 
@@ -166,7 +165,7 @@ export default function BookingSection() {
   }
 
   const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString(undefined, {
+    new Date(d).toLocaleDateString(lang, {
       weekday: "short",
       day: "numeric",
       month: "short"
@@ -211,8 +210,6 @@ export default function BookingSection() {
           {t("booking.title")}
         </h2>
 
-        {/* BRANCH SELECTOR */}
-
         <div className="mb-16">
 
           <h3 className="text-xl font-display mb-6 flex items-center gap-2">
@@ -245,11 +242,11 @@ export default function BookingSection() {
               >
 
                 <div className="font-semibold">
-                  {branch.name}
+                  {t(branch.nameKey)}
                 </div>
 
                 <div className="text-sm text-muted-foreground mt-1">
-                  {branch.address}
+                  {t(branch.addressKey)}
                 </div>
 
               </button>
@@ -554,7 +551,7 @@ export default function BookingSection() {
                 </div>
 
                 <div className="font-medium">
-                  {branches.find(b => b.id === branchId)?.name || "—"}
+                  {branches.find(b => b.id === branchId)?.nameKey ? t(branches.find(b => b.id === branchId)?.nameKey) : t("common.empty")}
                 </div>
 
               </div>
@@ -566,7 +563,7 @@ export default function BookingSection() {
                 </div>
 
                 <div className="font-medium">
-                  {selectedService ? t(selectedService.nameKey) : "—"}
+                  {selectedService ? t(selectedService.nameKey) : t("common.empty")}
                 </div>
 
               </div>
@@ -578,7 +575,7 @@ export default function BookingSection() {
                 </div>
 
                 <div>
-                  {booking.date ? formatDate(booking.date) : "—"}
+                  {booking.date ? formatDate(booking.date) : t("common.empty")}
                 </div>
 
               </div>
@@ -590,7 +587,7 @@ export default function BookingSection() {
                 </div>
 
                 <div>
-                  {booking.time || "—"}
+                  {booking.time ? booking.time : t("common.empty")}
                 </div>
 
               </div>

@@ -149,6 +149,31 @@
 
     "services.permanent_removal": "Permanent removal",
     "services.laser_removal": "Laser removal",
-    "services.remover_removal": "Remover removal"
+    "services.remover_removal": "Remover removal",
 
+    "branch.center.name": "Karolina Beauty Center",
+    "branch.center.address": "Tashkent • Center",
+
+    "branch.chilanzar.name": "Karolina Beauty Chilanzar",
+    "branch.chilanzar.address": "Tashkent • Chilanzar",
+
+    "common.empty": "—",
+
+    "booking.title": "Book an appointment",
+    "booking.select_branch": "Select a salon",
+    "booking.select_date": "Select a date",
+    "booking.select_time": "Select a time",
+    "booking.summary": "Booking summary",
+    "booking.branch": "Salon",
+    "booking.service": "Service",
+    "booking.date": "Date",
+    "booking.time": "Time",
+    "booking.price": "Price",
+    "booking.name": "Your name",
+    "booking.phone": "Phone",
+    "booking.confirm_booking": "Confirm booking",
+    "booking.success": "Booking confirmed",
+    "booking.success_message": "We will contact you shortly.",
+
+    "booking.details": "Your details"
 }

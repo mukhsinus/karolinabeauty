@@ -150,5 +150,31 @@
 
   "services.permanent_removal": "Удаление перманента",
   "services.laser_removal": "Удаление лазером",
-  "services.remover_removal": "Удаление ремувером"
+  "services.remover_removal": "Удаление ремувером",
+
+  "branch.center.name": "Karolina Beauty Center",
+  "branch.center.address": "Ташкент • Центр",
+
+  "branch.chilanzar.name": "Karolina Beauty Chilanzar",
+  "branch.chilanzar.address": "Ташкент • Чиланзар",
+
+  "common.empty": "—",
+
+  "booking.title": "Онлайн запись",
+  "booking.select_branch": "Выберите салон",
+  "booking.select_date": "Выберите дату",
+  "booking.select_time": "Выберите время",
+  "booking.summary": "Детали записи",
+  "booking.branch": "Салон",
+  "booking.service": "Услуга",
+  "booking.date": "Дата",
+  "booking.time": "Время",
+  "booking.price": "Стоимость",
+  "booking.name": "Ваше имя",
+  "booking.phone": "Телефон",
+  "booking.confirm_booking": "Подтвердить запись",
+  "booking.success": "Запись подтверждена",
+  "booking.success_message": "Мы свяжемся с вами для подтверждения.",
+
+  "booking.details": "Ваши данные"
 }
