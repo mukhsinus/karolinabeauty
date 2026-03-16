@@ -94,7 +94,77 @@ const translations: Record<Lang, Record<string, string>> = {
     "contacts.working_hours": "Working Hours",
 
     "footer.rights": "All rights reserved",
+
+    "services.basic_master": "Обычный мастер",
+    "services.top_master_regina": "ТОП мастер — Регина",
+    "services.premium_master_karolina": "Премиум мастер — Каролина",
+    "services.promo": "Акция",
+
+    "services.manicure_pedicure": "Маникюр и педикюр",
+    "services.extra_services": "Дополнительные услуги",
+    "services.japanese": "Японский уход",
+
+    "services.brows_basic": "Брови",
+    "services.karolina_brows": "Брови — Каролина",
+
+    "services.depilation_main": "Депиляция",
+
+    /* HAIR */
+
+    "services.hair": "Волосы",
+    "services.hair_extension_work": "Наращивание волос (только работа)",
+    "services.hair_100g_work": "Наращивание волос 100гр (только работа)",
+
+    "services.hair_natural": "Натуральные волосы + работа",
+    "services.hair_40_45": "Натуральные волосы 40–45см + работа",
+    "services.hair_50_55": "Натуральные волосы 50–55см + работа",
+    "services.hair_60_65": "Натуральные волосы 60–65см + работа",
+    "services.hair_70_75": "Натуральные волосы 70–75см + работа",
+    "services.hair_80_85": "Натуральные волосы 80–85см + работа",
+
+    "services.hair_bioprotein": "Биопротеин волосы + работа",
+    "services.bio_60_70": "Биопротеин 60–70см",
+    "services.bio_80_90": "Биопротеин 80–90см",
+
+    /* PERMANENT */
+
+    "services.permanent": "Перманент",
+    "services.permanent_makeup": "Перманентный макияж",
+
+    "services.permanent_lips": "Перманент губ",
+    "services.permanent_brows": "Перманент бровей",
+    "services.interlash": "Межресничка",
+
+    /* REMOVAL */
+
+    "services.removal": "Удаление",
+    "services.permanent_removal": "Удаление перманента",
+
+    "services.laser_removal": "Удаление лазером",
+    "services.remover_removal": "Удаление ремувером",
+
+    /* LASHES */
+
+    "services.classic": "Классика",
+    "services.lashes_2_3d": "2–3D объем",
+    "services.author_effect": "Авторский эффект",
+    "services.lashes_4_6d": "4–6D объем",
+
+    /* NAILS */
+
+    "services.vtirka": "Втирка",
+    "services.pedicure": "Педикюр",
+    "services.pedicure_plus": "Педикюр + покрытие",
+
+    "services.combo_four_hands": "Комбо 4 руки",
+    "services.combo_promo": "Комбо по акции",
+
+    "services.japanese_combo": "Японское комбо",
   },
+
+
+
+
   ru: {
     "nav.home": "Главная",
     "nav.services": "Услуги",
@@ -188,7 +258,77 @@ const translations: Record<Lang, Record<string, string>> = {
     "contacts.working_hours": "Часы работы",
 
     "footer.rights": "Все права защищены",
+
+    "services.basic_master": "Обычный мастер",
+    "services.top_master_regina": "ТОП мастер — Регина",
+    "services.premium_master_karolina": "Премиум мастер — Каролина",
+    "services.promo": "Акция",
+
+    "services.manicure_pedicure": "Маникюр и педикюр",
+    "services.extra_services": "Дополнительные услуги",
+    "services.japanese": "Японский уход",
+
+    "services.brows_basic": "Брови",
+    "services.karolina_brows": "Брови — Каролина",
+
+    "services.depilation_main": "Депиляция",
+
+    /* HAIR */
+
+    "services.hair": "Волосы",
+    "services.hair_extension_work": "Наращивание волос (только работа)",
+    "services.hair_100g_work": "Наращивание волос 100гр (только работа)",
+
+    "services.hair_natural": "Натуральные волосы + работа",
+    "services.hair_40_45": "Натуральные волосы 40–45см + работа",
+    "services.hair_50_55": "Натуральные волосы 50–55см + работа",
+    "services.hair_60_65": "Натуральные волосы 60–65см + работа",
+    "services.hair_70_75": "Натуральные волосы 70–75см + работа",
+    "services.hair_80_85": "Натуральные волосы 80–85см + работа",
+
+    "services.hair_bioprotein": "Биопротеин волосы + работа",
+    "services.bio_60_70": "Биопротеин 60–70см",
+    "services.bio_80_90": "Биопротеин 80–90см",
+
+    /* PERMANENT */
+
+    "services.permanent": "Перманент",
+    "services.permanent_makeup": "Перманентный макияж",
+
+    "services.permanent_lips": "Перманент губ",
+    "services.permanent_brows": "Перманент бровей",
+    "services.interlash": "Межресничка",
+
+    /* REMOVAL */
+
+    "services.removal": "Удаление",
+    "services.permanent_removal": "Удаление перманента",
+
+    "services.laser_removal": "Удаление лазером",
+    "services.remover_removal": "Удаление ремувером",
+
+    /* LASHES */
+
+    "services.classic": "Классика",
+    "services.lashes_2_3d": "2–3D объем",
+    "services.author_effect": "Авторский эффект",
+    "services.lashes_4_6d": "4–6D объем",
+
+    /* NAILS */
+
+    "services.vtirka": "Втирка",
+    "services.pedicure": "Педикюр",
+    "services.pedicure_plus": "Педикюр + покрытие",
+
+    "services.combo_four_hands": "Комбо 4 руки",
+    "services.combo_promo": "Комбо по акции",
+
+    "services.japanese_combo": "Японское комбо",
   },
+
+
+
+
   uz: {
     "nav.home": "Bosh sahifa",
     "nav.services": "Xizmatlar",
@@ -282,6 +422,73 @@ const translations: Record<Lang, Record<string, string>> = {
     "contacts.working_hours": "Ish vaqti",
 
     "footer.rights": "Barcha huquqlar himoyalangan",
+
+
+    "services.basic_master": "Oddiy usta",
+    "services.top_master_regina": "TOP usta — Regina",
+    "services.premium_master_karolina": "Premium usta — Karolina",
+    "services.promo": "Aksiya",
+
+    "services.manicure_pedicure": "Manikyur va pedikyur",
+    "services.extra_services": "Qo‘shimcha xizmatlar",
+    "services.japanese": "Yapon parvarishi",
+
+    "services.brows_basic": "Qosh xizmatlari",
+    "services.karolina_brows": "Karolina qosh",
+
+    "services.depilation_main": "Depilatsiya",
+
+    /* HAIR */
+
+    "services.hair": "Sochlar",
+    "services.hair_extension_work": "Soch uzaytirish (faqat ish)",
+    "services.hair_100g_work": "Soch uzaytirish 100g (faqat ish)",
+
+    "services.hair_natural": "Tabiiy soch + ish",
+    "services.hair_40_45": "Tabiiy soch 40–45 sm",
+    "services.hair_50_55": "Tabiiy soch 50–55 sm",
+    "services.hair_60_65": "Tabiiy soch 60–65 sm",
+    "services.hair_70_75": "Tabiiy soch 70–75 sm",
+    "services.hair_80_85": "Tabiiy soch 80–85 sm",
+
+    "services.hair_bioprotein": "Bioprotein soch",
+    "services.bio_60_70": "Bioprotein 60–70 sm",
+    "services.bio_80_90": "Bioprotein 80–90 sm",
+
+    /* PERMANENT */
+
+    "services.permanent": "Permanent makiyaj",
+    "services.permanent_makeup": "Permanent makiyaj",
+
+    "services.permanent_lips": "Lab permanent",
+    "services.permanent_brows": "Qosh permanent",
+    "services.interlash": "Kirpik oralig‘i",
+
+    /* REMOVAL */
+
+    "services.removal": "Olib tashlash",
+    "services.permanent_removal": "Permanent olib tashlash",
+
+    "services.laser_removal": "Lazer bilan olib tashlash",
+    "services.remover_removal": "Remover bilan olib tashlash",
+
+    /* LASHES */
+
+    "services.classic": "Klassika",
+    "services.lashes_2_3d": "2–3D hajm",
+    "services.author_effect": "Muallif effekti",
+    "services.lashes_4_6d": "4–6D hajm",
+
+    /* NAILS */
+
+    "services.vtirka": "Vtirka",
+    "services.pedicure": "Pedikyur",
+    "services.pedicure_plus": "Pedikyur + qoplama",
+
+    "services.combo_four_hands": "Kombo 4 qo‘l",
+    "services.combo_promo": "Aksiya kombo",
+
+    "services.japanese_combo": "Yapon kombo",
   },
 };
 

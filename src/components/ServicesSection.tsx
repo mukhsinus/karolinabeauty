@@ -1,92 +1,196 @@
 // src/components/ServicesSection.tsx
-import { useState } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
-import { serviceCategories } from "@/data/services";
-import { motion } from "framer-motion";
+
+import { useState } from "react"
+import { useLanguage } from "@/i18n/LanguageContext"
+import { serviceCategories } from "@/data/services"
+import { motion } from "framer-motion"
 
 const formatPrice = (price: number) => {
-  return price.toLocaleString("ru-RU");
-};
+  return price.toLocaleString("ru-RU")
+}
 
 const ServicesSection = () => {
-  const { t } = useLanguage();
-  const [activeCategory, setActiveCategory] = useState(serviceCategories[0].id);
 
-  const activeCat = serviceCategories.find((c) => c.id === activeCategory)!;
+  const { t } = useLanguage()
+
+  const [activeCategory, setActiveCategory] = useState(
+    serviceCategories[0].id
+  )
+
+  const activeCat = serviceCategories.find(
+    (c) => c.id === activeCategory
+  )!
 
   return (
-    <section id="services" className="py-24 bg-secondary/30">
-      <div className="container mx-auto px-4">
+
+    <section id="services" className="py-32 bg-background">
+
+      <div className="max-w-7xl mx-auto px-6">
+
+        {/* TITLE */}
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-24"
         >
-          <h2 className="font-display text-4xl md:text-5xl font-semibold text-foreground mb-4">
+
+          <h2 className="font-display text-4xl md:text-5xl font-semibold text-foreground mb-6">
             {t("services.title")}
           </h2>
-          <p className="text-muted-foreground text-lg font-light max-w-md mx-auto">
+
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             {t("services.subtitle")}
           </p>
+
         </motion.div>
 
-        {/* Category tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+
+        {/* CATEGORY TABS */}
+
+        <div className="flex flex-wrap justify-center gap-3 mb-20">
+
           {serviceCategories.map((cat) => (
+
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === cat.id
-                  ? "bg-primary text-primary-foreground shadow-soft"
-                  : "bg-card text-muted-foreground hover:text-foreground shadow-card"
+                  ? "bg-primary text-white shadow-lg"
+                  : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span className="mr-2">{cat.icon}</span>
+
+              <span className="mr-2">
+                {cat.icon}
+              </span>
+
               {t(cat.nameKey)}
+
             </button>
+
           ))}
+
         </div>
 
-        {/* Services grid */}
+
+        {/* GROUPS */}
+
         <motion.div
           key={activeCategory}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="space-y-24"
         >
-          {activeCat.services.map((service, index) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className="bg-card rounded-2xl p-6 shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
-            >
-              <p className="text-sm font-medium text-foreground mb-3">
-                {t(service.nameKey)}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-primary font-semibold text-lg">
-                  {service.isFrom && (
-                    <span className="text-muted-foreground text-sm font-normal mr-1">
-                      {t("services.from")}
-                    </span>
-                  )}
-                  {formatPrice(service.price)}{" "}
-                  <span className="text-xs text-muted-foreground font-normal">
-                    {t("services.currency")}
-                  </span>
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
-};
 
-export default ServicesSection;
+          {activeCat.groups.map((group) => (
+
+            <div key={group.id}>
+
+              {/* GROUP TITLE */}
+
+              <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
+                {t(group.titleKey)}
+              </h3>
+
+
+              {/* SERVICES GRID */}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+                {group.services.map((service, index) => (
+
+                  <motion.div
+                    key={service.id}
+
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+
+                    transition={{
+                      delay: index * 0.05
+                    }}
+
+                    className="group relative bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+                  >
+
+                    {/* SERVICE NAME */}
+
+                    <div className="mb-8">
+
+                      <p className="text-lg font-medium text-foreground leading-snug">
+                        {t(service.nameKey)}
+                      </p>
+
+                    </div>
+
+
+                    {/* PRICE + CTA */}
+
+                    <div className="flex items-center justify-between">
+
+                      <span className="text-primary font-semibold text-2xl">
+
+                        {service.isFrom && (
+                          <span className="text-muted-foreground text-sm font-normal mr-1">
+                            {t("services.from")}
+                          </span>
+                        )}
+
+                        {formatPrice(service.price)}
+
+                        <span className="text-xs text-muted-foreground font-normal ml-1">
+                          {t("services.currency")}
+                        </span>
+
+                      </span>
+
+
+                      {/* BOOK BUTTON */}
+
+                      <a
+                        href="/booking"
+                        className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-sm font-medium text-primary"
+                      >
+                        {t("services.book")}
+                      </a>
+
+                    </div>
+
+                  </motion.div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </motion.div>
+
+
+        {/* BOTTOM CTA */}
+
+        <div className="text-center mt-28">
+
+          <a
+            href="/services"
+            className="inline-block border border-primary text-primary px-10 py-4 rounded-full text-sm font-medium hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            {t("nav.prices")}
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  )
+}
+
+export default ServicesSection

@@ -102,6 +102,10 @@ export default function BookingSection() {
     c => c.id === category
   )
 
+  /* 🔧 FIX: новая архитектура services */
+  const categoryServices =
+    categoryData?.groups?.flatMap(g => g.services) || []
+
   const selectedService = services.find(
     s => s.id === booking.service
   )
@@ -321,7 +325,7 @@ export default function BookingSection() {
                 className="grid md:grid-cols-2 gap-4 mb-14"
               >
 
-                {categoryData?.services.map(service => (
+                {categoryServices.map(service => (
 
                   <button
                     key={service.id}
