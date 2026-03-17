@@ -1,6 +1,6 @@
 // src/components/ServicesSection.tsx
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { serviceCategories } from "@/data/services"
 import { motion, AnimatePresence } from "framer-motion"
@@ -9,7 +9,6 @@ const formatPrice = (price: number) => {
   return price.toLocaleString("ru-RU")
 }
 
-// 👇 лучше вынести в отдельный файл потом
 const serviceDetails: Record<string, any> = {
   "services.classic_extension": {
     title: "Наращивание ресниц",
@@ -28,6 +27,46 @@ const serviceDetails: Record<string, any> = {
   "services.colored_lashes": {
     title: "Цветные ресницы"
   }
+}
+
+const MagneticCard = ({ children }: { children: React.ReactNode }) => {
+
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const el = ref.current
+    if (!el) return
+
+    const rect = el.getBoundingClientRect()
+
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+
+    const deltaX = (x - centerX) * 0.15
+    const deltaY = (y - centerY) * 0.15
+
+    el.style.transform = `translate(${deltaX}px, ${deltaY}px)`
+  }
+
+  const handleLeave = () => {
+    if (!ref.current) return
+    ref.current.style.transform = "translate(0px, 0px)"
+  }
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleLeave}
+      style={{ transition: "transform 0.2s ease-out" }}
+      className="will-change-transform"
+    >
+      {children}
+    </div>
+  )
 }
 
 const ServicesSection = () => {
@@ -50,8 +89,6 @@ const ServicesSection = () => {
 
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* TITLE */}
-
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -70,10 +107,7 @@ const ServicesSection = () => {
 
         </motion.div>
 
-
-        {/* CATEGORY TABS */}
-
-        <div className="flex gap-3 overflow-x-auto pb-2 mb-20 whitespace-nowrap no-scrollbar">
+        <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar">
 
           {serviceCategories.map((cat) => (
 
@@ -95,9 +129,6 @@ const ServicesSection = () => {
           ))}
 
         </div>
-
-
-        {/* GROUPS */}
 
         <motion.div
           key={activeCategory}
@@ -124,56 +155,61 @@ const ServicesSection = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
                   >
 
-                    <div className="flex flex-col justify-between h-full">
+                    <MagneticCard>
 
-                      {/* NAME */}
-                      <p className="text-lg font-medium mb-6">
-                        {t(service.nameKey)}
-                      </p>
+                      <div className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
 
-                      {/* PRICE + ACTIONS */}
-                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col justify-between h-full">
 
-                        <span className="text-primary font-semibold text-2xl">
+                          <p className="text-lg font-medium mb-6">
+                            {t(service.nameKey)}
+                          </p>
 
-                          {service.isFrom && (
-                            <span className="text-muted-foreground text-sm mr-1">
-                              {t("services.from")}
+                          <div className="flex items-center justify-between">
+
+                            <span className="text-primary font-semibold text-2xl">
+
+                              {service.isFrom && (
+                                <span className="text-muted-foreground text-sm mr-1">
+                                  {t("services.from")}
+                                </span>
+                              )}
+
+                              {formatPrice(service.price)}
+
+                              <span className="text-xs text-muted-foreground ml-1">
+                                {t("services.currency")}
+                              </span>
+
                             </span>
-                          )}
 
-                          {formatPrice(service.price)}
+                            <div className="flex flex-col items-end gap-2">
 
-                          <span className="text-xs text-muted-foreground ml-1">
-                            {t("services.currency")}
-                          </span>
+                              <button
+                                onClick={() => setModalService(service)}
+                                className="text-xs text-muted-foreground underline"
+                              >
+                                Подробнее
+                              </button>
 
-                        </span>
+                              <a
+                                href="/booking"
+                                className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
+                              >
+                                {t("services.book")}
+                              </a>
 
-                        <div className="flex flex-col items-end gap-2">
+                            </div>
 
-                          <button
-                            onClick={() => setModalService(service)}
-                            className="text-xs text-muted-foreground underline"
-                          >
-                            Подробнее
-                          </button>
-
-                          <a
-                            href="/booking"
-                            className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
-                          >
-                            {t("services.book")}
-                          </a>
+                          </div>
 
                         </div>
 
                       </div>
 
-                    </div>
+                    </MagneticCard>
 
                   </motion.div>
 
@@ -188,8 +224,6 @@ const ServicesSection = () => {
         </motion.div>
 
       </div>
-
-      {/* MODAL */}
 
       <AnimatePresence>
 
