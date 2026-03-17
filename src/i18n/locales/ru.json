@@ -58,9 +58,9 @@
   "footer.rights": "Все права защищены",
 
 
-  "services.basic_master": "Обычный мастер",
-  "services.top_master_regina": "ТОП мастер — Регина",
-  "services.premium_master_karolina": "Премиум мастер — Каролина",
+  "services.basic_master": "Мастер",
+  "services.top_master_regina": "ТОП мастер",
+  "services.premium_master_karolina": "Премиум мастер",
 
   "services.classic_extension": "Классическое наращивание",
   "services.led_extension": "LED наращивание",

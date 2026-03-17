@@ -21,6 +21,7 @@ interface Branch {
   addressKey: string
 }
 
+
 const branches: Branch[] = [
   {
     id: "69b8571b54756438915bc8cf",
@@ -71,8 +72,32 @@ export default function BookingSection() {
 
   const { t, lang } = useLanguage()
 
+  const [confirmed, setConfirmed] = useState(false)
+  const [modalService, setModalService] = useState<any | null>(null)  
+
   const formatPrice = (price: number) =>
     price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")
+
+  const serviceDetails: Record<string, any> = {
+    "services.classic_extension": {
+      title: "Наращивание ресниц",
+      description: "(используется обычный клей)",
+      extra: "любой объем / эффект / изгиб"
+    },
+    "services.led_extension": {
+      title: "‼️ НОВИНКА\nНаращивание ресниц в LED технике",
+      description: "(нано-клей, последнее слово в lash-индустрии)",
+      extra: "любой объем / эффект / изгиб"
+    },
+    "services.lash_removal": {
+      title: "Снятие ресниц",
+      description: "без последующего наращивания"
+    },
+    "services.colored_lashes": {
+      title: "Цветные ресницы"
+    }
+  }
+
 
   const { services } = useServices()
 
@@ -96,7 +121,6 @@ export default function BookingSection() {
   })
 
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
-  const [confirmed, setConfirmed] = useState(false)
 
   const dates = useMemo(() => getNextDays(14), [])
 
@@ -135,7 +159,7 @@ export default function BookingSection() {
           booking.date
         )
 
-        setBookedSlots(data)
+        setBookedSlots(Array.isArray(data) ? data : [])
 
       } catch (error) {
 
@@ -158,7 +182,7 @@ export default function BookingSection() {
       await createBooking({
         branchId,
         serviceId: selectedService._id, // Use MongoDB ObjectId
-        serviceName: selectedService.nameKey,
+        serviceName: t(selectedService.nameKey),
         serviceDuration: selectedService.duration,
         price: selectedService.price,
         date: booking.date,
@@ -355,15 +379,30 @@ export default function BookingSection() {
 
                   >
 
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col gap-3">
 
-                      <div className="font-medium">
-                        {t(service.nameKey)}
+                      <div className="flex justify-between items-center">
+
+                        <div className="font-medium">
+                          {t(service.nameKey)}
+                        </div>
+
+                        <div className="text-primary text-sm">
+                          {formatPrice(service.price)}
+                        </div>
+
                       </div>
 
-                      <div className="text-primary text-sm">
-                        {formatPrice(service.price)}
-                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setModalService(service)
+                        }}
+                        className="text-xs text-muted-foreground underline text-left"
+                      >
+                        Подробнее
+                      </button>
 
                     </div>
 
@@ -631,6 +670,82 @@ export default function BookingSection() {
         )}
 
       </div>
+
+  {modalService && (
+
+    <div
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4"
+      onClick={() => setModalService(null)}
+    >
+
+      <div
+        className="bg-white max-w-md w-full rounded-2xl p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+
+        {(() => {
+
+          const details = serviceDetails[modalService.nameKey] || {}
+
+          return (
+
+            <div className="space-y-4">
+
+              <h3 className="text-xl font-display whitespace-pre-line">
+                {details.title || t(modalService.nameKey)}
+              </h3>
+
+              {details.description && (
+                <p className="text-sm text-muted-foreground">
+                  {details.description}
+                </p>
+              )}
+
+              {details.extra && (
+                <p className="text-sm">
+                  {details.extra}
+                </p>
+              )}
+
+              <div className="text-lg font-semibold text-primary pt-2">
+                {formatPrice(modalService.price)} сум
+              </div>
+
+              <div className="pt-4 flex gap-3">
+
+                <button
+                  onClick={() => {
+                    setBooking(b => ({
+                      ...b,
+                      service: modalService.id
+                    }))
+                    setModalService(null)
+                  }}
+                  className="flex-1 bg-primary text-white py-3 rounded-full"
+                >
+                  Записаться
+                </button>
+
+                <button
+                  onClick={() => setModalService(null)}
+                  className="px-4 py-3 border rounded-full"
+                >
+                  Закрыть
+                </button>
+
+              </div>
+
+            </div>
+
+          )
+
+        })()}
+
+      </div>
+
+    </div>
+
+  )}
 
     </section>
 

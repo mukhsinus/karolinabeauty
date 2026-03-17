@@ -3,10 +3,31 @@
 import { useState } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { serviceCategories } from "@/data/services"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 const formatPrice = (price: number) => {
   return price.toLocaleString("ru-RU")
+}
+
+// 👇 лучше вынести в отдельный файл потом
+const serviceDetails: Record<string, any> = {
+  "services.classic_extension": {
+    title: "Наращивание ресниц",
+    description: "(используется обычный клей)",
+    extra: "любой объем / эффект / изгиб"
+  },
+  "services.led_extension": {
+    title: "‼️ НОВИНКА\nНаращивание ресниц в LED технике",
+    description: "(нано-клей, последнее слово в lash-индустрии)",
+    extra: "любой объем / эффект / изгиб"
+  },
+  "services.lash_removal": {
+    title: "Снятие ресниц",
+    description: "без последующего наращивания"
+  },
+  "services.colored_lashes": {
+    title: "Цветные ресницы"
+  }
 }
 
 const ServicesSection = () => {
@@ -16,6 +37,8 @@ const ServicesSection = () => {
   const [activeCategory, setActiveCategory] = useState(
     serviceCategories[0].id
   )
+
+  const [modalService, setModalService] = useState<any | null>(null)
 
   const activeCat = serviceCategories.find(
     (c) => c.id === activeCategory
@@ -64,10 +87,7 @@ const ServicesSection = () => {
               }`}
             >
 
-              <span className="mr-2">
-                <cat.icon size={18} className="mr-2" />
-              </span>
-
+              <cat.icon size={18} className="mr-2" />
               {t(cat.nameKey)}
 
             </button>
@@ -91,14 +111,9 @@ const ServicesSection = () => {
 
             <div key={group.id}>
 
-              {/* GROUP TITLE */}
-
               <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
                 {t(group.titleKey)}
               </h3>
-
-
-              {/* SERVICES GRID */}
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
@@ -109,42 +124,54 @@ const ServicesSection = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-
                     className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
                   >
 
-                    {/* NAME */}
+                    <div className="flex flex-col justify-between h-full">
 
-                    <p className="text-lg font-medium mb-8">
-                      {t(service.nameKey)}
-                    </p>
+                      {/* NAME */}
+                      <p className="text-lg font-medium mb-6">
+                        {t(service.nameKey)}
+                      </p>
 
-                    {/* PRICE */}
+                      {/* PRICE + ACTIONS */}
+                      <div className="flex items-center justify-between">
 
-                    <div className="flex items-center justify-between">
+                        <span className="text-primary font-semibold text-2xl">
 
-                      <span className="text-primary font-semibold text-2xl">
+                          {service.isFrom && (
+                            <span className="text-muted-foreground text-sm mr-1">
+                              {t("services.from")}
+                            </span>
+                          )}
 
-                        {service.isFrom && (
-                          <span className="text-muted-foreground text-sm mr-1">
-                            {t("services.from")}
+                          {formatPrice(service.price)}
+
+                          <span className="text-xs text-muted-foreground ml-1">
+                            {t("services.currency")}
                           </span>
-                        )}
 
-                        {formatPrice(service.price)}
-
-                        <span className="text-xs text-muted-foreground ml-1">
-                          {t("services.currency")}
                         </span>
 
-                      </span>
+                        <div className="flex flex-col items-end gap-2">
 
-                      <a
-                        href="/booking"
-                        className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
-                      >
-                        {t("services.book")}
-                      </a>
+                          <button
+                            onClick={() => setModalService(service)}
+                            className="text-xs text-muted-foreground underline"
+                          >
+                            Подробнее
+                          </button>
+
+                          <a
+                            href="/booking"
+                            className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
+                          >
+                            {t("services.book")}
+                          </a>
+
+                        </div>
+
+                      </div>
 
                     </div>
 
@@ -161,6 +188,88 @@ const ServicesSection = () => {
         </motion.div>
 
       </div>
+
+      {/* MODAL */}
+
+      <AnimatePresence>
+
+        {modalService && (
+
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setModalService(null)}
+          >
+
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white max-w-md w-full rounded-2xl p-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+
+              {(() => {
+
+                const details = serviceDetails[modalService.nameKey] || {}
+
+                return (
+
+                  <div className="space-y-4">
+
+                    <h3 className="text-xl font-display whitespace-pre-line">
+                      {details.title || t(modalService.nameKey)}
+                    </h3>
+
+                    {details.description && (
+                      <p className="text-sm text-muted-foreground">
+                        {details.description}
+                      </p>
+                    )}
+
+                    {details.extra && (
+                      <p className="text-sm">
+                        {details.extra}
+                      </p>
+                    )}
+
+                    <div className="text-lg font-semibold text-primary pt-2">
+                      {formatPrice(modalService.price)} {t("services.currency")}
+                    </div>
+
+                    <div className="pt-4 flex gap-3">
+
+                      <a
+                        href="/booking"
+                        className="flex-1 text-center bg-primary text-white py-3 rounded-full"
+                      >
+                        Записаться
+                      </a>
+
+                      <button
+                        onClick={() => setModalService(null)}
+                        className="px-4 py-3 border rounded-full"
+                      >
+                        Закрыть
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+
+              })()}
+
+            </motion.div>
+
+          </motion.div>
+
+        )}
+
+      </AnimatePresence>
 
     </section>
 
