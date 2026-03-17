@@ -405,16 +405,17 @@ export default function BookingSection() {
 
                       </div>
 
-                      <button
-                        type="button"
+                      <span
+                        role="button"
+                        tabIndex={0}
                         onClick={(e) => {
-                          e.stopPropagation()
-                          setModalService(service)
+                          e.stopPropagation();
+                          setModalService(service);
                         }}
-                        className="text-xs text-muted-foreground underline text-left"
+                        className="text-xs text-muted-foreground underline text-left cursor-pointer"
                       >
                         Подробнее
-                      </button>
+                      </span>
 
                     </div>
 
