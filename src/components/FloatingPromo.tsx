@@ -13,15 +13,15 @@ const SHOW_DELAY = 5000
 
 export default function FloatingPromo() {
 
-  const { services } = useServices()
+  const { data: services, isLoading, error } = useServices()
   const { t } = useLanguage()
   const location = useLocation()
 
   const [visible, setVisible] = useState(false)
 
-  const allServices = services.flatMap(c =>
+  const allServices = services?.flatMap(c =>
     c.groups.flatMap(g => g.services)
-  )
+  ) || []
 
   const promo = allServices.find(s => s.isPromo)
 
@@ -53,7 +53,7 @@ export default function FloatingPromo() {
 
   }, [location.pathname])
 
-  if (!promo || !visible) return null
+  if (isLoading || error || !promo || !visible) return null
 
   return (
 

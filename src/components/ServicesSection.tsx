@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
-import { serviceCategories } from "@/data/services"
+import { useServices } from "@/hooks/useServices"
 import { motion, AnimatePresence } from "framer-motion"
 
 const formatPrice = (price: number) => {
@@ -73,15 +73,17 @@ const ServicesSection = () => {
 
   const { t } = useLanguage()
 
+  const { data: services, isLoading, error } = useServices()
+
   const [activeCategory, setActiveCategory] = useState(
-    serviceCategories[0].id
+    services?.[0]?.id || ""
   )
 
   const [modalService, setModalService] = useState<any | null>(null)
 
-  const activeCat = serviceCategories.find(
+  const activeCat = services?.find(
     (c) => c.id === activeCategory
-  )!
+  )
 
   return (
 
@@ -96,38 +98,35 @@ const ServicesSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-24"
         >
-
           <h2 className="font-display text-4xl md:text-5xl font-semibold mb-6">
             {t("services.title")}
           </h2>
-
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             {t("services.subtitle")}
           </p>
-
         </motion.div>
 
         <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar">
-
-          {serviceCategories.map((cat) => (
-
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`shrink-0 flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                activeCategory === cat.id
-                  ? "bg-primary text-white shadow-lg"
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
-              }`}
-            >
-
-              <cat.icon size={18} className="mr-2" />
-              {t(cat.nameKey)}
-
-            </button>
-
-          ))}
-
+          {isLoading ? (
+            <div className="text-sm text-muted-foreground">Загрузка...</div>
+          ) : error ? (
+            <div className="text-sm text-red-500">Ошибка загрузки</div>
+          ) : (
+            services?.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`shrink-0 flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+                  activeCategory === cat.id
+                    ? "bg-primary text-white shadow-lg"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <cat.icon size={18} className="mr-2" />
+                {t(cat.nameKey)}
+              </button>
+            ))
+          )}
         </div>
 
         <motion.div
@@ -137,90 +136,60 @@ const ServicesSection = () => {
           transition={{ duration: 0.4 }}
           className="space-y-24"
         >
-
-          {activeCat.groups.map((group) => (
-
+          {activeCat?.groups.map((group) => (
             <div key={group.id}>
-
               <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
                 {t(group.titleKey)}
               </h3>
-
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-
                 {group.services.map((service, index) => (
-
                   <motion.div
                     key={service.id}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-
                     <MagneticCard>
-
                       <div className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
-
                         <div className="flex flex-col justify-between h-full">
-
                           <p className="text-lg font-medium mb-6">
                             {t(service.nameKey)}
                           </p>
-
                           <div className="flex items-center justify-between">
-
                             <span className="text-primary font-semibold text-2xl">
-
                               {service.isFrom && (
                                 <span className="text-muted-foreground text-sm mr-1">
                                   {t("services.from")}
                                 </span>
                               )}
-
                               {formatPrice(service.price)}
-
                               <span className="text-xs text-muted-foreground ml-1">
                                 {t("services.currency")}
                               </span>
-
                             </span>
-
                             <div className="flex flex-col items-end gap-2">
-
                               <button
                                 onClick={() => setModalService(service)}
                                 className="text-xs text-muted-foreground underline"
                               >
                                 Подробнее
                               </button>
-
                               <a
                                 href="/booking"
                                 className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
                               >
                                 {t("services.book")}
                               </a>
-
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
-
                     </MagneticCard>
-
                   </motion.div>
-
                 ))}
-
               </div>
-
             </div>
-
           ))}
-
         </motion.div>
 
       </div>

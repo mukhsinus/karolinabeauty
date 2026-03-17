@@ -17,7 +17,13 @@ export const fetchServices = async () => {
   return res.json()
 }
 
-
+export const fetchBranches = async () => {
+  const res = await fetch(`${API_URL}/branches`)
+  if (!res.ok) {
+    throw new Error("Failed to load branches")
+  }
+  return res.json()
+}
 
 export const fetchAvailability = async (
   branchId: string,

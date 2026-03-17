@@ -4,26 +4,21 @@ import Service from "../models/Service.js"
 
 const router = express.Router()
 
+// GET /api/services
 router.get("/", async (req, res) => {
-
   try {
+    const services = await Service.find({ isActive: true })
+      .select("_id nameKey category price duration")
+      .lean()
 
-    const services = await Service.find({
-      isActive: true
-    }).lean()
-
-    res.json(services)
-
+    return res.json(services)
   } catch (error) {
+    console.error("GET /services error:", error)
 
-    console.error(error)
-
-    res.status(500).json({
+    return res.status(500).json({
       message: "Failed to load services"
     })
-
   }
-
 })
 
 export default router

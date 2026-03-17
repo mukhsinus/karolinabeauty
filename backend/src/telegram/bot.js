@@ -3,53 +3,235 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import { Telegraf, session } from "telegraf"
-import { registerCommands } from "./commands.js"
-import { registerAdminHandlers } from "./admin.handlers.js"
+
+// core
+import { initialSession, setStep } from "./core/session.js"
+import { STEPS, BUTTONS } from "./core/constants.js"
+import { isAdmin } from "./core/guards.js"
+
+// flows
+import { startFlow } from "./flows/start.flow.js"
+import { handleLanguage } from "./flows/auth.flow.js"
+
+import {
+  handleContact,
+  handleBranchSelect
+} from "./flows/branch.flow.js"
+
+import { showTodayBookings } from "./flows/admin.flow.js"
+
+import {
+  startAddressFlow,
+  handleAddressBranchSelect,
+  handleAddressInput,
+  confirmAddress,
+  cancelAddress
+} from "./flows/address.flow.js"
+
+import {
+  startPriceFlow,
+  handleCategorySelect,
+  handleServiceSelect,
+  handlePriceInput,
+  confirmPrice,
+  cancelPrice
+} from "./flows/price.flow.js"
+
+import {
+  startHoursFlow,
+  handleHoursInput,
+  handleHoursBranchSelect,
+  confirmHours,
+  cancelHours
+} from "./flows/hours.flow.js"
+
+// keyboards
+import { adminKeyboard } from "./keyboards/admin.keyboard.js"
+
+// ================= INIT =================
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
-// ❗ защита от двойного запуска
 let isStarted = false
+
+// ================= SESSION =================
 
 bot.use(session())
 
+bot.use((ctx, next) => {
+  if (!ctx.session) {
+    ctx.session = initialSession()
+  }
+  return next()
+})
+
+// ================= RATE LIMIT =================
+
 const userRateMap = new Map()
 
-const rateLimiter = (ctx, next) => {
+bot.use((ctx, next) => {
   const id = ctx.from?.id
   if (!id) return next()
 
   const now = Date.now()
   const last = userRateMap.get(id) || 0
 
-  if (now - last < 500) return
+  if (now - last < 300) return
 
   userRateMap.set(id, now)
   return next()
-}
+})
 
-bot.use(rateLimiter)
+// ================= START =================
 
-// ❗ защита от undefined
+bot.start(startFlow)
+
+// ================= LANGUAGE =================
+
+bot.hears(["🇷🇺 Русский", "🇺🇿 O'zbekcha"], async (ctx) => {
+  if (ctx.session.step !== STEPS.LANGUAGE) return
+  return handleLanguage(ctx)
+})
+
+// ================= CONTACT =================
+
+bot.on("contact", async (ctx) => {
+  if (!isAdmin(ctx)) return ctx.reply("⛔ Access denied")
+  if (ctx.session.step !== STEPS.PHONE) return
+
+  return handleContact(ctx)
+})
+
+// ================= CALLBACKS =================
+
+// branch (вход)
+bot.action(/branch_select:(.+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return handleBranchSelect(ctx, ctx.match[1])
+})
+
+// hours branch
+bot.action(/hours_branch:(.+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return handleHoursBranchSelect(ctx, ctx.match[1])
+})
+
+// address branch
+bot.action(/address_branch:(.+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return handleAddressBranchSelect(ctx, ctx.match[1])
+})
+
+// price category
+bot.action(/price_category:(.+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return handleCategorySelect(ctx, ctx.match[1])
+})
+
+// price service
+bot.action(/price_service:(.+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return handleServiceSelect(ctx, ctx.match[1])
+})
+
+// confirm / cancel price
+bot.action("confirm:price", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return confirmPrice(ctx)
+})
+
+bot.action("cancel:price", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return cancelPrice(ctx)
+})
+
+// confirm / cancel hours
+bot.action("confirm:hours", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return confirmHours(ctx)
+})
+
+bot.action("cancel:hours", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return cancelHours(ctx)
+})
+
+// confirm / cancel address
+bot.action("confirm:address", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return confirmAddress(ctx)
+})
+
+bot.action("cancel:address", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return cancelAddress(ctx)
+})
+
+// ================= ADMIN =================
+
+bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return showTodayBookings(ctx)
+})
+
+bot.hears(BUTTONS.PRICE, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return startPriceFlow(ctx)
+})
+
+bot.hears(BUTTONS.HOURS, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return startHoursFlow(ctx)
+})
+
+bot.hears(BUTTONS.ADDRESS, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return startAddressFlow(ctx)
+})
+
+// ================= TEXT ROUTER =================
+
+bot.on("text", async (ctx) => {
+  if (!isAdmin(ctx)) return
+
+  const step = ctx.session.step
+
+  switch (step) {
+
+    case STEPS.WAITING_PRICE:
+      return handlePriceInput(ctx)
+
+    case STEPS.WAITING_HOURS:
+      return handleHoursInput(ctx)
+
+    case STEPS.WAITING_ADDRESS:
+      return handleAddressInput(ctx)
+
+    default:
+      setStep(ctx, STEPS.ADMIN_PANEL)
+
+      return ctx.reply(
+        ctx.session.language === "uz"
+          ? "Siz admin paneldasiz"
+          : "Вы в админ панели",
+        adminKeyboard(ctx.session.language)
+      )
+  }
+})
+
+// ================= ERROR =================
+
+bot.catch((err, ctx) => {
+  console.error("BOT ERROR:", err)
+  return ctx.reply("⚠️ Произошла ошибка. Попробуйте снова.")
+})
+
+// ================= NOTIFICATIONS =================
+
 const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "")
   .split(",")
   .filter(Boolean)
   .map(id => Number(id))
-
-const isAdmin = (ctx) => {
-  const id = ctx.from?.id
-  return ADMIN_IDS.includes(id)
-}
-
-const adminOnly = (ctx, next) => {
-  if (!isAdmin(ctx)) {
-    return ctx.reply("⛔ Access denied")
-  }
-  return next()
-}
-
-registerCommands(bot)
-registerAdminHandlers(bot, adminOnly)
 
 export const notifyNewBooking = async (booking) => {
   const message = `🔔 Новая запись
@@ -72,23 +254,19 @@ export const notifyNewBooking = async (booking) => {
   }
 }
 
+// ================= START / STOP =================
+
 export const startBot = async () => {
-  if (isStarted) {
-    console.log("⚠️ Bot already started, skipping...")
-    return
-  }
+  if (isStarted) return
 
   try {
-    console.log("🧹 Cleaning webhook & pending updates...")
     await bot.telegram.deleteWebhook({ drop_pending_updates: true })
-  } catch (e) {
-    console.log("Webhook cleanup:", e.message)
-  }
+  } catch {}
 
   try {
     await bot.launch()
     isStarted = true
-    console.log("✅ Telegram bot started")
+    console.log("✅ Bot started")
   } catch (e) {
     console.error("❌ Bot launch error:", e.message)
   }
@@ -96,12 +274,6 @@ export const startBot = async () => {
 
 export const stopBot = () => {
   if (!isStarted) return
-
-  try {
-    bot.stop()
-    isStarted = false
-    console.log("🛑 Telegram bot stopped")
-  } catch (e) {
-    console.error("Stop bot error:", e.message)
-  }
+  bot.stop()
+  isStarted = false
 }

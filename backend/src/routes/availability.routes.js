@@ -1,20 +1,20 @@
 // backend/src/routes/availability.routes.js
-import express from "express";
-import { getAvailability } from "../controllers/availability.controller.js";
+import express from "express"
+import { getAvailability } from "../controllers/availability.controller.js"
 
-const router = express.Router();
+const router = express.Router()
 
-/*
-GET /api/availability
+// GET /api/availability?branchId=...&date=...
+router.get("/", async (req, res) => {
+  const { branchId, date } = req.query
 
-Query:
-branchId
-date
+  if (!branchId || !date) {
+    return res.status(400).json({
+      message: "branchId and date are required"
+    })
+  }
 
-Example:
-GET /api/availability?branchId=65f1c3c3b3c2&date=2026-03-12
-*/
+  return getAvailability(req, res)
+})
 
-router.get("/", getAvailability);
-
-export default router;
+export default router

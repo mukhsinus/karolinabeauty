@@ -6,6 +6,8 @@ import { useServices } from "@/hooks/useServices"
 import { fetchAvailability, createBooking } from "@/lib/api"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Calendar, Clock, User, MapPin } from "lucide-react"
+import { useAvailability } from "@/hooks/useAvailability"
+import { useBranches } from "@/hooks/useBranches"
 
 interface BookingState {
   service: string
@@ -16,24 +18,11 @@ interface BookingState {
 }
 
 interface Branch {
-  id: string
-  nameKey: string
-  addressKey: string
+  _id: string
+  name: string
+  address: string
 }
 
-
-const branches: Branch[] = [
-  {
-    id: "69b8571b54756438915bc8cf",
-    nameKey: "branch.chilanzar.name",
-    addressKey: "branch.chilanzar.address"
-  },
-  {
-    id: "69b8571b54756438915bc8d0",
-    nameKey: "branch.center.name",
-    addressKey: "branch.center.address"
-  }
-]
 
 const getNextDays = (count: number) => {
   const days: string[] = []
@@ -75,6 +64,8 @@ const generateTimeSlots = (date: string) => {
 export default function BookingSection() {
 
   const { t, lang } = useLanguage()
+  
+  const { data: branches = [], isLoading: branchesLoading } = useBranches()
 
   const [confirmed, setConfirmed] = useState(false)
   const [modalService, setModalService] = useState<any | null>(null)  
@@ -103,7 +94,7 @@ export default function BookingSection() {
   }
 
 
-  const { services } = useServices()
+  const {data: services, isLoading, error} = useServices()
 
 
   const [branchId, setBranchId] = useState<string | null>(null)
@@ -111,7 +102,7 @@ export default function BookingSection() {
   const [category, setCategory] = useState("")
 
   useEffect(() => {
-    if (services.length && !category) {
+    if (services?.length && !category) {
       setCategory(services[0].id)
     }
   }, [services, category])
@@ -124,7 +115,7 @@ export default function BookingSection() {
     phone: ""
   })
 
-  const [bookedSlots, setBookedSlots] = useState<string[]>([])
+  const { data: bookedSlots = [] } = useAvailability(branchId, booking.date)
 
   const dates = useMemo(() => getNextDays(14), [])
 
@@ -156,34 +147,8 @@ export default function BookingSection() {
       : selectedService.price
     : 0
 
-  const branch = branches.find(b => b.id === branchId)
+  const branch = branches.find((b: any) => b._id === branchId)
 
-  useEffect(() => {
-
-    if (!branchId || !booking.date) return
-
-    const load = async () => {
-
-      try {
-
-        const data = await fetchAvailability(
-          branchId,
-          booking.date
-        )
-
-        setBookedSlots(Array.isArray(data) ? data : [])
-
-      } catch (error) {
-
-        console.error("availability error", error)
-
-      }
-
-    }
-
-    load()
-
-  }, [branchId, booking.date])
 
   const handleConfirm = async () => {
 
@@ -193,7 +158,7 @@ export default function BookingSection() {
 
       await createBooking({
         branchId,
-        serviceId: selectedService._id, // Use MongoDB ObjectId
+        serviceId: selectedService.id, // Use MongoDB ObjectId
         serviceName: t(selectedService.nameKey),
         serviceDuration: selectedService.duration,
         price: finalPrice,
@@ -268,39 +233,50 @@ export default function BookingSection() {
 
           <div className="grid md:grid-cols-2 gap-4">
 
-            {branches.map(branch => (
+            {branchesLoading ? (
 
-              <button
-                key={branch.id}
+              <div className="text-sm text-muted-foreground">
+                Загрузка филиалов...
+              </div>
 
-                onClick={() => {
-                  setBranchId(branch.id)
-                  setBooking(b => ({
-                    ...b,
-                    service: "",
-                    date: "",
-                    time: ""
-                  }))
-                }}
+            ) : (
 
-                className={`p-6 border rounded-2xl text-left transition hover:shadow-md
-                ${branchId === branch.id
-                  ? "border-primary bg-primary/5"
-                  : "border-border"}`}
+              branches.map((branch: any) => (
 
-              >
+                <button
+                  key={branch._id}
 
-                <div className="font-semibold">
-                  {t(branch.nameKey)}
-                </div>
+                  onClick={() => {
+                    setBranchId(branch._id)
 
-                <div className="text-sm text-muted-foreground mt-1">
-                  {t(branch.addressKey)}
-                </div>
+                    setBooking(b => ({
+                      ...b,
+                      service: "",
+                      date: "",
+                      time: ""
+                    }))
+                  }}
 
-              </button>
+                  className={`p-6 border rounded-2xl text-left transition hover:shadow-md
+                  ${branchId === branch._id
+                    ? "border-primary bg-primary/5"
+                    : "border-border"}`}
 
-            ))}
+                >
+
+                  <div className="font-semibold">
+                    {branch.name}
+                  </div>
+
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {branch.address}
+                  </div>
+
+                </button>
+
+              ))
+
+            )}
 
           </div>
 
@@ -310,41 +286,55 @@ export default function BookingSection() {
 
         {branchId && (
 
-        <div className="flex gap-3 overflow-x-auto pb-2 mb-14 whitespace-nowrap">
+          <div className="flex gap-3 overflow-x-auto pb-2 mb-14 whitespace-nowrap">
 
-          {(services || []).map(cat => (
+            {isLoading ? (
 
-            <button
-              key={cat.id}
+              <div className="text-sm text-muted-foreground">
+                Загрузка услуг...
+              </div>
 
-              onClick={() => {
+            ) : error ? (
 
-                setCategory(cat.id)
+              <div className="text-sm text-red-500">
+                Ошибка загрузки
+              </div>
 
-                setBooking(b => ({
-                  ...b,
-                  service: "",
-                  date: "",
-                  time: ""
-                }))
+            ) : (
 
-              }}
+              services?.map(cat => (
 
-              className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
-              ${category === cat.id
-              ? "bg-primary text-white border-primary shadow-sm"
-              : "bg-white border-border hover:border-primary hover:shadow-sm"}`}
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setCategory(cat.id)
 
-            >
+                    setBooking(b => ({
+                      ...b,
+                      service: "",
+                      date: "",
+                      time: ""
+                    }))
+                  }}
 
-              <cat.icon size={18} className="mr-2" />
-              <span>{t(cat.nameKey)}</span>
+                  className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
+                  ${
+                    category === cat.id
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "bg-white border-border hover:border-primary hover:shadow-sm"
+                  }`}
+                >
 
-            </button>
+                  <cat.icon size={18} className="mr-2" />
+                  <span>{t(cat.nameKey)}</span>
 
-          ))}
+                </button>
 
-        </div>
+              ))
+
+            )}
+
+          </div>
 
         )}
 
@@ -372,7 +362,15 @@ export default function BookingSection() {
                 className="grid md:grid-cols-2 gap-4 mb-14"
               >
 
-                {categoryServices.map(service => (
+                {isLoading ? (
+                  <div className="col-span-2 text-muted-foreground">
+                    Загрузка услуг...
+                  </div>
+                ) : error ? (
+                  <div className="col-span-2 text-red-500">
+                    Ошибка загрузки
+                  </div>
+                ) : categoryServices?.map(service => (
 
                   <button
                     key={service.id}
@@ -511,6 +509,7 @@ export default function BookingSection() {
                       key={time}
 
                       disabled={isBooked}
+                      title={isBooked ? "Уже занято" : ""}
 
                       onClick={() =>
                         setBooking(b => ({
@@ -785,4 +784,4 @@ export default function BookingSection() {
 
   )
 
-}
+} 

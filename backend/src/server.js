@@ -7,8 +7,12 @@ import dotenv from "dotenv"
 import bookingRoutes from "./routes/booking.routes.js"
 import availabilityRoutes from "./routes/availability.routes.js"
 import servicesRoutes from "./routes/services.routes.js"
+import branchesRoutes from "./routes/branches.routes.js"
 
 import { startBot, stopBot } from "./telegram/bot.js"
+
+import adminRoutes from "./routes/admin.routes.js"
+
 
 dotenv.config()
 
@@ -43,6 +47,8 @@ app.get("/health", (req, res) => {
 app.use("/api/bookings", bookingRoutes)
 app.use("/api/availability", availabilityRoutes)
 app.use("/api/services", servicesRoutes)
+app.use("/api/branches", branchesRoutes)
+app.use("/api/admin", adminRoutes)
 
 app.use((err, req, res, next) => {
   console.error("Server error:", err)

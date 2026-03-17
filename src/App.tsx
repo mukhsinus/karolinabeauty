@@ -13,9 +13,8 @@ import Gallery from "./pages/Gallery.tsx";
 import Services from "./pages/Services.tsx";
 import Home from "./pages/Home.tsx";
 import FloatingPromo from "@/components/FloatingPromo"
+import { queryClient } from "@/lib/queryClient"
 
-
-const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

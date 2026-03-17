@@ -3,40 +3,12 @@ import Navbar from "@/components/Navbar"
 import HeroSection from "@/components/HeroSection"
 import Footer from "@/components/Footer"
 import { useLanguage } from "@/i18n/LanguageContext"
-
-const branches = [
-
-  {
-    nameKey: "branches.friendship",
-    addressKey: "branches.friendship.address",
-    landmarkKey: "branches.friendship.landmark",
-    phone: "+998901234567",
-
-    mapImage:
-      "https://static-maps.yandex.ru/1.x/?ll=69.2045,41.2992&size=650,450&z=16&l=map&pt=69.2045,41.2992,pm2rdm",
-
-    mapLink:
-      "https://yandex.ru/maps/?text=Ташкент%20Фурката%2015/1"
-  },
-
-  {
-    nameKey: "branches.yunusabad",
-    addressKey: "branches.yunusabad.address",
-    landmarkKey: "branches.yunusabad.landmark",
-    phone: "+998901234567",
-
-    mapImage:
-      "https://static-maps.yandex.ru/1.x/?ll=69.2787,41.3612&size=650,450&z=16&l=map&pt=69.2787,41.3612,pm2rdm",
-
-    mapLink:
-      "https://yandex.ru/maps/?text=Ташкент%20Юнусабад%2014%20квартал%201"
-  }
-
-]
+import { useBranches } from "@/hooks/useBranches"
 
 const Home = () => {
 
   const { t } = useLanguage()
+  const { data: branches, isLoading, error } = useBranches()
 
   return (
 
@@ -149,104 +121,75 @@ const Home = () => {
       {/* LOCATIONS */}
 
       <section className="py-20 md:py-24 bg-secondary/30">
-
         <div className="max-w-6xl mx-auto px-4">
-
           <div className="text-center mb-14 md:mb-16">
-
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
               {t("home.locations.title")}
             </h2>
-
             <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
               {t("home.locations.subtitle")}
             </p>
-
           </div>
-
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-
-            {branches.map((branch) => (
-
-              <div
-                key={branch.nameKey}
-                className="bg-card rounded-3xl overflow-hidden border border-border shadow-card"
-              >
-
-                <a
-                  href={branch.mapLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group"
+            {isLoading ? (
+              <div className="text-sm text-muted-foreground">Загрузка...</div>
+            ) : error ? (
+              <div className="text-sm text-red-500">Ошибка загрузки</div>
+            ) : (
+              branches?.map((branch) => (
+                <div
+                  key={branch.nameKey}
+                  className="bg-card rounded-3xl overflow-hidden border border-border shadow-card"
                 >
-
-                  <img
-                    src={branch.mapImage}
-                    alt={t(branch.nameKey)}
-                    className="w-full h-[240px] md:h-[340px] object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                  />
-
-                </a>
-
-
-                <div className="p-6 md:p-8">
-
-                  <h3 className="font-display text-lg md:text-xl font-semibold mb-2">
-                    {t(branch.nameKey)}
-                  </h3>
-
-                  <p className="text-sm mb-1">
-                    {t(branch.addressKey)}
-                  </p>
-
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {t(branch.landmarkKey)}
-                  </p>
-
-
-                  <div className="text-muted-foreground text-sm space-y-1 mb-6">
-
-                    <p>{t("home.locations.hours")}</p>
-
-                    <p>{t("booking.weekdays")}</p>
-
-                    <p>{t("booking.weekends")}</p>
-
+                  <a
+                    href={branch.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <img
+                      src={branch.mapImage}
+                      alt={t(branch.nameKey)}
+                      className="w-full h-[240px] md:h-[340px] object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                  </a>
+                  <div className="p-6 md:p-8">
+                    <h3 className="font-display text-lg md:text-xl font-semibold mb-2">
+                      {t(branch.nameKey)}
+                    </h3>
+                    <p className="text-sm mb-1">
+                      {t(branch.addressKey)}
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {t(branch.landmarkKey)}
+                    </p>
+                    <div className="text-muted-foreground text-sm space-y-1 mb-6">
+                      <p>{t("home.locations.hours")}</p>
+                      <p>{t("booking.weekdays")}</p>
+                      <p>{t("booking.weekends")}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <a
+                        href={branch.mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center bg-primary text-white px-5 py-3 rounded-full text-sm font-medium"
+                      >
+                        {t("home.locations.route")}
+                      </a>
+                      <a
+                        href={`tel:${branch.phone}`}
+                        className="flex-1 text-center border border-border px-5 py-3 rounded-full text-sm font-medium hover:bg-secondary"
+                      >
+                        {t("contacts.phone")}
+                      </a>
+                    </div>
                   </div>
-
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-
-                    <a
-                      href={branch.mapLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 text-center bg-primary text-white px-5 py-3 rounded-full text-sm font-medium"
-                    >
-                      {t("home.locations.route")}
-                    </a>
-
-                    <a
-                      href={`tel:${branch.phone}`}
-                      className="flex-1 text-center border border-border px-5 py-3 rounded-full text-sm font-medium hover:bg-secondary"
-                    >
-                      {t("contacts.phone")}
-                    </a>
-
-                  </div>
-
                 </div>
-
-              </div>
-
-            ))}
-
-
+              ))
+            )}
           </div>
-
         </div>
-
       </section>
 
 
