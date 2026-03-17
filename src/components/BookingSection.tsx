@@ -48,9 +48,13 @@ const getNextDays = (count: number) => {
   return days
 }
 
+const isVipTime = (time: string) => {
+  const hour = Number(time.split(":")[0])
+  return hour < 10 || hour >= 19
+}
+
 const generateTimeSlots = (date: string) => {
   const d = new Date(date)
-
   const isWeekend =
     d.getDay() === 0 ||
     d.getDay() === 6
@@ -144,6 +148,14 @@ export default function BookingSection() {
     s => s.id === booking.service
   )
 
+  const isVipSelected = booking.time ? isVipTime(booking.time) : false
+
+  const finalPrice = selectedService
+    ? isVipSelected
+      ? Math.round(selectedService.price * 1.3)
+      : selectedService.price
+    : 0
+
   const branch = branches.find(b => b.id === branchId)
 
   useEffect(() => {
@@ -184,7 +196,7 @@ export default function BookingSection() {
         serviceId: selectedService._id, // Use MongoDB ObjectId
         serviceName: t(selectedService.nameKey),
         serviceDuration: selectedService.duration,
-        price: selectedService.price,
+        price: finalPrice,
         date: booking.date,
         time: booking.time,
         name: booking.name,
@@ -477,6 +489,9 @@ export default function BookingSection() {
                 <h3 className="text-xl font-display">
                   {t("booking.select_time")}
                 </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Студия работает с 10:00 до 20:00. Ранние и поздние записи — VIP (+доплата).
+                </p>
 
               </div>
 
@@ -486,6 +501,8 @@ export default function BookingSection() {
 
                   const isBooked =
                     bookedSlots.includes(`${booking.date}-${time}`)
+
+                  const isVip = isVipTime(time)
 
                   return (
 
@@ -501,16 +518,26 @@ export default function BookingSection() {
                         }))
                       }
 
-                      className={`py-3 rounded-xl border text-sm
-                      ${isBooked
-                        ? "opacity-30"
+                      className={`py-3 rounded-xl border text-sm relative
+
+                      ${isBooked && "opacity-30"}
+
+                      ${isVip
+                        ? "border-primary bg-primary/5 text-primary"
                         : booking.time === time
                           ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary"}`}
+                          : "border-border hover:border-primary"}
+                      `}
 
                     >
 
-                      {time}
+                      <span>{time}</span>
+
+                      {isVip && (
+                        <span className="absolute top-1 right-2 text-[10px] font-medium text-primary">
+                          VIP
+                        </span>
+                      )}
 
                     </button>
 
@@ -654,7 +681,13 @@ export default function BookingSection() {
                 </div>
 
                 <div className="text-primary text-lg font-semibold">
-                  {formatPrice(selectedService.price)}
+                  {formatPrice(finalPrice)}
+
+                  {isVipSelected && (
+                    <span className="text-xs text-primary ml-2">
+                      VIP
+                    </span>
+                  )}
                 </div>
 
               </div>
