@@ -67,8 +67,16 @@ export const notifyNewBooking = async (booking) => {
 
 }
 
-export const startBot = () => {
+export const startBot = async () => {
+
+  try {
+    await bot.telegram.deleteWebhook()
+  } catch (e) {
+    console.log("Webhook cleanup:", e.message)
+  }
+
   bot.launch()
+
   console.log("Telegram bot started")
 }
 
