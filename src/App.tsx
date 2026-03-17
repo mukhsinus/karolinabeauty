@@ -12,6 +12,8 @@ import Booking from "./pages/Booking.tsx";
 import Gallery from "./pages/Gallery.tsx";
 import Services from "./pages/Services.tsx";
 import Home from "./pages/Home.tsx";
+import FloatingPromo from "@/components/FloatingPromo"
+
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <FloatingPromo />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />

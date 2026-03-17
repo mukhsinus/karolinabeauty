@@ -43,6 +43,13 @@ const ServiceSchema = new mongoose.Schema(
       default: true,
       index: true,
     },
+
+    // в ServiceSchema
+    isPromo: {
+      type: Boolean,
+      default: false,
+      index: true
+    },
   },
   {
     timestamps: true,

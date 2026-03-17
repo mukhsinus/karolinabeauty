@@ -7,11 +7,8 @@ interface DbService {
   price: number
   duration: number
   isFrom?: boolean
+  isPromo?: boolean // 🔥 добавили
 }
-
-/*
-Соединяет MongoDB services + структуру services.ts
-*/
 
 export const mapServices = (
   dbServices: DbService[]
@@ -30,18 +27,34 @@ export const mapServices = (
       ...group,
 
       services: group.services.map(service => {
+
         const db = map.get(service.nameKey)
-        if (!db) return service
+
+        // если нет в БД — возвращаем фронтовый, но с fallback promo
+        if (!db) {
+          return {
+            ...service,
+            isPromo: service.nameKey.includes("lamination") // 🔥 fallback
+          }
+        }
+
         return {
           ...service,
-          _id: db._id, // Add MongoDB ObjectId
+          _id: db._id,
           price: db.price,
           duration: db.duration,
-          isFrom: db.isFrom
+          isFrom: db.isFrom,
+
+          // 🔥 ГЛАВНАЯ ЛОГИКА АКЦИИ
+          isPromo:
+            db.isPromo === true ||
+            service.nameKey.includes("lamination")
         }
+
       })
 
     }))
 
   }))
+
 }
