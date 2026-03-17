@@ -3,16 +3,8 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import { Telegraf, session } from "telegraf"
-import { Queue, Worker } from "bullmq"
-import IORedis from "ioredis"
 import { registerCommands } from "./commands.js"
 import { registerAdminHandlers } from "./admin.handlers.js"
-
-const redis = new IORedis({
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT),
-  maxRetriesPerRequest: null
-})
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
@@ -52,16 +44,9 @@ const adminOnly = (ctx, next) => {
 registerCommands(bot)
 registerAdminHandlers(bot, adminOnly)
 
-const notificationQueue = new Queue("telegram_notifications", {
-  connection: redis
-})
+export const notifyNewBooking = async (booking) => {
 
-new Worker(
-  "telegram_notifications",
-  async job => {
-    const booking = job.data
-
-    const message = `🔔 Новая запись
+  const message = `🔔 Новая запись
 
 📅 ${booking.date} ${booking.time}
 
@@ -72,15 +57,14 @@ new Worker(
 
 💰 ${booking.price}`
 
-    for (const id of ADMIN_IDS) {
+  for (const id of ADMIN_IDS) {
+    try {
       await bot.telegram.sendMessage(id, message)
+    } catch (e) {
+      console.error("Telegram send error:", e.message)
     }
-  },
-  { connection: redis }
-)
+  }
 
-export const notifyNewBooking = async (booking) => {
-  await notificationQueue.add("send_notification", booking)
 }
 
 export const startBot = () => {
