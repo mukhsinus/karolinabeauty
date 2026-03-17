@@ -58,10 +58,11 @@ mongoose
   .then(() => {
     console.log("MongoDB connected")
 
-    if (process.env.TELEGRAM_BOT_TOKEN && process.env.NODE_ENV === "production") {
+    if (process.env.ENABLE_BOT === "true") {
+      console.log("Starting Telegram bot...")
       startBot()
     } else {
-      console.warn("Telegram bot not started (no TELEGRAM_BOT_TOKEN)")
+      console.warn("Telegram bot disabled")
     }
 
     app.listen(PORT, () => {
