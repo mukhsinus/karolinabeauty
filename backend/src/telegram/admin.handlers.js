@@ -5,11 +5,7 @@ import Booking from "../models/Booking.js"
 import Branch from "../models/Branch.js"
 import { t } from "../utils/translate.js"
 
-export const registerAdminHandlers = (bot) => {
-
-  /*
-  LANGUAGE
-  */
+export const registerAdminHandlers = (bot, adminOnly) => {
 
   bot.hears(["🇷🇺 Русский", "🇺🇿 O'zbekcha"], async (ctx) => {
 
@@ -22,12 +18,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  PHONE
-  */
-
-  bot.on("contact", async (ctx) => {
+  bot.on("contact", adminOnly, async (ctx) => {
 
     const branches = await Branch.find()
 
@@ -42,12 +33,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  BRANCH SELECT
-  */
-
-  bot.action(/branch_(.+)/, async (ctx) => {
+  bot.action(/branch_(.+)/, adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -63,12 +49,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  TODAY BOOKINGS
-  */
-
-  bot.hears("📅 Сегодняшние записи", async (ctx) => {
+  bot.hears("📅 Сегодняшние записи", adminOnly, async (ctx) => {
 
     const today = new Date().toISOString().slice(0,10)
 
@@ -98,12 +79,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  CHANGE PRICE → CATEGORY
-  */
-
-  bot.hears("💰 Изменить цену", async (ctx) => {
+  bot.hears("💰 Изменить цену", adminOnly, async (ctx) => {
 
     const categories = await Service.distinct("category", {
       isActive: true
@@ -123,12 +99,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  CATEGORY → SERVICES
-  */
-
-  bot.action(/price_category_(.+)/, async (ctx) => {
+  bot.action(/price_category_(.+)/, adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -153,12 +124,7 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  SERVICE SELECT
-  */
-
-  bot.action(/price_service_(.+)/, async (ctx) => {
+  bot.action(/price_service_(.+)/, adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -181,16 +147,13 @@ export const registerAdminHandlers = (bot) => {
 
   })
 
-
-  /*
-  NEW PRICE INPUT
-  */
-
   bot.on("text", async (ctx, next) => {
 
     if (ctx.session?.flow !== "change_price") {
       return next()
     }
+
+    if (!adminOnly(ctx, () => true)) return
 
     const price = Number(ctx.message.text)
 
@@ -221,12 +184,7 @@ ${t(service.nameKey)}
 
   })
 
-
-  /*
-  CONFIRM PRICE
-  */
-
-  bot.action("confirm_price", async (ctx) => {
+  bot.action("confirm_price", adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -251,12 +209,7 @@ ${t(service.nameKey)}
 
   })
 
-
-  /*
-  CANCEL PRICE
-  */
-
-  bot.action("cancel_price", async (ctx) => {
+  bot.action("cancel_price", adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -266,12 +219,7 @@ ${t(service.nameKey)}
 
   })
 
-
-  /*
-  CHANGE ADDRESS
-  */
-
-  bot.hears("📍 Изменить адрес филиала", async (ctx) => {
+  bot.hears("📍 Изменить адрес филиала", adminOnly, async (ctx) => {
 
     const branches = await Branch.find()
 
@@ -289,8 +237,7 @@ ${t(service.nameKey)}
 
   })
 
-
-  bot.action(/branch_edit_(.+)/, async (ctx) => {
+  bot.action(/branch_edit_(.+)/, adminOnly, async (ctx) => {
 
     await ctx.answerCbQuery()
 
@@ -305,12 +252,13 @@ ${t(service.nameKey)}
 
   })
 
-
   bot.on("text", async (ctx, next) => {
 
     if (ctx.session?.flow !== "change_address") {
       return next()
     }
+
+    if (!adminOnly(ctx, () => true)) return
 
     const address = ctx.message.text
 
