@@ -1,4 +1,5 @@
 // src/pages/Home.tsx
+
 import Navbar from "@/components/Navbar"
 import HeroSection from "@/components/HeroSection"
 import Footer from "@/components/Footer"
@@ -6,16 +7,16 @@ import { useLanguage } from "@/i18n/LanguageContext"
 import { useBranches } from "@/hooks/useBranches"
 
 const Home = () => {
-
   const { t } = useLanguage()
   const { data: branches } = useBranches()
 
-  // 🔥 МАПА ДЛЯ ПЕРЕИМЕНОВАНИЯ ФИЛИАЛОВ
+  // Переименование филиалов
   const branchNamesMap: Record<string, string> = {
     "Чиланзар": "Филиал Дружба Народов",
     "Юнусабад": "Филиал Юнусабад"
   }
 
+  // Координаты
   const coordsMap: Record<string, { lat: number; lng: number }> = {
     "Метро Дружба Народов, Фурката 15/1": {
       lat: 41.303216,
@@ -27,37 +28,29 @@ const Home = () => {
     }
   }
 
+  // Фолбек координаты (если вдруг не найдется)
+  const DEFAULT_COORDS = {
+    lat: 41.311081,
+    lng: 69.240562
+  }
+
   const getStaticMap = (lat: number, lng: number) =>
     `https://static-maps.yandex.ru/1.x/?ll=${lng},${lat}&z=16&size=650,300&l=map&pt=${lng},${lat},pm2rdm`
 
-  const getYandexRoute = (lat: number, lng: number) =>
-    `https://yandex.ru/maps/?rtext=~${lat},${lng}`
-
-  const getGoogleRoute = (lat: number, lng: number) =>
-    `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-
+  // ✅ ТОЛЬКО GOOGLE MAPS (стабильно)
   const openRoute = (lat: number, lng: number) => {
-    const win = window.open(getYandexRoute(lat, lng), "_blank")
-
-    setTimeout(() => {
-      if (!win || win.closed) {
-        window.open(getGoogleRoute(lat, lng), "_blank")
-      }
-    }, 700)
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+    window.location.href = url
   }
 
   return (
-
     <div className="min-h-screen bg-background">
-
       <Navbar />
       <HeroSection />
 
-      {/* 🔥 POPULAR SERVICES (НЕ ТРОГАЛ) */}
-
+      {/* POPULAR SERVICES */}
       <section className="py-20 md:py-24">
         <div className="max-w-7xl mx-auto px-4">
-
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
               {t("home.popular.title")}
@@ -120,7 +113,6 @@ const Home = () => {
       </section>
 
       {/* LOCATIONS */}
-
       <section className="py-20 md:py-24 bg-secondary/30">
         <div className="max-w-6xl mx-auto px-4">
 
@@ -133,9 +125,7 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {branches?.map((branch) => {
-
-              const coords = coordsMap[branch.address]
-              if (!coords) return null
+              const coords = coordsMap[branch.address] || DEFAULT_COORDS
 
               return (
                 <div
@@ -155,8 +145,6 @@ const Home = () => {
                   </div>
 
                   <div className="p-6">
-
-                    {/* ✅ ВОТ ЭТО МЫ ИЗМЕНИЛИ */}
                     <h3 className="font-display text-lg font-semibold mb-2">
                       {branchNamesMap[branch.name] || branch.name}
                     </h3>
@@ -178,7 +166,6 @@ const Home = () => {
                     >
                       {t("contacts.phone")}
                     </a>
-
                   </div>
 
                 </div>
@@ -190,7 +177,6 @@ const Home = () => {
       </section>
 
       <Footer />
-
     </div>
   )
 }
