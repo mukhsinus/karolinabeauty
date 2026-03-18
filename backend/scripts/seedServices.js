@@ -53,11 +53,47 @@ const servicesData = [
 
 /* BROWS */
 
-{ nameKey: "services.brow_architecture", category: "brows", price: 100000, duration: 45 },
-{ nameKey: "services.brow_styling", category: "brows", price: 100000, duration: 45 },
-{ nameKey: "services.brow_coloring", category: "brows", price: 100000, duration: 45 },
-{ nameKey: "services.muslim_lightening", category: "brows", price: 100000, duration: 45 },
-{ nameKey: "services.karolina_brows", category: "brows", price: 350000, duration: 60 },
+{ 
+  nameKey: "services.brow_architecture",
+  category: "brows",
+  price: 100000,
+  duration: 45
+},
+
+{ 
+  nameKey: "services.brow_correction",
+  category: "brows",
+  price: 100000,
+  duration: 45
+},
+
+{ 
+  nameKey: "services.brow_coloring",
+  category: "brows",
+  price: 100000,
+  duration: 45
+},
+
+{ 
+  nameKey: "services.brow_lamination",
+  category: "brows",
+  price: 100000,
+  duration: 60
+},
+
+{ 
+  nameKey: "services.brow_muslim",
+  category: "brows",
+  price: 100000,
+  duration: 45
+},
+
+{ 
+  nameKey: "services.brow_set",
+  category: "brows",
+  price: 300000,
+  duration: 90
+},
 
 /* DEPILATION */
 

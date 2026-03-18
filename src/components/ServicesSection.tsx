@@ -9,7 +9,10 @@ const formatPrice = (price: number) => {
   return price.toLocaleString("ru-RU")
 }
 
+// 🔥 ОБНОВЛЕННЫЕ ДЕТАЛИ УСЛУГ
 const serviceDetails: Record<string, any> = {
+
+  // РЕСНИЦЫ
   "services.classic_extension": {
     title: "Наращивание ресниц",
     description: "(используется обычный клей)",
@@ -26,6 +29,38 @@ const serviceDetails: Record<string, any> = {
   },
   "services.colored_lashes": {
     title: "Цветные ресницы"
+  },
+
+  // 🔥 БРОВИ (НОВОЕ)
+  "services.brow_architecture": {
+    title: "Архитектура бровей",
+    description: "подбор формы с учетом типа лица"
+  },
+
+  "services.brow_correction": {
+    title: "Коррекция бровей",
+    description: "воском / пинцетом"
+  },
+
+  "services.brow_coloring": {
+    title: "Окрашивание бровей",
+    description: "на выбор: хна или краска"
+  },
+
+  "services.brow_lamination": {
+    title: "Долговременная укладка бровей",
+    description: "эффект «уложенных бровей»"
+  },
+
+  "services.brow_muslim": {
+    title: "Мусульманская коррекция",
+    description: "осветление нежелательных волосков"
+  },
+
+  "services.brow_set": {
+    title: "СЕТ ВСЕ ВКЛЮЧЕНО",
+    description: "архитектура + коррекция + окрашивание + укладка",
+    extra: "выгоднее, чем по отдельности"
   }
 }
 
@@ -110,9 +145,7 @@ const ServicesSection = () => {
 
         <div className="relative">
 
-          <div
-            className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar"
-          >
+          <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar">
             {isLoading ? (
               <div className="text-sm text-muted-foreground">Загрузка...</div>
             ) : error ? (
@@ -135,8 +168,6 @@ const ServicesSection = () => {
             )}
           </div>
 
-          {/* ✅ РОЗОВАЯ СТРЕЛКА (ТОЛЬКО МОБИЛКА) */}
-
           <motion.div
             animate={{ x: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
@@ -144,8 +175,6 @@ const ServicesSection = () => {
           >
             →
           </motion.div>
-
-          {/* ✅ ГРАДИЕНТ (ТОЛЬКО МОБИЛКА) */}
 
           <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-background to-transparent" />
 
@@ -165,7 +194,9 @@ const ServicesSection = () => {
               <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
                 {t(group.titleKey)}
               </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
                 {group.services.map((service, index) => (
                   <motion.div
                     key={service.id}
@@ -175,11 +206,15 @@ const ServicesSection = () => {
                   >
                     <MagneticCard>
                       <div className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
+
                         <div className="flex flex-col justify-between h-full">
+
                           <p className="text-lg font-medium mb-6">
                             {t(service.nameKey)}
                           </p>
+
                           <div className="flex items-center justify-between">
+
                             <span className="text-primary font-semibold text-2xl">
                               {service.isFrom && (
                                 <span className="text-muted-foreground text-sm mr-1">
@@ -191,26 +226,34 @@ const ServicesSection = () => {
                                 {t("services.currency")}
                               </span>
                             </span>
+
                             <div className="flex flex-col items-end gap-2">
+
                               <button
                                 onClick={() => setModalService(service)}
                                 className="text-xs text-muted-foreground underline"
                               >
                                 Подробнее
                               </button>
+
                               <a
                                 href="/booking"
                                 className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
                               >
                                 {t("services.book")}
                               </a>
+
                             </div>
+
                           </div>
+
                         </div>
+
                       </div>
                     </MagneticCard>
                   </motion.div>
                 ))}
+
               </div>
             </div>
           ))}
