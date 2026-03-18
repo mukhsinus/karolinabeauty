@@ -1,6 +1,6 @@
 // src/components/BookingSection.tsx
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useRef } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { useServices } from "@/hooks/useServices"
 import { fetchAvailability, createBooking } from "@/lib/api"
@@ -74,6 +74,10 @@ export default function BookingSection() {
 
   const [confirmed, setConfirmed] = useState(false)
   const [modalService, setModalService] = useState<any | null>(null)  
+
+    // 🔥 UX HINT
+  const [showHint, setShowHint] = useState(true)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
   const formatPrice = (price: number) =>
     price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")
@@ -291,53 +295,77 @@ export default function BookingSection() {
 
         {branchId && (
 
-          <div className="flex gap-3 overflow-x-auto pb-2 mb-14 whitespace-nowrap">
+          <div className="relative mb-14">
 
-            {isLoading ? (
+            <div
+              ref={scrollRef}
+              onScroll={() => setShowHint(false)}
+              className="flex gap-3 overflow-x-auto pb-2 whitespace-nowrap no-scrollbar"
+            >
 
-              <div className="text-sm text-muted-foreground">
-                Загрузка услуг...
-              </div>
+              {isLoading ? (
 
-            ) : error ? (
+                <div className="text-sm text-muted-foreground">
+                  Загрузка услуг...
+                </div>
 
-              <div className="text-sm text-red-500">
-                Ошибка загрузки
-              </div>
+              ) : error ? (
 
-            ) : (
+                <div className="text-sm text-red-500">
+                  Ошибка загрузки
+                </div>
 
-              services?.map(cat => (
+              ) : (
 
-                <button
-                  key={cat.id}
-                  onClick={() => {
-                    setCategory(cat.id)
+                services?.map(cat => (
 
-                    setBooking(b => ({
-                      ...b,
-                      service: "",
-                      date: "",
-                      time: ""
-                    }))
-                  }}
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setCategory(cat.id)
 
-                  className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
-                  ${
-                    category === cat.id
-                      ? "bg-primary text-white border-primary shadow-sm"
-                      : "bg-white border-border hover:border-primary hover:shadow-sm"
-                  }`}
-                >
+                      setBooking(b => ({
+                        ...b,
+                        service: "",
+                        date: "",
+                        time: ""
+                      }))
+                    }}
 
-                  <cat.icon size={18} className="mr-2" />
-                  <span>{t(cat.nameKey)}</span>
+                    className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
+                    ${
+                      category === cat.id
+                        ? "bg-primary text-white border-primary"
+                        : "bg-white border-border"
+                    }`}
+                  >
 
-                </button>
+                    <cat.icon size={18}/>
+                    {t(cat.nameKey)}
 
-              ))
+                  </button>
 
+                ))
+
+              )}
+
+            </div>
+
+            {/* 🔥 СТРЕЛКА (только мобилка) */}
+
+            {showHint && (
+              <motion.div
+                animate={{ x: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="lg:hidden absolute right-2 top-full mt-2 text-primary text-sm"
+              >
+                →
+              </motion.div>
             )}
+
+            {/* 🔥 ГРАДИЕНТ */}
+
+            <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-background to-transparent" />
 
           </div>
 
