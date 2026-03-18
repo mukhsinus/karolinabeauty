@@ -67,6 +67,11 @@ export default function BookingSection() {
   
   const { data: branches = [], isLoading: branchesLoading } = useBranches()
 
+  const branchNamesMap: Record<string, string> = {
+    "Чиланзар": "Филиал Дружба Народов",
+    "Юнусабад": "Филиал Юнусабад"
+  }
+
   const [confirmed, setConfirmed] = useState(false)
   const [modalService, setModalService] = useState<any | null>(null)  
 
@@ -265,7 +270,7 @@ export default function BookingSection() {
                 >
 
                   <div className="font-semibold">
-                    {branch.name}
+                    {branchNamesMap[branch.name] || branch.name}
                   </div>
 
                   <div className="text-sm text-muted-foreground mt-1">
@@ -631,7 +636,7 @@ export default function BookingSection() {
                 </div>
 
                 <div className="font-medium">
-                  {branch ? branch.name : t("common.empty")}
+                  {branch ? (branchNamesMap[branch.name] || branch.name) : t("common.empty")}
                 </div>
 
               </div>

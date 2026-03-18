@@ -10,7 +10,7 @@ const ContactsSection = () => {
 
     {
       icon: <MapPin size={20} />,
-      label: "Chilanzar",
+      label: "Филиал Дружба Народов",
       value: `Метро Дружба Народов
   Фурката 15/1`,
       href: "https://maps.google.com/?q=Furkat+15/1+Tashkent"
@@ -18,7 +18,7 @@ const ContactsSection = () => {
 
     {
       icon: <MapPin size={20} />,
-      label: "Yunusabad",
+      label: "Филиал Юнусабад",
       value: `Юнусабад 14 квартал
   дом 1`,
       href: "https://maps.google.com/?q=Yunusabad+14+kvartal+1+dom"
