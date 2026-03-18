@@ -11,13 +11,11 @@ export const adminKeyboard = (lang = "ru") => {
           ["📅 Bugungi yozuvlar"],
           ["💰 Narxni o‘zgartirish"],
           ["🕐 Ish vaqtini o‘zgartirish"],
-          ["📍 Filial manzilini o‘zgartirish"]
         ]
       : [
           [BUTTONS.BOOKINGS],
           [BUTTONS.PRICE],
           [BUTTONS.HOURS],
-          [BUTTONS.ADDRESS]
         ]
 
   return Markup.keyboard(buttons).resize()

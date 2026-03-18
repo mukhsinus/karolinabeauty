@@ -158,7 +158,7 @@ export default function BookingSection() {
 
       await createBooking({
         branchId,
-        serviceId: selectedService.id, // Use MongoDB ObjectId
+        serviceId: selectedService.mongoId, // Use MongoDB ObjectId
         serviceName: t(selectedService.nameKey),
         serviceDuration: selectedService.duration,
         price: finalPrice,
@@ -370,10 +370,10 @@ export default function BookingSection() {
                   <div className="col-span-2 text-red-500">
                     Ошибка загрузки
                   </div>
-                ) : categoryServices?.map(service => (
+                ) : categoryServices?.map((service, index) => (
 
                   <button
-                    key={service.id}
+                    key={`${service.id}-${index}-${category}`}
 
                     onClick={() =>
                       setBooking(b => ({
@@ -631,7 +631,7 @@ export default function BookingSection() {
                 </div>
 
                 <div className="font-medium">
-                  {branch ? t(branch.nameKey) : t("common.empty")}
+                  {branch ? branch.name : t("common.empty")}
                 </div>
 
               </div>

@@ -17,11 +17,6 @@ export const STEPS = {
   WAITING_PRICE: "WAITING_PRICE",
   CONFIRM_PRICE: "CONFIRM_PRICE",
 
-  // ===== ADDRESS FLOW =====
-  ADDRESS_BRANCH: "ADDRESS_BRANCH",
-  WAITING_ADDRESS: "WAITING_ADDRESS",
-  CONFIRM_ADDRESS: "CONFIRM_ADDRESS",
-
   // ===== HOURS FLOW =====
   HOURS_BRANCH: "HOURS_BRANCH",
   WAITING_HOURS: "WAITING_HOURS",
@@ -32,5 +27,4 @@ export const BUTTONS = {
   BOOKINGS: "📅 Сегодняшние записи",
   PRICE: "💰 Изменить цену",
   HOURS: "🕐 Изменить часы работы",
-  ADDRESS: "📍 Изменить адрес филиала"
 }

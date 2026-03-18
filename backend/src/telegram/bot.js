@@ -184,11 +184,6 @@ bot.hears(BUTTONS.HOURS, async (ctx) => {
   return startHoursFlow(ctx)
 })
 
-bot.hears(BUTTONS.ADDRESS, async (ctx) => {
-  if (!isAdmin(ctx)) return
-  return startAddressFlow(ctx)
-})
-
 // ================= TEXT ROUTER =================
 
 bot.on("text", async (ctx) => {
@@ -203,9 +198,6 @@ bot.on("text", async (ctx) => {
 
     case STEPS.WAITING_HOURS:
       return handleHoursInput(ctx)
-
-    case STEPS.WAITING_ADDRESS:
-      return handleAddressInput(ctx)
 
     default:
       setStep(ctx, STEPS.ADMIN_PANEL)

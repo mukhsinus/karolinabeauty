@@ -14,10 +14,6 @@ export const initialSession = () => ({
     serviceId: null,
     newPrice: null,
 
-    // address
-    addressBranchId: null,
-    newAddress: null,
-
     // hours
     hoursBranchId: null,
     newHours: null
