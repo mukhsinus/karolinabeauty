@@ -30,7 +30,6 @@ const serviceDetails: Record<string, any> = {
 }
 
 const MagneticCard = ({ children }: { children: React.ReactNode }) => {
-
   const ref = useRef<HTMLDivElement | null>(null)
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -72,7 +71,6 @@ const MagneticCard = ({ children }: { children: React.ReactNode }) => {
 const ServicesSection = () => {
 
   const { t } = useLanguage()
-
   const { data: services, isLoading, error } = useServices()
 
   const [activeCategory, setActiveCategory] = useState(
@@ -91,6 +89,8 @@ const ServicesSection = () => {
 
       <div className="max-w-7xl mx-auto px-6">
 
+        {/* HEADER */}
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -106,28 +106,52 @@ const ServicesSection = () => {
           </p>
         </motion.div>
 
-        <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar">
-          {isLoading ? (
-            <div className="text-sm text-muted-foreground">Загрузка...</div>
-          ) : error ? (
-            <div className="text-sm text-red-500">Ошибка загрузки</div>
-          ) : (
-            services?.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`shrink-0 flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                  activeCategory === cat.id
-                    ? "bg-primary text-white shadow-lg"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <cat.icon size={18} className="mr-2" />
-                {t(cat.nameKey)}
-              </button>
-            ))
-          )}
+        {/* CATEGORY TABS */}
+
+        <div className="relative">
+
+          <div
+            className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar"
+          >
+            {isLoading ? (
+              <div className="text-sm text-muted-foreground">Загрузка...</div>
+            ) : error ? (
+              <div className="text-sm text-red-500">Ошибка загрузки</div>
+            ) : (
+              services?.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`shrink-0 flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+                    activeCategory === cat.id
+                      ? "bg-primary text-white shadow-lg"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <cat.icon size={18} className="mr-2" />
+                  {t(cat.nameKey)}
+                </button>
+              ))
+            )}
+          </div>
+
+          {/* ✅ РОЗОВАЯ СТРЕЛКА (ТОЛЬКО МОБИЛКА) */}
+
+          <motion.div
+            animate={{ x: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="lg:hidden absolute right-2 top-full mt-2 text-primary text-sm"
+          >
+            →
+          </motion.div>
+
+          {/* ✅ ГРАДИЕНТ (ТОЛЬКО МОБИЛКА) */}
+
+          <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-background to-transparent" />
+
         </div>
+
+        {/* SERVICES */}
 
         <motion.div
           key={activeCategory}
@@ -194,10 +218,10 @@ const ServicesSection = () => {
 
       </div>
 
+      {/* MODAL */}
+
       <AnimatePresence>
-
         {modalService && (
-
           <motion.div
             className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4"
             initial={{ opacity: 0 }}
@@ -205,7 +229,6 @@ const ServicesSection = () => {
             exit={{ opacity: 0 }}
             onClick={() => setModalService(null)}
           >
-
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -213,13 +236,11 @@ const ServicesSection = () => {
               className="bg-white max-w-md w-full rounded-2xl p-6"
               onClick={(e) => e.stopPropagation()}
             >
-
               {(() => {
 
                 const details = serviceDetails[modalService.nameKey] || {}
 
                 return (
-
                   <div className="space-y-4">
 
                     <h3 className="text-xl font-display whitespace-pre-line">
@@ -261,21 +282,15 @@ const ServicesSection = () => {
                     </div>
 
                   </div>
-
                 )
 
               })()}
-
             </motion.div>
-
           </motion.div>
-
         )}
-
       </AnimatePresence>
 
     </section>
-
   )
 }
 
