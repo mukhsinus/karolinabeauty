@@ -1,9 +1,8 @@
 // src/components/BookingSection.tsx
-
 import { useState, useMemo, useEffect, useRef } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { useServices } from "@/hooks/useServices"
-import { fetchAvailability, createBooking } from "@/lib/api"
+import { createBooking } from "@/lib/api"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Calendar, Clock, User, MapPin } from "lucide-react"
 import { useAvailability } from "@/hooks/useAvailability"
@@ -75,7 +74,6 @@ export default function BookingSection() {
   const [confirmed, setConfirmed] = useState(false)
   const [modalService, setModalService] = useState<any | null>(null)  
 
-    // 🔥 UX HINT
   const [showHint, setShowHint] = useState(true)
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -102,6 +100,8 @@ export default function BookingSection() {
     }
   }
 
+  const [step, setStep] = useState(1)
+
 
   const {data: services, isLoading, error} = useServices()
 
@@ -124,6 +124,13 @@ export default function BookingSection() {
     phone: ""
   })
 
+  useEffect(() => {
+    if (!booking.service) setStep(1)
+    else if (!booking.date) setStep(2)
+    else if (!booking.time) setStep(3)
+    else setStep(4)
+  }, [booking])
+
   const { data: bookedSlots = [] } = useAvailability(branchId, booking.date)
 
   const dates = useMemo(() => getNextDays(14), [])
@@ -144,16 +151,27 @@ export default function BookingSection() {
     c.groups.flatMap(g => g.services)
   )
 
+  const [serviceId, level] = booking.service
+    ? booking.service.split("_")
+    : ["", ""]
+  const prices = [
+    { level: "master", label: "Мастер", price: 200000 },
+    { level: "top", label: "Топ мастер", price: 300000 },
+    { level: "premium", label: "Премиум", price: 400000 }
+  ]
+
   const selectedService = allServices.find(
-    s => s.id === booking.service
+    s => s.id === serviceId
   )
+
+  const selectedPrice = prices.find(p => p.level === level)
 
   const isVipSelected = booking.time ? isVipTime(booking.time) : false
 
-  const finalPrice = selectedService
+  const finalPrice = selectedPrice
     ? isVipSelected
-      ? Math.round(selectedService.price * 1.3)
-      : selectedService.price
+      ? Math.round(selectedPrice.price * 1.3)
+      : selectedPrice.price
     : 0
 
   const branch = branches.find((b: any) => b._id === branchId)
@@ -382,85 +400,103 @@ export default function BookingSection() {
           <div>
 
             {/* SERVICES */}
-
-            <AnimatePresence mode="wait">
-
-              <motion.div
-                key={category}
-
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-
-                className="grid md:grid-cols-2 gap-4 mb-14"
-              >
-
-                {isLoading ? (
-                  <div className="col-span-2 text-muted-foreground">
-                    Загрузка услуг...
-                  </div>
-                ) : error ? (
-                  <div className="col-span-2 text-red-500">
-                    Ошибка загрузки
-                  </div>
-                ) : categoryServices?.map((service, index) => (
-
-                  <button
-                    key={`${service.id}-${index}-${category}`}
-
-                    onClick={() =>
-                      setBooking(b => ({
-                        ...b,
-                        service: service.id
-                      }))
-                    }
-
-                    className={`p-6 rounded-2xl border bg-white text-left transition-all
-                    ${booking.service === service.id
-                      ? "border-primary shadow-sm"
-                      : "border-border hover:border-primary hover:shadow-sm"}`}
-
-                  >
-
-                    <div className="flex flex-col gap-3">
-
-                      <div className="flex justify-between items-center">
-
+            <AnimatePresence>
+              {step === 1 && (
+                <motion.div
+                  key={category}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="grid md:grid-cols-2 gap-4 mb-14"
+                >
+                  {isLoading ? (
+                    <div className="col-span-2 text-muted-foreground">
+                      Загрузка услуг...
+                    </div>
+                  ) : error ? (
+                    <div className="col-span-2 text-red-500">
+                      Ошибка загрузки
+                    </div>
+                  ) : categoryServices?.map((service) => (
+                    <button
+                      key={service.id}
+                      className={`p-6 rounded-2xl border bg-white text-left transition-all
+                      ${booking.service.startsWith(service.id)
+                        ? "border-primary shadow-sm"
+                        : "border-border hover:border-primary hover:shadow-sm"}`}
+                    >
+                      <div className="flex flex-col gap-3">
                         <div className="font-medium">
                           {t(service.nameKey)}
                         </div>
-
-                        <div className="text-primary text-sm">
-                          {formatPrice(service.price)}
+                        <div className="flex flex-col gap-1 text-sm">
+                          {prices.map((p) => (
+                            <div
+                              key={p.level}
+                              className={`flex justify-between px-3 py-2 rounded-lg border cursor-pointer
+                              ${booking.service === `${service.id}_${p.level}`
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary"}`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setBooking(b => ({
+                                  ...b,
+                                  service: `${service.id}_${p.level}`
+                                }))
+                              }}
+                            >
+                              <span className="text-muted-foreground">
+                                {p.label}
+                              </span>
+                              <span className="text-primary font-medium">
+                                {formatPrice(p.price)}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalService(service);
+                          }}
+                          className="text-xs text-muted-foreground underline text-left cursor-pointer"
+                        >
+                          Подробнее
+                        </span>
                       </div>
-
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setModalService(service);
-                        }}
-                        className="text-xs text-muted-foreground underline text-left cursor-pointer"
-                      >
-                        Подробнее
-                      </span>
-
-                    </div>
-
-                  </button>
-
-                ))}
-
-              </motion.div>
-
+                    </button>
+                  ))}
+                </motion.div>
+              )}
             </AnimatePresence>
+
+            {booking.service && step > 1 && selectedService && (
+              <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+
+                <div>
+                  <div className="font-medium">
+                    {t(selectedService.nameKey)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {selectedPrice?.label}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setBooking(b => ({ ...b, service: "", time: "" }))}
+                  className="text-sm text-primary"
+                >
+                  Изменить
+                </button>
+
+              </div>
+            )}
 
             {/* DATE */}
 
-            {booking.service && (
+            {step === 2 && (
 
             <>
 
@@ -508,9 +544,28 @@ export default function BookingSection() {
 
             )}
 
+
+            {booking.date && step > 2 && (
+              <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+
+                <div className="font-medium">
+                  {formatDate(booking.date)}
+                </div>
+
+                <button
+                  onClick={() => setBooking(b => ({ ...b, date: "", time: "" }))}
+                  className="text-sm text-primary"
+                >
+                  Изменить
+                </button>
+
+              </div>
+            )}
+            
+
             {/* TIME */}
 
-            {booking.date && (
+            {step === 3 && (
 
             <>
 
@@ -584,9 +639,28 @@ export default function BookingSection() {
 
             )}
 
+
+            {booking.time && step > 3 && (
+              <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+
+                <div className="font-medium">
+                  {booking.time}
+                </div>
+
+                <button
+                  onClick={() => setBooking(b => ({ ...b, time: "" }))}
+                  className="text-sm text-primary"
+                >
+                  Изменить
+                </button>
+
+              </div>
+            )}
+
+
             {/* DETAILS */}
 
-            {booking.time && (
+            {step === 4 && (
 
             <div className="max-w-md">
 
@@ -646,6 +720,7 @@ export default function BookingSection() {
             )}
 
           </div>
+          
 
           {/* SUMMARY */}
 
