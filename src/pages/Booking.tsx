@@ -1,6 +1,6 @@
 // src/pages/Booking.tsx
 import Navbar from "@/components/Navbar";
-import BookingSection from "@/components/BookingSection";
+import BookingSection from "@/components/booking/BookingSection";
 import Footer from "@/components/Footer";
 
 const Booking = () => {

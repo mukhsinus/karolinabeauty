@@ -43,16 +43,12 @@ export const mapServices = (dbServices: DbService[]) => {
         // ✅ нормальный случай (есть в БД)
         return {
           ...service,
-
-          id: db._id,                  // 🔥 используем как UI id
-          mongoId: db._id,             // 🔥 для backend
-
-          _id: db._id,                 // (на всякий случай совместимость)
-
+          id: db._id || service.id, // fallback to front id if db._id is missing
+          mongoId: db._id,
+          _id: db._id,
           price: db.price,
           duration: db.duration,
           isFrom: db.isFrom,
-
           isPromo:
             db.isPromo === true ||
             service.nameKey.includes("lamination")

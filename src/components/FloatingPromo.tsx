@@ -5,8 +5,10 @@ import { useLanguage } from "@/i18n/LanguageContext"
 import { motion, AnimatePresence } from "framer-motion"
 import { useLocation } from "react-router-dom"
 
-const formatPrice = (price: number) =>
-  price.toLocaleString("ru-RU")
+const formatPrice = (price: number) => {
+  if (typeof price !== "number" || isNaN(price)) return "-";
+  return price.toLocaleString("ru-RU");
+}
 
 const HIDE_DURATION = 1000 * 60 * 60
 const SHOW_DELAY = 5000

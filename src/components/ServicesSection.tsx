@@ -6,7 +6,8 @@ import { useServices } from "@/hooks/useServices"
 import { motion, AnimatePresence } from "framer-motion"
 
 const formatPrice = (price: number) => {
-  return price.toLocaleString("ru-RU")
+  if (typeof price !== "number" || isNaN(price)) return "-";
+  return price.toLocaleString("ru-RU");
 }
 
 // 🔥 ОБНОВЛЕННЫЕ ДЕТАЛИ УСЛУГ
