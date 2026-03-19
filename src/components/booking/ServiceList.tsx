@@ -49,10 +49,10 @@ export default function ServiceList({
           <div className="col-span-2 text-muted-foreground">
             Нет доступных услуг
           </div>
-        ) : services.map((service) => (
+        ) : services.map((service, index) => (
 
           <div
-            key={service.id}
+            key={service.mongoId ? `${service.mongoId}_${index}` : `${service.id}_${index}`}
             className={`p-6 rounded-2xl border bg-white text-left transition-all
             ${
               booking.service.startsWith(service.id)
@@ -71,10 +71,10 @@ export default function ServiceList({
               {/* уровни цен */}
               <div className="flex flex-col gap-1 text-sm">
 
-                {prices.map((p, index) => (
+                {prices.map((p, priceIdx) => (
 
                   <div
-                    key={`${service.id}_${p.level}_${index}`}
+                    key={`${service.mongoId ? service.mongoId : service.id}_${p.level}_${priceIdx}`}
                     className={`flex justify-between px-3 py-2 rounded-lg border cursor-pointer
                     ${
                       booking.service === `${service.id}_${p.level}`
