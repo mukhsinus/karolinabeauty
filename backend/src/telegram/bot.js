@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import { Telegraf, session } from "telegraf"
+import Branch from "../models/Branch.js"
 
 // core
 import { initialSession, setStep } from "./core/session.js"
@@ -226,11 +227,22 @@ const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "")
   .map(id => Number(id))
 
 export const notifyNewBooking = async (booking) => {
+  let branchName = ""
+  try {
+    const branch = await Branch.findById(booking.branchId).lean()
+    branchName = branch?.name || ""
+  } catch (e) {
+    console.error("Branch fetch for telegram error:", e.message)
+  }
+
   const message = `🔔 Новая запись
 
 📅 ${booking.date} ${booking.time}
 
+📍 ${branchName || "-"}
+
 💅 ${booking.serviceName}
+⭐ ${booking.serviceLevel || "-"}
 
 👩 ${booking.name}
 📞 ${booking.phone}

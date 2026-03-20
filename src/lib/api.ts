@@ -50,6 +50,7 @@ export const createBooking = async (data: {
   branchId: string
   serviceId: string
   serviceName: string
+  serviceLevel: string
   serviceDuration: number
   price: number
   date: string

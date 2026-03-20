@@ -7,7 +7,6 @@ interface Props {
   isLoading: boolean
   error: any
 
-  prices: any[]
   formatPrice: (price: number) => string
 
   selectService: (serviceId: string, level: string) => void
@@ -15,12 +14,30 @@ interface Props {
   t: (key: string) => string
 }
 
+const getLevelLabel = (level: string) => {
+  switch (level) {
+    case "master":
+      return "Мастер"
+    case "top":
+      return "Топ мастер"
+    case "premium":
+      return "Премиум"
+    case "promo":
+      return "Промо"
+    default:
+      return level
+  }
+}
+
+const getCurrencyByService = (service: any, t: (key: string) => string) => {
+  return service?.category === "hair" ? "USD" : t("services.currency")
+}
+
 export default function ServiceList({
   services,
   booking,
   isLoading,
   error,
-  prices,
   formatPrice,
   selectService,
   setModalService,
@@ -56,8 +73,10 @@ export default function ServiceList({
             className={`p-6 rounded-2xl border bg-white text-left transition-all
             ${
               booking.service.startsWith(service.id)
-                ? "border-primary shadow-sm"
-                : "border-border hover:border-primary hover:shadow-sm"
+                ? "border-primary shadow-sm opacity-100"
+                : booking.service
+                  ? "border-border hover:border-primary hover:shadow-sm opacity-60"
+                  : "border-border hover:border-primary hover:shadow-sm"
             }`}
           >
 
@@ -71,32 +90,65 @@ export default function ServiceList({
               {/* уровни цен */}
               <div className="flex flex-col gap-1 text-sm">
 
-                {prices.map((p, priceIdx) => (
+                {(() => {
+                  const servicePrices = Array.isArray(service?.prices)
+                    ? service.prices
+                    : []
 
-                  <div
-                    key={`${service.mongoId ? service.mongoId : service.id}_${p.level}_${priceIdx}`}
-                    className={`flex justify-between px-3 py-2 rounded-lg border cursor-pointer
-                    ${
-                      booking.service === `${service.id}_${p.level}`
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary"
-                    }`}
-                    onClick={() =>
-                      selectService(service.id, p.level)
-                    }
-                  >
+                  const isMulti = servicePrices.length > 1
 
-                    <span className="text-muted-foreground">
-                      {p.label}
-                    </span>
+                  if (isMulti) {
+                    return servicePrices.map((price) => {
+                      const level = String((price as { level?: string }).level ?? "")
+                      const priceValue = Number(
+                        (price as { price?: number }).price
+                      )
+                      const currency = getCurrencyByService(service, t)
 
-                    <span className="text-primary font-medium">
-                      {formatPrice(p.price)}
-                    </span>
+                      return (
+                        <div
+                          key={`${service.id}_${level}`}
+                          className={`flex justify-between px-3 py-2 rounded-lg border cursor-pointer
+                          ${
+                            booking.service === `${service.id}_${level}`
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:border-primary"
+                          }`}
+                          onClick={() => selectService(service.id, level)}
+                        >
+                          <span className="text-muted-foreground">
+                            {getLevelLabel(level)}
+                          </span>
 
-                  </div>
+                          <span className="text-primary font-medium">
+                            {formatPrice(priceValue)} {currency}
+                          </span>
+                        </div>
+                      )
+                    })
+                  }
 
-                ))}
+                  const singlePrice = servicePrices[0]
+                  const singleValue = Number(singlePrice?.price)
+                  const currency = getCurrencyByService(service, t)
+
+                  return (
+                    <div
+                      key={`${service.id}_master`}
+                      className={`flex justify-center px-3 py-2 rounded-lg border cursor-pointer
+                      ${
+                        booking.service === `${service.id}_master`
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary"
+                      }`}
+                      onClick={() => selectService(service.id, "master")}
+                    >
+                      <span className="text-primary font-medium">
+                        {formatPrice(singleValue)} {currency}
+                      </span>
+                    </div>
+                  )
+                })()}
 
               </div>
 

@@ -10,6 +10,10 @@ const formatPrice = (price: number) => {
   return price.toLocaleString("ru-RU");
 }
 
+const getCurrencyByService = (service: any, t: (key: string) => string) => {
+  return service?.category === "hair" ? "USD" : t("services.currency")
+}
+
 // 🔥 ОБНОВЛЕННЫЕ ДЕТАЛИ УСЛУГ
 const serviceDetails: Record<string, any> = {
 
@@ -224,7 +228,7 @@ const ServicesSection = () => {
                               )}
                               {formatPrice(service.price)}
                               <span className="text-xs text-muted-foreground ml-1">
-                                {t("services.currency")}
+                                {getCurrencyByService(service, t)}
                               </span>
                             </span>
 
@@ -304,7 +308,7 @@ const ServicesSection = () => {
                     )}
 
                     <div className="text-lg font-semibold text-primary pt-2">
-                      {formatPrice(modalService.price)} {t("services.currency")}
+                      {formatPrice(modalService.price)} {getCurrencyByService(modalService, t)}
                     </div>
 
                     <div className="pt-4 flex gap-3">

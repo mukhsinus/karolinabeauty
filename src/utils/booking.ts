@@ -78,7 +78,22 @@ export const getCategoryServices = (services: any[], category: string) => {
   if (!cat) return []
 
   if (cat.groups) {
-    return cat.groups.flatMap((g: any) => g.services || [])
+    const flat = cat.groups.flatMap((g: any) => g.services || [])
+    const uniqueMap = new Map<string, any>()
+
+    flat.forEach((service: any) => {
+      const key =
+        service?.mongoId ||
+        service?._id ||
+        service?.id ||
+        service?.nameKey
+
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, service)
+      }
+    })
+
+    return Array.from(uniqueMap.values())
   }
 
   if (cat.services) {

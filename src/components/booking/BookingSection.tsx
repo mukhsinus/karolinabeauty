@@ -136,44 +136,97 @@ export default function BookingSection() {
             <div>
 
               {/* SERVICES */}
-              <ServiceList
-                services={categoryServices}
-                booking={booking}
-                isLoading={isLoading}
-                error={error}
-                prices={[
-                  { level: "master", label: "Мастер", price: 200000 },
-                  { level: "top", label: "Топ мастер", price: 300000 },
-                  { level: "premium", label: "Премиум", price: 400000 }
-                ]}
-                formatPrice={(p: number) => formatPrice(p, lang)}
-                selectService={selectService}
-                setModalService={setModalService}
-                t={t}
-              />
-
-              {/* DATE */}
-              {booking.service && !booking.date && (
-                <DateSelector
-                  dates={dates}
+              {!booking.service ? (
+                <ServiceList
+                  services={categoryServices}
                   booking={booking}
-                  selectDate={selectDate}
-                  resetDate={resetDate}
-                  formatDateLocal={(d) => formatDate(d, lang)}
+                  isLoading={isLoading}
+                  error={error}
+                  formatPrice={(p: number) => formatPrice(p, lang)}
+                  selectService={selectService}
+                  setModalService={setModalService}
                   t={t}
                 />
+              ) : (
+                <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+                  <div>
+                    <div className="font-medium">
+                      {selectedService ? t(selectedService.nameKey) : t("common.empty")}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {selectedPrice?.level === "master"
+                        ? "Мастер"
+                        : selectedPrice?.level === "top"
+                          ? "Топ мастер"
+                          : selectedPrice?.level === "premium"
+                            ? "Премиум"
+                            : selectedPrice?.level === "promo"
+                              ? "Промо"
+                              : ""}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={resetService}
+                    className="text-sm text-primary"
+                  >
+                    Изменить
+                  </button>
+                </div>
+              )}
+
+              {/* DATE */}
+              {booking.service && (
+                !booking.date ? (
+                  <DateSelector
+                    dates={dates}
+                    booking={booking}
+                    selectDate={selectDate}
+                    resetDate={resetDate}
+                    formatDateLocal={(d) => formatDate(d, lang)}
+                    t={t}
+                  />
+                ) : (
+                  <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+                    <div className="font-medium">
+                      {formatDate(booking.date, lang)}
+                    </div>
+
+                    <button
+                      onClick={resetDate}
+                      className="text-sm text-primary"
+                    >
+                      Изменить
+                    </button>
+                  </div>
+                )
               )}
 
               {/* TIME */}
-              {booking.date && !booking.time && (
-                <TimeSelector
-                  timeSlots={timeSlots}
-                  booking={booking}
-                  bookedSlots={bookedSlots}
-                  selectTime={selectTime}
-                  resetTime={resetTime}
-                  t={t}
-                />
+              {booking.date && (
+                !booking.time ? (
+                  <TimeSelector
+                    timeSlots={timeSlots}
+                    booking={booking}
+                    bookedSlots={bookedSlots}
+                    selectTime={selectTime}
+                    resetTime={resetTime}
+                    t={t}
+                  />
+                ) : (
+                  <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">
+                    <div className="font-medium">
+                      {booking.time}
+                    </div>
+
+                    <button
+                      onClick={resetTime}
+                      className="text-sm text-primary"
+                    >
+                      Изменить
+                    </button>
+                  </div>
+                )
               )}
 
               {/* FORM */}

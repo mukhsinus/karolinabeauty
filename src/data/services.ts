@@ -3,7 +3,6 @@
 import {
   Sparkles,
   Scissors,
-  Flower2,
   Eye,
   Droplets,
   Wand2,
@@ -69,7 +68,6 @@ export const serviceCategories: ServiceCategory[] = [
           { id: "karolina_2_3d", nameKey: "services.lashes_2_3d", price: 500000, duration: 150 },
           { id: "karolina_effect", nameKey: "services.author_effect", price: 550000, duration: 150 },
           { id: "karolina_4_6d", nameKey: "services.lashes_4_6d", price: 600000, duration: 180 },
-          { id: "karolina_removal", nameKey: "services.removal", price: 100000, duration: 30 },
           { id: "karolina_lamination", nameKey: "services.lash_lamination", price: 300000, duration: 60 },
         ],
       },
@@ -161,33 +159,6 @@ export const serviceCategories: ServiceCategory[] = [
         ],
       },
 
-    ],
-  },
-
-  /* ---------- DEPILATION ---------- */
-
-  {
-    id: "depilation",
-    nameKey: "services.depilation",
-    icon: Flower2,
-    groups: [
-      {
-        id: "depilation_main",
-        titleKey: "services.depilation_main",
-        services: [
-          { id: "promo_depilation", nameKey: "services.promo_depilation", price: 250000, duration: 90 },
-          { id: "deep_bikini", nameKey: "services.deep_bikini", price: 150000, duration: 45 },
-          { id: "armpits", nameKey: "services.armpits", price: 50000, duration: 20 },
-          { id: "legs_to_knee", nameKey: "services.legs_to_knee", price: 100000, duration: 30 },
-          { id: "full_legs", nameKey: "services.full_legs", price: 150000, duration: 60 },
-          { id: "arms_to_elbow", nameKey: "services.arms_to_elbow", price: 60000, duration: 25 },
-          { id: "full_arms", nameKey: "services.full_arms", price: 90000, duration: 40 },
-          { id: "face_dep", nameKey: "services.face", price: 70000, duration: 30 },
-          { id: "stomach", nameKey: "services.stomach", price: 60000, duration: 25 },
-          { id: "back", nameKey: "services.back", price: 60000, duration: 30 },
-          { id: "upper_lip", nameKey: "services.upper_lip", price: 30000, duration: 15 },
-        ],
-      },
     ],
   },
 

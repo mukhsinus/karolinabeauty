@@ -9,6 +9,9 @@ export const createBooking = async (req, res) => {
     const {
       branchId,
       serviceId,
+      serviceName,
+      serviceLevel,
+      price,
       date,
       time,
       name,
@@ -26,6 +29,9 @@ export const createBooking = async (req, res) => {
     const booking = await createBookingService({
       branchId,
       serviceId,
+      serviceName,
+      serviceLevel,
+      price,
       date,
       time,
       name,

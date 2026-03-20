@@ -22,6 +22,7 @@ export default function ServiceModal({
   if (!modalService) return null
 
   const details = serviceDetails[modalService.nameKey] || {}
+  const currency = modalService?.category === "hair" ? "USD" : "сум"
 
   return (
     <div
@@ -57,7 +58,7 @@ export default function ServiceModal({
 
           {/* PRICE (базовый, без level — как в оригинале) */}
           <div className="text-lg font-semibold text-primary pt-2">
-            {formatPrice(modalService.price)} сум
+            {formatPrice(modalService.price)} {currency}
           </div>
 
           {/* ACTIONS */}

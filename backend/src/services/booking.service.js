@@ -25,6 +25,9 @@ export const createBooking = async (payload) => {
   const {
     branchId,
     serviceId,
+    serviceName,
+    serviceLevel,
+    price,
     date,
     time,
     name,
@@ -63,17 +66,29 @@ export const createBooking = async (payload) => {
 
   // создаем запись
 
+  const resolvedPrice =
+    typeof price === "number" && !Number.isNaN(price)
+      ? price
+      : Array.isArray(service.prices) && service.prices.length > 0
+        ? service.prices[0].price
+        : null
+
+  if (typeof resolvedPrice !== "number") {
+    throw new Error("Service price is not defined")
+  }
+
   const booking = await Booking.create({
 
     branchId,
 
     serviceId: service._id,
 
-    serviceName: service.nameKey,
+    serviceName: serviceName || service.nameKey,
+    serviceLevel: serviceLevel || "",
 
     serviceDuration: service.duration,
 
-    price: service.price,
+    price: resolvedPrice,
 
     date,
 

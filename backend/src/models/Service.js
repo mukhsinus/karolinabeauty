@@ -1,5 +1,25 @@
 // backend/src/models/Service.js
-import mongoose from "mongoose";
+import mongoose from "mongoose"
+
+/**
+ * Подсхема для уровней цен
+ * (master / top / premium / promo)
+ */
+const priceSchema = new mongoose.Schema(
+  {
+    level: {
+      type: String,
+      required: true,
+      enum: ["master", "top", "premium", "promo"]
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0
+    }
+  },
+  { _id: false }
+)
 
 const ServiceSchema = new mongoose.Schema(
   {
@@ -17,11 +37,14 @@ const ServiceSchema = new mongoose.Schema(
       index: true,
     },
 
-    // цена услуги
-    price: {
-      type: Number,
+    // ✅ НОВАЯ СТРУКТУРА ЦЕН
+    prices: {
+      type: [priceSchema],
       required: true,
-      min: 0,
+      validate: {
+        validator: (val) => val.length > 0,
+        message: "Service must have at least one price"
+      }
     },
 
     // длительность в минутах
@@ -44,7 +67,7 @@ const ServiceSchema = new mongoose.Schema(
       index: true,
     },
 
-    // в ServiceSchema
+    // акция (для UI бейджа)
     isPromo: {
       type: Boolean,
       default: false,
@@ -54,9 +77,10 @@ const ServiceSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
-// индекс для быстрых фильтров
-ServiceSchema.index({ category: 1, isActive: 1 });
+// индексы
+ServiceSchema.index({ category: 1, isActive: 1 })
+ServiceSchema.index({ nameKey: 1 })
 
-export default mongoose.model("Service", ServiceSchema);
+export default mongoose.model("Service", ServiceSchema)

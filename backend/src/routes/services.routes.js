@@ -8,7 +8,7 @@ const router = express.Router()
 router.get("/", async (req, res) => {
   try {
     const services = await Service.find({ isActive: true })
-      .select("_id nameKey category price duration")
+      .select("_id nameKey category prices duration isFrom isPromo")
       .lean()
 
     return res.json(services)

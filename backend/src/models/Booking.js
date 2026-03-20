@@ -24,6 +24,12 @@ const BookingSchema = new mongoose.Schema(
     trim: true
   },
 
+  serviceLevel: {
+    type: String,
+    trim: true,
+    default: ""
+  },
+
   serviceDuration: {
     type: Number,
     required: true,

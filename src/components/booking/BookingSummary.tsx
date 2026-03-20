@@ -26,6 +26,17 @@ export default function BookingSummary({
   t,
   branchNamesMap
 }: Props) {
+  const currency = selectedService?.category === "hair"
+    ? "USD"
+    : t("services.currency")
+  const rawLevel = selectedPrice?.level || booking?.service?.split("_")[1] || ""
+  const levelLabelMap: Record<string, string> = {
+    master: "Мастер",
+    top: "Топ мастер",
+    premium: "Премиум",
+    promo: "Промо"
+  }
+  const selectedLevelLabel = levelLabelMap[rawLevel] || rawLevel
 
   return (
     <div className="lg:sticky lg:top-28 h-fit bg-card border rounded-2xl p-6">
@@ -61,6 +72,18 @@ export default function BookingSummary({
               : t("common.empty")}
           </div>
         </div>
+
+        {/* LEVEL */}
+        {selectedService && selectedLevelLabel && (
+          <div>
+            <div className="text-muted-foreground">
+              Уровень
+            </div>
+            <div className="font-medium">
+              {selectedLevelLabel}
+            </div>
+          </div>
+        )}
 
         {/* DATE */}
         <div>
@@ -98,7 +121,7 @@ export default function BookingSummary({
 
             <div className="text-primary text-lg font-semibold">
 
-              {formatPrice(finalPrice)}
+              {formatPrice(finalPrice)} {currency}
 
               {isVipSelected && (
                 <span className="text-xs text-primary ml-2">
