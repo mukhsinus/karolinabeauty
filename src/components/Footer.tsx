@@ -49,12 +49,14 @@ const Footer = () => {
                 {t("nav.services")}
               </Link>
 
+              {/*
               <Link
                 to="/gallery"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 {t("nav.gallery")}
               </Link>
+              */}
 
               <Link
                 to="/booking"

@@ -27,7 +27,7 @@ const Navbar = () => {
   const navItems = [
     { key: "nav.home", href: "/" },
     { key: "nav.services", href: "/services" },
-    { key: "nav.gallery", href: "/gallery" },
+    // { key: "nav.gallery", href: "/gallery" },
     { key: "nav.booking", href: "/booking" },
     { key: "nav.contacts", href: "/contacts" },
   ]
