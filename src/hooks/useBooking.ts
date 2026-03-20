@@ -133,14 +133,11 @@ export function useBooking() {
     [booking.time]
   )
 
-  // ✅ КРИТИЧЕСКИЙ ФИКС (как в оригинале)
+  // VIP price is not counted automatically, only shown in summary
   const finalPrice = useMemo(() => {
     if (!selectedPrice) return 0
-
-    return isVipSelected
-      ? Math.round(selectedPrice.price * 1.3)
-      : selectedPrice.price
-  }, [selectedPrice, isVipSelected])
+    return selectedPrice.price
+  }, [selectedPrice])
 
   const branch = useMemo(
     () => getBranchById(branches, branchId),
