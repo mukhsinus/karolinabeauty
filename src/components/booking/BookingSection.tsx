@@ -101,8 +101,8 @@ export default function BookingSection() {
   }
 
   return (
-    <section className="py-24">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="py-20 md:py-24">
+      <div className="container mx-auto px-4 md:px-6">
 
         <h2 className="text-center text-5xl font-display mb-16">
           {t("booking.title")}
@@ -131,7 +131,7 @@ export default function BookingSection() {
         )}
 
         {branchId && (
-          <div className="grid lg:grid-cols-[1fr,320px] gap-14">
+          <div className="grid lg:grid-cols-[1fr_360px] gap-10 xl:gap-14">
 
             <div>
 

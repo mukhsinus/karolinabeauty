@@ -50,7 +50,7 @@ const Home = () => {
 
       {/* POPULAR SERVICES */}
       <section className="py-20 md:py-24">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
               {t("home.popular.title")}
@@ -114,7 +114,7 @@ const Home = () => {
 
       {/* LOCATIONS */}
       <section className="py-20 md:py-24 bg-secondary/30">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="container mx-auto px-4 md:px-6">
 
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">

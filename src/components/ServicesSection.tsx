@@ -125,9 +125,9 @@ const ServicesSection = () => {
 
   return (
 
-    <section id="services" className="py-32 bg-background">
+    <section id="services" className="py-24 md:py-32 bg-background">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="container mx-auto px-4 md:px-6">
 
         {/* HEADER */}
 
@@ -200,7 +200,7 @@ const ServicesSection = () => {
                 {t(group.titleKey)}
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
 
                 {group.services.map((service, index) => (
                   <motion.div
@@ -210,7 +210,7 @@ const ServicesSection = () => {
                     transition={{ delay: index * 0.05 }}
                   >
                     <MagneticCard>
-                      <div className="group bg-card rounded-3xl p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
+                      <div className="group bg-card rounded-2xl p-6 md:p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
 
                         <div className="flex flex-col justify-between h-full">
 

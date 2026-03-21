@@ -39,7 +39,7 @@ export default function BookingSummary({
   const selectedLevelLabel = levelLabelMap[rawLevel] || rawLevel
 
   return (
-    <div className="lg:sticky lg:top-28 h-fit bg-card border rounded-2xl p-6">
+    <div className="lg:sticky lg:top-28 h-fit bg-card border border-border rounded-3xl p-6 md:p-8 shadow-sm">
 
       <h3 className="font-display text-lg mb-6">
         {t("booking.summary")}

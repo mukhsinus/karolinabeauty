@@ -62,7 +62,7 @@ const StickyBookingButton = () => {
 
         onClick={() => navigate("/booking")}
 
-        className="pointer-events-auto w-full bg-primary text-primary-foreground py-4 rounded-xl font-semibold shadow-xl backdrop-blur-lg active:scale-[0.98] transition"
+        className="pointer-events-auto w-full bg-primary text-primary-foreground py-4 rounded-2xl font-semibold shadow-xl backdrop-blur-lg active:scale-[0.98] transition"
       >
 
         {t("hero.book")}

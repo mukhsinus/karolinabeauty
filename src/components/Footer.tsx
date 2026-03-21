@@ -13,7 +13,7 @@ const Footer = () => {
       {/* TOP BLOCK */}
       <div className="container mx-auto px-4">
 
-        <div className="bg-card/80 backdrop-blur-xl border border-border rounded-3xl p-8 md:p-12 shadow-sm">
+        <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl p-6 md:p-8 shadow-sm">
 
           {/* Desktop */}
           <div className="hidden md:grid md:grid-cols-3 gap-12">
