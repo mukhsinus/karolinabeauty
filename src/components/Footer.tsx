@@ -15,10 +15,9 @@ const Footer = () => {
 
         <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl p-6 md:p-10 shadow-sm">
 
-          {/* subtle divider */}
           <div className="hidden md:block h-px bg-gradient-to-r from-transparent via-border to-transparent mb-10" />
 
-          {/* Desktop */}
+          {/* DESKTOP */}
           <div className="hidden md:grid md:grid-cols-3 gap-16">
 
             {/* BRAND */}
@@ -29,8 +28,7 @@ const Footer = () => {
               </h3>
 
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Премиальный салон красоты в Ташкенте. Маникюр, ресницы,
-                брови и депиляция от профессиональных мастеров.
+                {t("footer.description")}
               </p>
 
             </div>
@@ -39,24 +37,24 @@ const Footer = () => {
             <div>
 
               <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
-                Навигация
+                {t("footer.navigation")}
               </h4>
 
               <div className="flex flex-col gap-4 text-sm">
 
-                <Link to="/" className="hover:text-primary transition-colors">
+                <Link to="/" className="hover:text-primary transition">
                   {t("nav.home")}
                 </Link>
 
-                <Link to="/services" className="hover:text-primary transition-colors">
+                <Link to="/services" className="hover:text-primary transition">
                   {t("nav.services")}
                 </Link>
 
-                <Link to="/booking" className="hover:text-primary transition-colors">
+                <Link to="/booking" className="hover:text-primary transition">
                   {t("nav.booking")}
                 </Link>
 
-                <Link to="/contacts" className="hover:text-primary transition-colors">
+                <Link to="/contacts" className="hover:text-primary transition">
                   {t("nav.contacts")}
                 </Link>
 
@@ -68,19 +66,18 @@ const Footer = () => {
             <div>
 
               <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
-                Контакты
+                {t("footer.contacts")}
               </h4>
 
               <div className="flex flex-col gap-3">
 
                 <a
                   href="tel:+998931299955"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition-all duration-300 group"
+                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
                 >
                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
                     <Phone size={14} />
                   </div>
-
                   <span className="text-sm group-hover:text-primary transition">
                     +998 93 129 99 55
                   </span>
@@ -88,12 +85,11 @@ const Footer = () => {
 
                 <a
                   href="mailto:info@karolinabeauty.uz"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition-all duration-300 group"
+                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
                 >
                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
                     <Mail size={14} />
                   </div>
-
                   <span className="text-sm group-hover:text-primary transition">
                     info@karolina.uz
                   </span>
@@ -103,14 +99,13 @@ const Footer = () => {
                   href="https://t.me/radionkhusainov"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition-all duration-300 group"
+                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
                 >
                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
                     <Send size={14} />
                   </div>
-
                   <span className="text-sm group-hover:text-primary transition">
-                    Telegram
+                    {t("contacts.telegram")}
                   </span>
                 </a>
 
@@ -118,14 +113,13 @@ const Footer = () => {
                   href="https://instagram.com/karolinabeautyroom"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition-all duration-300 group"
+                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
                 >
                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
                     <Instagram size={14} />
                   </div>
-
                   <span className="text-sm group-hover:text-primary transition">
-                    Instagram
+                    {t("contacts.instagram")}
                   </span>
                 </a>
 
@@ -136,44 +130,58 @@ const Footer = () => {
           </div>
 
           {/* MOBILE */}
-          <div className="md:hidden text-center">
+          <div className="md:hidden flex flex-col items-center text-center">
 
-            <h3 className="font-display text-xl font-semibold mb-6">
+            {/* BRAND */}
+            <h3 className="font-display text-2xl font-semibold mb-2">
               Karolina Beauty Room
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
+            <p className="text-xs text-muted-foreground mb-8 max-w-xs">
+              {t("footer.description")}
+            </p>
 
-              {[
-                {
-                  icon: <Phone size={18} />,
-                  href: "tel:+998931299955",
-                },
-                {
-                  icon: <Mail size={18} />,
-                  href: "mailto:info@karolinabeauty.uz",
-                },
-                {
-                  icon: <Send size={18} />,
-                  href: "https://t.me/radionkhusainov",
-                },
-                {
-                  icon: <Instagram size={18} />,
-                  href: "https://instagram.com/karolinabeautyroom",
-                },
-              ].map((item, i) => (
-                <a
-                  key={i}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center p-5 rounded-2xl bg-secondary/50 hover:bg-primary/10 active:scale-95 transition-all duration-200"
-                >
-                  <div className="text-foreground/80">
-                    {item.icon}
-                  </div>
-                </a>
-              ))}
+            {/* PRIMARY ACTIONS */}
+            <div className="w-full flex flex-col gap-3 mb-6">
+
+              <a
+                href="tel:+998931299955"
+                className="flex items-center justify-center gap-2 py-4 rounded-full bg-primary text-white font-medium text-sm active:scale-[0.98] transition"
+              >
+                <Phone size={16} />
+                {t("contacts.phone")}
+              </a>
+
+              <a
+                href="mailto:info@karolinabeauty.uz"
+                className="flex items-center justify-center gap-2 py-4 rounded-full border border-border text-sm active:scale-[0.98] transition"
+              >
+                <Mail size={16} />
+                Email
+              </a>
+
+            </div>
+
+            {/* SOCIALS */}
+            <div className="flex gap-3">
+
+              <a
+                href="https://t.me/radionkhusainov"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
+              >
+                <Send size={18} />
+              </a>
+
+              <a
+                href="https://instagram.com/karolinabeautyroom"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
+              >
+                <Instagram size={18} />
+              </a>
 
             </div>
 
@@ -203,7 +211,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="opacity-60 hover:opacity-100 hover:text-primary transition"
           >
-            Developed with care
+            {t("footer.developed")}
           </a>
 
         </div>

@@ -14,16 +14,17 @@ interface Props {
   t: (key: string) => string
 }
 
-const getLevelLabel = (level: string) => {
+// ✅ теперь полностью через i18n
+const getLevelLabel = (level: string, t: (key: string) => string) => {
   switch (level) {
     case "master":
-      return "Мастер"
+      return t("services.basic_master")
     case "top":
-      return "Топ мастер"
+      return t("services.top_master")
     case "premium":
-      return "Премиум"
+      return t("services.premium_master")
     case "promo":
-      return "Промо"
+      return t("services.promo")
     default:
       return level
   }
@@ -54,17 +55,18 @@ export default function ServiceList({
         className="grid md:grid-cols-2 gap-4 mb-14"
       >
 
+        {/* LOADING */}
         {isLoading ? (
           <div className="col-span-2 text-muted-foreground">
-            Загрузка услуг...
+            {t("common.loading_services")}
           </div>
         ) : error ? (
           <div className="col-span-2 text-red-500">
-            Ошибка загрузки
+            {t("common.error_loading")}
           </div>
         ) : services?.length === 0 ? (
           <div className="col-span-2 text-muted-foreground">
-            Нет доступных услуг
+            {t("common.no_services")}
           </div>
         ) : services.map((service, index) => (
 
@@ -82,12 +84,12 @@ export default function ServiceList({
 
             <div className="flex flex-col gap-3">
 
-              {/* название */}
+              {/* NAME */}
               <div className="font-medium">
                 {t(service.nameKey)}
               </div>
 
-              {/* уровни цен */}
+              {/* PRICES */}
               <div className="flex flex-col gap-1 text-sm">
 
                 {(() => {
@@ -117,7 +119,7 @@ export default function ServiceList({
                           onClick={() => selectService(service.id, level)}
                         >
                           <span className="text-muted-foreground">
-                            {getLevelLabel(level)}
+                            {getLevelLabel(level, t)}
                           </span>
 
                           <span className="text-primary font-medium">
@@ -152,12 +154,12 @@ export default function ServiceList({
 
               </div>
 
-              {/* подробнее */}
+              {/* DETAILS */}
               <button
                 onClick={() => setModalService(service)}
                 className="text-xs text-muted-foreground underline text-left"
               >
-                Подробнее
+                {t("common.details")}
               </button>
 
             </div>

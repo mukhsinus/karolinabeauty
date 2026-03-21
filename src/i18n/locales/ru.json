@@ -49,8 +49,8 @@
   "branches.yunusabad.address": "дом 1",
   "branches.yunusabad.landmark": "Ориентир: Корзинка Петушок",
 
-  "booking.weekdays": "Пн–Пт: 09:00 — 21:00",
-  "booking.weekends": "Сб–Вс: 10:00 — 22:00",
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP отдельная запись",
 
   "contacts.title": "Контакты",
   "contacts.phone": "Позвонить",
@@ -180,5 +180,74 @@
 
   "contacts.address": "Адрес",
   "contacts.instagram": "Instagram",
-  "contacts.working_hours": "Часы работы"
+  "contacts.working_hours": "Часы работы",
+
+  "footer.description": "Премиальный салон красоты в Ташкенте. Маникюр, ресницы, брови и депиляция от профессиональных мастеров.",
+  "footer.navigation": "Навигация",
+  "footer.contacts": "Контакты",
+  "footer.developed": "Разработано с заботой",
+  "contacts.telegram": "Telegram",
+
+  "hero.alt": "Студия красоты Karolina Beauty Room",
+
+  "promo.badge": "Акция",
+  "promo.default": "Специальное предложение",
+  "promo.lamination_bonus": "С витаминами и окрашиванием",
+  "promo.cta": "Записаться",
+
+  "home.locations.map_alt": "Карта расположения салона",
+
+  "services.top_master": "Топ мастер",
+  "services.premium_master": "Премиум мастер",
+
+  "common.loading_services": "Загрузка услуг...",
+  "common.error_loading": "Ошибка загрузки",
+  "common.no_services": "Нет доступных услуг",
+  "common.details": "Подробнее",
+
+
+  "common.loading": "Загрузка...",
+  "common.close": "Закрыть",
+
+  "services.details.classic.title": "Наращивание ресниц",
+  "services.details.classic.description": "Используется обычный клей",
+  "services.details.classic.extra": "Любой объем / эффект / изгиб",
+
+  "services.details.led.title": "LED наращивание ресниц",
+  "services.details.led.description": "Нано-клей нового поколения",
+  "services.details.led.extra": "Любой объем / эффект / изгиб",
+
+  "services.details.removal.title": "Снятие ресниц",
+  "services.details.removal.description": "Без последующего наращивания",
+
+  "services.details.colored.title": "Цветные ресницы",
+
+  "services.details.brow_architecture.title": "Архитектура бровей",
+  "services.details.brow_architecture.description": "Подбор формы под лицо",
+
+  "services.details.brow_correction.title": "Коррекция бровей",
+  "services.details.brow_correction.description": "Воском или пинцетом",
+
+  "services.details.brow_coloring.title": "Окрашивание бровей",
+  "services.details.brow_coloring.description": "Хна или краска",
+
+  "services.details.brow_lamination.title": "Укладка бровей",
+  "services.details.brow_lamination.description": "Эффект уложенных бровей",
+
+  "services.details.brow_muslim.title": "Мусульманская коррекция",
+  "services.details.brow_muslim.description": "Осветление волосков",
+
+  "services.details.brow_set.title": "Сет бровей",
+  "services.details.brow_set.description": "Полный комплекс",
+  "services.details.brow_set.extra": "Выгоднее чем отдельно",
+
+  "common.change": "Изменить",
+
+  "booking.level": "Уровень",
+  "booking.vip": "VIP",
+
+
+  "contacts.phone.value": "+998 93 129 99 55",
+  "contacts.instagram.value": "@karolinabeautyroom",
+  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom"
 }

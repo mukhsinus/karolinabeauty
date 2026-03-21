@@ -1,4 +1,5 @@
 // src/components/booking/BookingSummary.tsx
+
 interface Props {
   booking: any
   selectedService: any
@@ -26,16 +27,23 @@ export default function BookingSummary({
   t,
   branchNamesMap
 }: Props) {
+
   const currency = selectedService?.category === "hair"
     ? "USD"
     : t("services.currency")
-  const rawLevel = selectedPrice?.level || booking?.service?.split("_")[1] || ""
+
+  const rawLevel =
+    selectedPrice?.level ||
+    booking?.service?.split("_")[1] ||
+    ""
+
   const levelLabelMap: Record<string, string> = {
-    master: "Мастер",
-    top: "Топ мастер",
-    premium: "Премиум",
-    promo: "Промо"
+    master: t("services.basic_master"),
+    top: t("services.top_master_regina"),
+    premium: t("services.premium_master_karolina"),
+    promo: t("services.promo")
   }
+
   const selectedLevelLabel = levelLabelMap[rawLevel] || rawLevel
 
   return (
@@ -77,7 +85,7 @@ export default function BookingSummary({
         {selectedService && selectedLevelLabel && (
           <div>
             <div className="text-muted-foreground">
-              Уровень
+              {t("booking.level")}
             </div>
             <div className="font-medium">
               {selectedLevelLabel}
@@ -125,7 +133,7 @@ export default function BookingSummary({
 
               {isVipSelected && (
                 <span className="text-xs text-primary ml-2">
-                  VIP
+                  {t("booking.vip")}
                 </span>
               )}
 

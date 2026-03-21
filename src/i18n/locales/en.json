@@ -41,7 +41,7 @@
   "home.cta.title": "Ready for the perfect look?",
   "home.cta.subtitle": "Book your beauty treatment now",
 
-  "branches.friendship": "Friendship of Peoples metro",
+  "branches.friendship": "Halqlar dostligi metro",
   "branches.friendship.address": "Furkat street 15/1",
   "branches.friendship.landmark": "Near Usmanov Dental Clinic",
 
@@ -49,8 +49,8 @@
   "branches.yunusabad.address": "House 1",
   "branches.yunusabad.landmark": "Near Korzinka Petushok",
 
-  "booking.weekdays": "Weekdays: 09:00 — 21:00",
-  "booking.weekends": "Weekends: 10:00 — 22:00",
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP by extra appointment",
 
   "contacts.title": "Contact us",
   "contacts.phone": "Call",
@@ -179,5 +179,73 @@
 
     "contacts.address": "Address",
     "contacts.instagram": "Instagram",
-    "contacts.working_hours": "Working hours"
+    "contacts.working_hours": "Working hours",
+
+    "footer.description": "Premium beauty salon in Tashkent. Manicure, lashes, brows and depilation by professional masters.",
+    "footer.navigation": "Navigation",
+    "footer.contacts": "Contacts",
+    "footer.developed": "Developed with care",
+    "contacts.telegram": "Telegram",
+
+    "hero.alt": "Karolina Beauty Room beauty studio",
+
+    "promo.badge": "Promo",
+    "promo.default": "Special offer",
+    "promo.lamination_bonus": "With vitamins and tinting",
+    "promo.cta": "Book now",
+
+    "home.locations.map_alt": "Salon location map",
+
+    "services.top_master": "Top master",
+    "services.premium_master": "Premium master",
+
+    "common.loading_services": "Loading services...",
+    "common.error_loading": "Loading error",
+    "common.no_services": "No services available",
+    "common.details": "Details",
+
+
+    "common.loading": "Loading...",
+    "common.close": "Close",
+
+    "services.details.classic.title": "Eyelash Extensions",
+    "services.details.classic.description": "Standard adhesive is used",
+    "services.details.classic.extra": "Any volume / effect / curl",
+
+    "services.details.led.title": "LED Lash Extensions",
+    "services.details.led.description": "Next-generation nano adhesive",
+    "services.details.led.extra": "Any volume / effect / curl",
+
+    "services.details.removal.title": "Lash Removal",
+    "services.details.removal.description": "Without re-application",
+
+    "services.details.colored.title": "Colored Lashes",
+
+    "services.details.brow_architecture.title": "Brow Architecture",
+    "services.details.brow_architecture.description": "Customized to face shape",
+
+    "services.details.brow_correction.title": "Brow Correction",
+    "services.details.brow_correction.description": "Wax or tweezers",
+
+    "services.details.brow_coloring.title": "Brow Coloring",
+    "services.details.brow_coloring.description": "Henna or dye",
+
+    "services.details.brow_lamination.title": "Brow Lamination",
+    "services.details.brow_lamination.description": "Sleek, styled brow effect",
+
+    "services.details.brow_muslim.title": "Muslim Brow Treatment",
+    "services.details.brow_muslim.description": "Lightening unwanted hair",
+
+    "services.details.brow_set.title": "Full Brow Set",
+    "services.details.brow_set.description": "Complete brow treatment",
+    "services.details.brow_set.extra": "Better value than individual services",
+
+    "common.change": "Change",
+
+    "booking.level": "Level",
+    "booking.vip": "VIP",
+
+    "contacts.phone.value": "+998 93 129 99 55",
+    "contacts.instagram.value": "@karolinabeautyroom",
+    "contacts.instagram.url": "https://instagram.com/karolinabeautyroom"
 }

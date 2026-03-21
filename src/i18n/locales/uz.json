@@ -41,7 +41,7 @@
   "home.cta.title": "Mukammal obrazga tayyormisiz?",
   "home.cta.subtitle": "Hozir yoziling",
 
-  "branches.friendship": "Do'stlik metro",
+  "branches.friendship": "Halqlar do'stligi metro",
   "branches.friendship.address": "Furqat ko'chasi 15/1",
   "branches.friendship.landmark": "Usmanov Dental yonida",
 
@@ -49,8 +49,8 @@
   "branches.yunusabad.address": "1-uy",
   "branches.yunusabad.landmark": "Korzinka Petushok yonida",
 
-  "booking.weekdays": "Dushanba–Juma: 09:00 — 21:00",
-  "booking.weekends": "Shanba–Yakshanba: 10:00 — 22:00",
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP alohida yozilish",
 
   "contacts.phone": "Qo'ng'iroq",
 
@@ -178,5 +178,74 @@
 
   "contacts.address": "Manzil",
   "contacts.instagram": "Instagram",
-  "contacts.working_hours": "Ish vaqti"
+  "contacts.working_hours": "Ish vaqti",
+
+  "footer.description": "Toshkentdagi premium go‘zallik saloni. Manikyur, kiprik, qosh va depilyatsiya professional ustalar tomonidan.",
+  "footer.navigation": "Navigatsiya",
+  "footer.contacts": "Kontaktlar",
+  "footer.developed": "Mehr bilan ishlab chiqilgan",
+  "contacts.telegram": "Telegram",
+
+  "hero.alt": "Karolina Beauty Room go‘zallik studiyasi",
+
+  "promo.badge": "Aksiya",
+  "promo.default": "Maxsus taklif",
+  "promo.lamination_bonus": "Vitaminlar va bo‘yash bilan",
+  "promo.cta": "Yozilish",
+
+  "home.locations.map_alt": "Salon joylashuvi xaritasi",
+
+  "services.top_master": "Top usta",
+  "services.premium_master": "Premium usta",
+
+  "common.loading_services": "Xizmatlar yuklanmoqda...",
+  "common.error_loading": "Yuklashda xatolik",
+  "common.no_services": "Xizmatlar mavjud emas",
+  "common.details": "Batafsil",
+
+
+  "common.loading": "Yuklanmoqda...",
+  "common.close": "Yopish",
+
+  "services.details.classic.title": "Kipriklarni uzaytirish",
+  "services.details.classic.description": "Oddiy kley ishlatiladi",
+  "services.details.classic.extra": "Har qanday hajm / effekt / egilish",
+
+  "services.details.led.title": "LED kiprik uzaytirish",
+  "services.details.led.description": "Yangi avlod nano-kley",
+  "services.details.led.extra": "Har qanday hajm / effekt / egilish",
+
+  "services.details.removal.title": "Kipriklarni olib tashlash",
+  "services.details.removal.description": "Qayta uzaytirishsiz",
+
+  "services.details.colored.title": "Rangli kipriklar",
+
+  "services.details.brow_architecture.title": "Qosh arxitekturasi",
+  "services.details.brow_architecture.description": "Yuz shakliga moslash",
+
+  "services.details.brow_correction.title": "Qosh korreksiyasi",
+  "services.details.brow_correction.description": "Vosk yoki pinset bilan",
+
+  "services.details.brow_coloring.title": "Qosh bo‘yash",
+  "services.details.brow_coloring.description": "Xna yoki bo‘yoq",
+
+  "services.details.brow_lamination.title": "Qosh laminatsiyasi",
+  "services.details.brow_lamination.description": "Tartibli qosh effekti",
+
+  "services.details.brow_muslim.title": "Musulmoncha korreksiya",
+  "services.details.brow_muslim.description": "Keraksiz tuklarni ochartirish",
+
+  "services.details.brow_set.title": "To‘liq qosh seti",
+  "services.details.brow_set.description": "To‘liq kompleks xizmat",
+  "services.details.brow_set.extra": "Alohida xizmatlarga qaraganda foydaliroq",
+
+  "common.change": "O'zgartirish",
+
+  "booking.level": "Daraja",
+  "booking.vip": "VIP",
+
+
+  "contacts.phone.value": "+998 93 129 99 55",
+  "contacts.instagram.value": "@karolinabeautyroom",
+  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom"
 }

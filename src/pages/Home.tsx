@@ -7,16 +7,16 @@ import { useLanguage } from "@/i18n/LanguageContext"
 import { useBranches } from "@/hooks/useBranches"
 
 const Home = () => {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const { data: branches } = useBranches()
 
-  // Переименование филиалов
+  // 🌍 i18n-safe названия филиалов
   const branchNamesMap: Record<string, string> = {
-    "Чиланзар": "Филиал Дружба Народов",
-    "Юнусабад": "Филиал Юнусабад"
+    "Чиланзар": t("branches.friendship"),
+    "Юнусабад": t("branches.yunusabad"),
   }
 
-  // Координаты
+  // координаты
   const coordsMap: Record<string, { lat: number; lng: number }> = {
     "Метро Дружба Народов, Фурката 15/1": {
       lat: 41.303216,
@@ -28,16 +28,21 @@ const Home = () => {
     }
   }
 
-  // Фолбек координаты (если вдруг не найдется)
   const DEFAULT_COORDS = {
     lat: 41.311081,
     lng: 69.240562
   }
 
+  const formatPrice = (price: number) => {
+    if (!price) return "-"
+    return price.toLocaleString(
+      lang === "uz" ? "uz-UZ" : lang === "en" ? "en-US" : "ru-RU"
+    )
+  }
+
   const getStaticMap = (lat: number, lng: number) =>
     `https://static-maps.yandex.ru/1.x/?ll=${lng},${lat}&z=16&size=650,300&l=map&pt=${lng},${lat},pm2rdm`
 
-  // ✅ ТОЛЬКО GOOGLE MAPS (стабильно)
   const openRoute = (lat: number, lng: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
     window.location.href = url
@@ -51,6 +56,7 @@ const Home = () => {
       {/* POPULAR SERVICES */}
       <section className="py-20 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
+
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-display text-3xl md:text-5xl font-semibold mb-4">
               {t("home.popular.title")}
@@ -63,6 +69,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
 
+            {/* CARD 1 */}
             <div className="bg-card p-7 rounded-3xl border flex flex-col">
               <h3 className="font-display text-xl mb-3">
                 {t("home.popular.lashes.title")}
@@ -71,13 +78,14 @@ const Home = () => {
                 {t("home.popular.lashes.desc")}
               </p>
               <div className="text-primary font-semibold text-lg mb-6">
-                200 000 {t("services.currency")}
+                {formatPrice(200000)} {t("services.currency")}
               </div>
               <a href="/booking" className="bg-primary text-white px-6 py-3 rounded-full text-center">
                 {t("services.book")}
               </a>
             </div>
 
+            {/* CARD 2 */}
             <div className="bg-card p-7 rounded-3xl border flex flex-col">
               <h3 className="font-display text-xl mb-3">
                 {t("home.popular.lamination.title")}
@@ -86,13 +94,14 @@ const Home = () => {
                 {t("home.popular.lamination.desc")}
               </p>
               <div className="text-primary font-semibold text-lg mb-6">
-                100 000 {t("services.currency")}
+                {formatPrice(100000)} {t("services.currency")}
               </div>
               <a href="/booking" className="bg-primary text-white px-6 py-3 rounded-full text-center">
                 {t("services.book")}
               </a>
             </div>
 
+            {/* CARD 3 */}
             <div className="bg-card p-7 rounded-3xl border flex flex-col">
               <h3 className="font-display text-xl mb-3">
                 {t("home.popular.manicure.title")}
@@ -101,7 +110,7 @@ const Home = () => {
                 {t("home.popular.manicure.desc")}
               </p>
               <div className="text-primary font-semibold text-lg mb-6">
-                170 000 {t("services.currency")}
+                {formatPrice(170000)} {t("services.currency")}
               </div>
               <a href="/booking" className="bg-primary text-white px-6 py-3 rounded-full text-center">
                 {t("services.book")}
@@ -139,7 +148,7 @@ const Home = () => {
                   >
                     <img
                       src={getStaticMap(coords.lat, coords.lng)}
-                      alt={branch.name}
+                      alt={t("home.locations.map_alt")}
                       className="w-full h-[240px] md:h-[320px] object-cover"
                     />
                   </div>
@@ -157,7 +166,7 @@ const Home = () => {
                       onClick={() => openRoute(coords.lat, coords.lng)}
                       className="w-full bg-primary text-white py-3 rounded-full text-sm mb-3"
                     >
-                      Проложить маршрут
+                      {t("home.locations.route")}
                     </button>
 
                     <a

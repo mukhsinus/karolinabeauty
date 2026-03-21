@@ -1,5 +1,5 @@
 // src/components/booking/BookingSection.tsx
-// src/components/booking/BookingSection.tsx
+
 import { useState } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { createBooking } from "@/lib/api"
@@ -22,8 +22,8 @@ export default function BookingSection() {
   const [showHint, setShowHint] = useState(true)
 
   const branchNamesMap: Record<string, string> = {
-    "Чиланзар": "Филиал Дружба Народов",
-    "Юнусабад": "Филиал Юнусабад"
+    "Чиланзар": t("branches.friendship"),
+    "Юнусабад": t("branches.yunusabad")
   }
 
   const {
@@ -155,13 +155,13 @@ export default function BookingSection() {
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {selectedPrice?.level === "master"
-                        ? "Мастер"
+                        ? t("services.basic_master")
                         : selectedPrice?.level === "top"
-                          ? "Топ мастер"
+                          ? t("services.top_master_regina")
                           : selectedPrice?.level === "premium"
-                            ? "Премиум"
+                            ? t("services.premium_master_karolina")
                             : selectedPrice?.level === "promo"
-                              ? "Промо"
+                              ? t("services.promo")
                               : ""}
                     </div>
                   </div>
@@ -170,7 +170,7 @@ export default function BookingSection() {
                     onClick={resetService}
                     className="text-sm text-primary"
                   >
-                    Изменить
+                    {t("common.change")}
                   </button>
                 </div>
               )}
@@ -196,7 +196,7 @@ export default function BookingSection() {
                       onClick={resetDate}
                       className="text-sm text-primary"
                     >
-                      Изменить
+                      {t("common.change")}
                     </button>
                   </div>
                 )
@@ -223,7 +223,7 @@ export default function BookingSection() {
                       onClick={resetTime}
                       className="text-sm text-primary"
                     >
-                      Изменить
+                      {t("common.change")}
                     </button>
                   </div>
                 )

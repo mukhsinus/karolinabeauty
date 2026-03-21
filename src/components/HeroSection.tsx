@@ -39,7 +39,7 @@ const HeroSection = () => {
           {/* desktop */}
           <img
             src={heroImage}
-            alt="Karolina Beauty Studio"
+            alt={t("hero.alt")}
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
           />
@@ -61,24 +61,18 @@ const HeroSection = () => {
         <div className="max-w-7xl mx-auto px-6">
 
           <motion.div
-
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-
             transition={{ duration: 0.9, ease: "easeOut" }}
-
             className="max-w-2xl text-center md:text-left mx-auto md:mx-0"
           >
 
             {/* TITLE */}
 
             <motion.h1
-
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-
               transition={{ delay: 0.2, duration: 0.8 }}
-
               className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-6"
             >
               {t("hero.title")}
@@ -88,12 +82,9 @@ const HeroSection = () => {
             {/* SUBTITLE */}
 
             <motion.p
-
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-
               transition={{ delay: 0.35, duration: 0.8 }}
-
               className="text-white/80 text-lg md:text-xl font-light mb-10 max-w-xl"
             >
               {t("hero.tagline")}
@@ -103,21 +94,17 @@ const HeroSection = () => {
             {/* BUTTONS */}
 
             <motion.div
-
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-
               transition={{ delay: 0.5, duration: 0.8 }}
-
               className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
             >
 
               {/* PRIMARY BUTTON */}
 
               <button
-
                 onClick={goToBooking}
-
+                aria-label={t("hero.book")}
                 className="bg-primary text-white px-10 py-4 rounded-full text-base font-medium transition-all duration-300 hover:shadow-xl hover:scale-[1.03]"
               >
                 {t("hero.book")}
@@ -127,9 +114,8 @@ const HeroSection = () => {
               {/* SECONDARY BUTTON */}
 
               <button
-
                 onClick={goToServices}
-
+                aria-label={t("hero.services")}
                 className="bg-white/10 backdrop-blur-sm border border-white/30 text-white px-10 py-4 rounded-full text-base font-medium transition-all hover:bg-white/20"
               >
                 {t("hero.services")}

@@ -5,21 +5,21 @@ import { useLanguage } from "@/i18n/LanguageContext"
 import { motion, AnimatePresence } from "framer-motion"
 import { useLocation } from "react-router-dom"
 
-const formatPrice = (price: number) => {
-  if (typeof price !== "number" || isNaN(price)) return "-";
-  return price.toLocaleString("ru-RU");
-}
-
 const HIDE_DURATION = 1000 * 60 * 60
 const SHOW_DELAY = 5000
 
 export default function FloatingPromo() {
 
   const { data: services, isLoading, error } = useServices()
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const location = useLocation()
 
   const [visible, setVisible] = useState(false)
+
+  const formatPrice = (price: number) => {
+    if (typeof price !== "number" || isNaN(price)) return "-"
+    return price.toLocaleString(lang === "uz" ? "uz-UZ" : lang === "en" ? "en-US" : "ru-RU")
+  }
 
   const allServices = services?.flatMap(c =>
     c.groups.flatMap(g => g.services)
@@ -74,12 +74,13 @@ export default function FloatingPromo() {
           <div className="flex justify-between items-start mb-3">
 
             <span className="text-[11px] font-semibold text-primary tracking-[0.12em] uppercase">
-              акция
+              {t("promo.badge")}
             </span>
 
             <button
               onClick={() => setVisible(false)}
               className="text-xs text-muted-foreground hover:text-black transition"
+              aria-label="close promo"
             >
               ✕
             </button>
@@ -92,8 +93,8 @@ export default function FloatingPromo() {
 
           <div className="text-xs text-muted-foreground mb-4 leading-relaxed">
             {promo.nameKey.includes("lamination")
-              ? "С витаминами и окрашиванием"
-              : "Специальное предложение"}
+              ? t("promo.lamination_bonus")
+              : t("promo.default")}
           </div>
 
           <div className="flex items-center justify-between">
@@ -110,7 +111,7 @@ export default function FloatingPromo() {
               }}
               className="text-xs font-medium text-primary hover:opacity-70 transition"
             >
-              Записаться →
+              {t("promo.cta")} →
             </a>
 
           </div>

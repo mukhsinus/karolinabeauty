@@ -1,4 +1,5 @@
 // src/components/booking/DateSelector.tsx
+
 import { Calendar } from "lucide-react"
 
 interface Props {
@@ -63,7 +64,7 @@ export default function DateSelector({
             onClick={resetDate}
             className="text-sm text-primary"
           >
-            Изменить
+            {t("common.change")}
           </button>
 
         </div>

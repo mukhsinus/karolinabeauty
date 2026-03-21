@@ -14,58 +14,59 @@ const getCurrencyByService = (service: any, t: (key: string) => string) => {
   return service?.category === "hair" ? "USD" : t("services.currency")
 }
 
-// 🔥 ОБНОВЛЕННЫЕ ДЕТАЛИ УСЛУГ
+// ✅ ПЕРЕВЕДЕНО НА i18n
 const serviceDetails: Record<string, any> = {
 
-  // РЕСНИЦЫ
   "services.classic_extension": {
-    title: "Наращивание ресниц",
-    description: "(используется обычный клей)",
-    extra: "любой объем / эффект / изгиб"
-  },
-  "services.led_extension": {
-    title: "‼️ НОВИНКА\nНаращивание ресниц в LED технике",
-    description: "(нано-клей, последнее слово в lash-индустрии)",
-    extra: "любой объем / эффект / изгиб"
-  },
-  "services.lash_removal": {
-    title: "Снятие ресниц",
-    description: "без последующего наращивания"
-  },
-  "services.colored_lashes": {
-    title: "Цветные ресницы"
+    title: "services.details.classic.title",
+    description: "services.details.classic.description",
+    extra: "services.details.classic.extra"
   },
 
-  // 🔥 БРОВИ (НОВОЕ)
+  "services.led_extension": {
+    title: "services.details.led.title",
+    description: "services.details.led.description",
+    extra: "services.details.led.extra"
+  },
+
+  "services.lash_removal": {
+    title: "services.details.removal.title",
+    description: "services.details.removal.description"
+  },
+
+  "services.colored_lashes": {
+    title: "services.details.colored.title"
+  },
+
   "services.brow_architecture": {
-    title: "Архитектура бровей",
-    description: "подбор формы с учетом типа лица"
+    title: "services.details.brow_architecture.title",
+    description: "services.details.brow_architecture.description"
   },
 
   "services.brow_correction": {
-    title: "Коррекция бровей",
-    description: "воском / пинцетом"
+    title: "services.details.brow_correction.title",
+    description: "services.details.brow_correction.description"
   },
 
   "services.brow_coloring": {
-    title: "Окрашивание бровей",
-    description: "на выбор: хна или краска"
+    title: "services.details.brow_coloring.title",
+    description: "services.details.brow_coloring.description"
   },
 
   "services.brow_lamination": {
-    title: "Долговременная укладка бровей",
-    description: "эффект «уложенных бровей»"
+    title: "services.details.brow_lamination.title",
+    description: "services.details.brow_lamination.description"
   },
 
   "services.brow_muslim": {
-    title: "Мусульманская коррекция",
-    description: "осветление нежелательных волосков"
+    title: "services.details.brow_muslim.title",
+    description: "services.details.brow_muslim.description"
   },
 
   "services.brow_set": {
-    title: "СЕТ ВСЕ ВКЛЮЧЕНО",
-    description: "архитектура + коррекция + окрашивание + укладка",
-    extra: "выгоднее, чем по отдельности"
+    title: "services.details.brow_set.title",
+    description: "services.details.brow_set.description",
+    extra: "services.details.brow_set.extra"
   }
 }
 
@@ -152,9 +153,13 @@ const ServicesSection = () => {
 
           <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap lg:justify-center pb-2 mb-20 whitespace-nowrap no-scrollbar">
             {isLoading ? (
-              <div className="text-sm text-muted-foreground">Загрузка...</div>
+              <div className="text-sm text-muted-foreground">
+                {t("common.loading")}
+              </div>
             ) : error ? (
-              <div className="text-sm text-red-500">Ошибка загрузки</div>
+              <div className="text-sm text-red-500">
+                {t("common.error_loading")}
+              </div>
             ) : (
               services?.map((cat) => (
                 <button
@@ -238,7 +243,7 @@ const ServicesSection = () => {
                                 onClick={() => setModalService(service)}
                                 className="text-xs text-muted-foreground underline"
                               >
-                                Подробнее
+                                {t("common.details")}
                               </button>
 
                               <a
@@ -292,18 +297,18 @@ const ServicesSection = () => {
                   <div className="space-y-4">
 
                     <h3 className="text-xl font-display whitespace-pre-line">
-                      {details.title || t(modalService.nameKey)}
+                      {details.title ? t(details.title) : t(modalService.nameKey)}
                     </h3>
 
                     {details.description && (
                       <p className="text-sm text-muted-foreground">
-                        {details.description}
+                        {t(details.description)}
                       </p>
                     )}
 
                     {details.extra && (
                       <p className="text-sm">
-                        {details.extra}
+                        {t(details.extra)}
                       </p>
                     )}
 
@@ -317,14 +322,14 @@ const ServicesSection = () => {
                         href="/booking"
                         className="flex-1 text-center bg-primary text-white py-3 rounded-full"
                       >
-                        Записаться
+                        {t("services.book")}
                       </a>
 
                       <button
                         onClick={() => setModalService(null)}
                         className="px-4 py-3 border rounded-full"
                       >
-                        Закрыть
+                        {t("common.close")}
                       </button>
 
                     </div>

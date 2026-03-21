@@ -1,4 +1,5 @@
 // src/components/ContactsSection.tsx
+
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Clock, Instagram } from "lucide-react";
@@ -10,31 +11,43 @@ const ContactsSection = () => {
 
     {
       icon: <MapPin size={20} />,
-      label: "Филиал Дружба Народов",
-      value: `Метро Дружба Народов
-  Фурката 15/1`,
+      label: t("branches.friendship"),
+      value: `${t("branches.friendship")}\n${t("branches.friendship.address")}`,
       href: "https://maps.google.com/?q=Furkat+15/1+Tashkent"
     },
 
     {
       icon: <MapPin size={20} />,
-      label: "Филиал Юнусабад",
-      value: `Юнусабад 14 квартал
-  дом 1`,
+      label: t("branches.yunusabad"),
+      value: `${t("branches.yunusabad")}\n${t("branches.yunusabad.address")}`,
       href: "https://maps.google.com/?q=Yunusabad+14+kvartal+1+dom"
     },
 
-    { icon: <Phone size={20} />, label: t("contacts.phone"), value: "+998 90 123 45 67" },
+    {
+      icon: <Phone size={20} />,
+      label: t("contacts.phone"),
+      value: t("contacts.phone.value")
+    },
 
-    { icon: <Instagram size={20} />, label: t("contacts.instagram"), value: "@karolinabeautyroom", href: "https://instagram.com/karolinabeautyroom" },
+    {
+      icon: <Instagram size={20} />,
+      label: t("contacts.instagram"),
+      value: t("contacts.instagram.value"),
+      href: t("contacts.instagram.url")
+    },
 
-    { icon: <Clock size={20} />, label: t("contacts.working_hours"), value: `${t("booking.weekdays")}\n${t("booking.weekends")}` },
+    {
+      icon: <Clock size={20} />,
+      label: t("contacts.working_hours"),
+      value: `${t("booking.weekdays")}\n${t("booking.weekends")}`
+    },
 
   ];
 
   return (
     <section id="contacts" className="py-24">
       <div className="container mx-auto px-4">
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +60,9 @@ const ContactsSection = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+
           {items.map((item, i) => (
+
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -56,27 +71,36 @@ const ContactsSection = () => {
               transition={{ delay: i * 0.1 }}
               className="bg-card rounded-2xl p-8 shadow-card text-center transition hover:-translate-y-1 hover:shadow-xl"
             >
+
               <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
                 {item.icon}
               </div>
+
               <h4 className="font-display text-sm font-semibold text-foreground mb-2">
                 {item.label}
               </h4>
+
               {item.href ? (
                 <a
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-primary hover:underline whitespace-pre-line"
                 >
                   {item.value}
                 </a>
               ) : (
-                <p className="text-sm text-muted-foreground whitespace-pre-line">{item.value}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                  {item.value}
+                </p>
               )}
+
             </motion.div>
+
           ))}
+
         </div>
+
       </div>
     </section>
   );
