@@ -2,8 +2,8 @@
 import { useLanguage } from "@/i18n/LanguageContext"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import heroImage from "@/assets/hero-beauty.png"
-import heroImgMob from "@/assets/hero-mob.png"
+import heroImage from "@/assets/hero-beauty.webp"
+import heroImgMob from "@/assets/hero-mob.webp"
 
 const HeroSection = () => {
 
