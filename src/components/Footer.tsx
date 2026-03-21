@@ -18,7 +18,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <h3 className="font-display text-2xl font-semibold text-foreground mb-4">
-              Karolina Beauty
+              Karolina Beauty Room
             </h3>
 
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
@@ -128,7 +128,7 @@ const Footer = () => {
         <div className="md:hidden">
 
           <h3 className="font-display text-xl font-semibold text-foreground mb-6">
-            Karolina Beauty
+            Karolina Beauty Room
           </h3>
 
           <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
