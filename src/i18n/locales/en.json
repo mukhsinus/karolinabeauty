@@ -247,5 +247,10 @@
 
     "contacts.phone.value": "+998 93 129 99 55",
     "contacts.instagram.value": "@karolinabeautyroom",
-    "contacts.instagram.url": "https://instagram.com/karolinabeautyroom"
+    "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
+
+    "footer.contacts.email": "Email",
+    "footer.contacts.phone": "Phone",
+    "footer.contacts.telegram": "Telegram",
+    "footer.contacts.instagram": "Instagram"
 }

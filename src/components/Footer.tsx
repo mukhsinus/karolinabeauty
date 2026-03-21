@@ -18,111 +18,109 @@ const Footer = () => {
           <div className="hidden md:block h-px bg-gradient-to-r from-transparent via-border to-transparent mb-10" />
 
           {/* DESKTOP */}
-          <div className="hidden md:grid md:grid-cols-3 gap-16">
+          <div className="hidden md:grid md:grid-cols-[1.2fr_0.8fr_1fr] gap-20 items-start">
 
             {/* BRAND */}
-            <div className="max-w-sm">
+            <div className="max-w-sm flex flex-col justify-between h-full">
 
-              <h3 className="font-display text-3xl leading-tight tracking-tight mb-6">
-                Karolina Beauty Room
-              </h3>
+              <div>
+                <h3 className="font-display text-3xl leading-tight tracking-tight mb-6">
+                  Karolina Beauty Room
+                </h3>
 
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t("footer.description")}
-              </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {t("footer.description")}
+                </p>
+              </div>
 
             </div>
 
             {/* NAV */}
-            <div>
+            <div className="flex flex-col justify-between h-full">
 
-              <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
-                {t("footer.navigation")}
-              </h4>
+              <div>
+                <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
+                  {t("footer.navigation")}
+                </h4>
 
-              <div className="flex flex-col gap-4 text-sm">
+                <div className="flex flex-col gap-4 text-sm">
 
-                <Link to="/" className="hover:text-primary transition">
-                  {t("nav.home")}
-                </Link>
+                  <Link to="/" className="hover:text-primary transition">
+                    {t("nav.home")}
+                  </Link>
 
-                <Link to="/services" className="hover:text-primary transition">
-                  {t("nav.services")}
-                </Link>
+                  <Link to="/services" className="hover:text-primary transition">
+                    {t("nav.services")}
+                  </Link>
 
-                <Link to="/booking" className="hover:text-primary transition">
-                  {t("nav.booking")}
-                </Link>
+                  <Link to="/booking" className="hover:text-primary transition">
+                    {t("nav.booking")}
+                  </Link>
 
-                <Link to="/contacts" className="hover:text-primary transition">
-                  {t("nav.contacts")}
-                </Link>
+                  <Link to="/contacts" className="hover:text-primary transition">
+                    {t("nav.contacts")}
+                  </Link>
 
+                </div>
               </div>
 
             </div>
 
             {/* CONTACTS */}
-            <div>
+            <div className="flex flex-col justify-between h-full">
 
-              <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
-                {t("footer.contacts")}
-              </h4>
+              <div>
+                <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
+                  {t("footer.contacts")}
+                </h4>
 
-              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-5 text-sm">
 
-                <a
-                  href="tel:+998931299955"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
-                >
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
-                    <Phone size={14} />
-                  </div>
-                  <span className="text-sm group-hover:text-primary transition">
-                    +998 93 129 99 55
-                  </span>
-                </a>
+                  <a
+                    href="tel:+998931299955"
+                    className="flex items-center gap-3 group"
+                  >
+                    <Phone size={16} className="opacity-60 group-hover:opacity-100 transition" />
+                    <span className="group-hover:text-primary transition">
+                      {t("footer.contacts.phone")}
+                    </span>
+                  </a>
 
-                <a
-                  href="mailto:info@karolinabeauty.uz"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
-                >
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
-                    <Mail size={14} />
-                  </div>
-                  <span className="text-sm group-hover:text-primary transition">
-                    info@karolina.uz
-                  </span>
-                </a>
+                  <a
+                    href="mailto:info@karolinabeauty.uz"
+                    className="flex items-center gap-3 group"
+                  >
+                    <Mail size={16} className="opacity-60 group-hover:opacity-100 transition" />
+                    <span className="group-hover:text-primary transition">
+                      {t("footer.contacts.email")}
+                    </span>
+                  </a>
 
-                <a
-                  href="https://t.me/radionkhusainov"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
-                >
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
-                    <Send size={14} />
-                  </div>
-                  <span className="text-sm group-hover:text-primary transition">
-                    {t("contacts.telegram")}
-                  </span>
-                </a>
+                  <a
+                    href="https://t.me/radionkhusainov"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 group"
+                  >
+                    <Send size={16} className="opacity-60 group-hover:opacity-100 transition" />
+                    <span className="group-hover:text-primary transition">
+                      {t("footer.contacts.telegram")}
+                    </span>
+                  </a>
 
-                <a
-                  href="https://instagram.com/karolinabeautyroom"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full bg-secondary/40 hover:bg-primary/10 transition group"
-                >
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-background border border-border">
-                    <Instagram size={14} />
-                  </div>
-                  <span className="text-sm group-hover:text-primary transition">
-                    {t("contacts.instagram")}
-                  </span>
-                </a>
+                  <a
+                    href="https://instagram.com/karolinabeautyroom"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 group"
+                  >
+                    <Instagram size={16} className="opacity-60 group-hover:opacity-100 transition" />
+                    <span className="group-hover:text-primary transition">
+                      {t("footer.contacts.instagram")}
+                    </span>
+                  </a>
 
+                </div>
               </div>
 
             </div>

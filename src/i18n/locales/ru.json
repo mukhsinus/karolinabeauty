@@ -186,7 +186,7 @@
   "footer.navigation": "Навигация",
   "footer.contacts": "Контакты",
   "footer.developed": "Разработано с заботой",
-  "contacts.telegram": "Telegram",
+  "contacts.telegram": "Телеграм",
 
   "hero.alt": "Студия красоты Karolina Beauty Room",
 
@@ -249,5 +249,10 @@
 
   "contacts.phone.value": "+998 93 129 99 55",
   "contacts.instagram.value": "@karolinabeautyroom",
-  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom"
+  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
+
+  "footer.contacts.email": "Почта",
+  "footer.contacts.phone": "Телефон",
+  "footer.contacts.telegram": "Телеграм",
+  "footer.contacts.instagram": "Инстаграм"
 }
