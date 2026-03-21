@@ -62,11 +62,11 @@ const Navbar = () => {
 
         <NavLink
           to="/"
-          className={`font-display text-xl font-semibold tracking-wide transition-colors ${
+          className={`font-display text-lg md:text-xl font-semibold tracking-wide transition-colors ${
             isHeroTop ? "text-white" : "text-foreground"
           }`}
         >
-          Karolina Beauty Studio
+          Karolina Beauty Room
         </NavLink>
 
 
@@ -101,9 +101,9 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
 
-          {/* LANGUAGE SWITCHER */}
+          {/* LANGUAGE SWITCHER — ТЕПЕРЬ ВИДЕН ВЕЗДЕ */}
 
-          <div className="hidden md:flex items-center gap-1 bg-secondary/70 backdrop-blur-sm rounded-full px-1 py-0.5">
+          <div className="flex items-center gap-1 px-1 py-0.5">
 
             {langs.map((l) => (
 
@@ -113,6 +113,8 @@ const Navbar = () => {
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                   lang === l.code
                     ? "bg-primary text-primary-foreground"
+                    : isHeroTop
+                    ? "text-white/80 hover:text-white"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -170,7 +172,7 @@ const Navbar = () => {
           </div>
 
 
-          {/* LANGUAGE MOBILE */}
+          {/* LANGUAGE MOBILE (ОСТАВИЛ КАК У ТЕБЯ) */}
 
           <div className="flex items-center gap-1 mt-4 bg-secondary rounded-full px-1 py-0.5 w-fit">
 

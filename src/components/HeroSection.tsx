@@ -2,7 +2,8 @@
 import { useLanguage } from "@/i18n/LanguageContext"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
-import heroImage from "@/assets/hero-beauty.jpg"
+import heroImage from "@/assets/hero-beauty.png"
+import heroImgMob from "@/assets/hero-mob.png"
 
 const HeroSection = () => {
 
@@ -28,19 +29,26 @@ const HeroSection = () => {
 
       <div className="absolute inset-0">
 
-        <img
-          src={heroImage}
-          alt="Karolina Beauty Studio"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-        />
+        <picture>
+          {/* mobile */}
+          <source
+            srcSet={heroImgMob}
+            media="(max-width: 768px)"
+          />
+
+          {/* desktop */}
+          <img
+            src={heroImage}
+            alt="Karolina Beauty Studio"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+          />
+        </picture>
 
         {/* cinematic dark overlay */}
-
         <div className="absolute inset-0 bg-black/55" />
 
         {/* gradient depth */}
-
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
       </div>
