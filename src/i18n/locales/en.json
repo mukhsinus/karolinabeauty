@@ -252,5 +252,6 @@
     "footer.contacts.email": "Email",
     "footer.contacts.phone": "Phone",
     "footer.contacts.telegram": "Telegram",
-    "footer.contacts.instagram": "Instagram"
+    "footer.contacts.instagram": "Instagram",
+    "contacts.call": "Call"
 }

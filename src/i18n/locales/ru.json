@@ -254,5 +254,6 @@
   "footer.contacts.email": "Почта",
   "footer.contacts.phone": "Телефон",
   "footer.contacts.telegram": "Телеграм",
-  "footer.contacts.instagram": "Инстаграм"
+  "footer.contacts.instagram": "Инстаграм",
+  "contacts.call": "Позвонить"
 }

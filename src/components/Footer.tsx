@@ -2,7 +2,7 @@
 
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
-import { Phone, Mail, Send, Instagram } from "lucide-react";
+import { Phone, Mail, Send, Instagram, MapPin } from "lucide-react";
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -22,7 +22,6 @@ const Footer = () => {
 
             {/* BRAND */}
             <div className="max-w-sm flex flex-col justify-between h-full">
-
               <div>
                 <h3 className="font-display text-3xl leading-tight tracking-tight mb-6">
                   Karolina Beauty Room
@@ -32,19 +31,16 @@ const Footer = () => {
                   {t("footer.description")}
                 </p>
               </div>
-
             </div>
 
             {/* NAV */}
             <div className="flex flex-col justify-between h-full">
-
               <div>
                 <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
                   {t("footer.navigation")}
                 </h4>
 
                 <div className="flex flex-col gap-4 text-sm">
-
                   <Link to="/" className="hover:text-primary transition">
                     {t("nav.home")}
                   </Link>
@@ -60,22 +56,18 @@ const Footer = () => {
                   <Link to="/contacts" className="hover:text-primary transition">
                     {t("nav.contacts")}
                   </Link>
-
                 </div>
               </div>
-
             </div>
 
             {/* CONTACTS */}
             <div className="flex flex-col justify-between h-full">
-
               <div>
                 <h4 className="text-[11px] tracking-[0.2em] text-muted-foreground mb-6 uppercase">
                   {t("footer.contacts")}
                 </h4>
 
                 <div className="flex flex-col gap-5 text-sm">
-
                   <a
                     href="tel:+998931299955"
                     className="flex items-center gap-3 group"
@@ -119,10 +111,8 @@ const Footer = () => {
                       {t("footer.contacts.instagram")}
                     </span>
                   </a>
-
                 </div>
               </div>
-
             </div>
 
           </div>
@@ -135,39 +125,67 @@ const Footer = () => {
               Karolina Beauty Room
             </h3>
 
-            <p className="text-xs text-muted-foreground mb-8 max-w-xs">
+            <p className="text-xs text-muted-foreground mb-6 max-w-xs">
               {t("footer.description")}
             </p>
 
-            {/* PRIMARY ACTIONS */}
+            {/* LOCATIONS (COMPACT PREMIUM) */}
             <div className="w-full flex flex-col gap-3 mb-6">
 
-              <a
-                href="tel:+998931299955"
-                className="flex items-center justify-center gap-2 py-4 rounded-full bg-primary text-white font-medium text-sm active:scale-[0.98] transition"
-              >
-                <Phone size={16} />
-                {t("contacts.phone")}
-              </a>
+              {/* Дружба */}
+              <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3 bg-secondary/20">
+                <div className="flex items-center gap-2 text-left">
+                  <MapPin size={14} className="opacity-60" />
+                  <div className="text-xs">
+                    <div className="font-medium leading-none">
+                      Дружба
+                    </div>
+                    <div className="text-muted-foreground text-[11px]">
+                      +998 90 912 00 26
+                    </div>
+                  </div>
+                </div>
 
-              <a
-                href="mailto:info@karolinabeauty.uz"
-                className="flex items-center justify-center gap-2 py-4 rounded-full border border-border text-sm active:scale-[0.98] transition"
-              >
-                <Mail size={16} />
-                Email
-              </a>
+                <a
+                  href="tel:+998909120026"
+                  className="text-xs px-3 py-1.5 rounded-full bg-primary text-white active:scale-[0.96] transition"
+                >
+                  {t("contacts.call")}
+                </a>
+              </div>
+
+              {/* Юнусабад */}
+              <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3 bg-secondary/20">
+                <div className="flex items-center gap-2 text-left">
+                  <MapPin size={14} className="opacity-60" />
+                  <div className="text-xs">
+                    <div className="font-medium leading-none">
+                      Юнусабад
+                    </div>
+                    <div className="text-muted-foreground text-[11px]">
+                      +998 94 913 00 26
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href="tel:+998949130026"
+                  className="text-xs px-3 py-1.5 rounded-full bg-primary text-white active:scale-[0.96] transition"
+                >
+                  {t("contacts.call")}
+                </a>
+              </div>
 
             </div>
 
+
             {/* SOCIALS */}
             <div className="flex gap-3">
-
               <a
                 href="https://t.me/radionkhusainov"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
+                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
               >
                 <Send size={18} />
               </a>
@@ -176,9 +194,16 @@ const Footer = () => {
                 href="https://instagram.com/karolinabeautyroom"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
+                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
               >
                 <Instagram size={18} />
+              </a>
+
+              <a
+                href="mailto:info@karolinabeauty.uz"
+                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
+              >
+                <Mail size={18} />
               </a>
 
             </div>
@@ -191,7 +216,6 @@ const Footer = () => {
 
       {/* BOTTOM */}
       <div className="mt-8 border-t border-border">
-
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
 
           <a
@@ -213,7 +237,6 @@ const Footer = () => {
           </a>
 
         </div>
-
       </div>
 
     </footer>
