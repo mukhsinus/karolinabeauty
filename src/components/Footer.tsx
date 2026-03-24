@@ -3,9 +3,13 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Phone, Mail, Send, Instagram, MapPin } from "lucide-react";
+import { useState } from "react";
 
 const Footer = () => {
   const { t } = useLanguage();
+
+  // 🔥 state для modal
+  const [isPhoneOpen, setIsPhoneOpen] = useState(false);
 
   return (
     <footer className="relative mt-24">
@@ -68,15 +72,17 @@ const Footer = () => {
                 </h4>
 
                 <div className="flex flex-col gap-5 text-sm">
-                  <a
-                    href="tel:+998931299955"
-                    className="flex items-center gap-3 group"
+
+                  {/* 🔥 PHONE → теперь button */}
+                  <button
+                    onClick={() => setIsPhoneOpen(true)}
+                    className="flex items-center gap-3 group text-left"
                   >
                     <Phone size={16} className="opacity-60 group-hover:opacity-100 transition" />
                     <span className="group-hover:text-primary transition">
                       {t("footer.contacts.phone")}
                     </span>
-                  </a>
+                  </button>
 
                   <a
                     href="mailto:info@karolinabeauty.uz"
@@ -111,16 +117,16 @@ const Footer = () => {
                       {t("footer.contacts.instagram")}
                     </span>
                   </a>
+
                 </div>
               </div>
             </div>
 
           </div>
 
-          {/* MOBILE */}
+          {/* MOBILE (НЕ ТРОГАЕМ) */}
           <div className="md:hidden flex flex-col items-center text-center">
 
-            {/* BRAND */}
             <h3 className="font-display text-2xl font-semibold mb-2">
               Karolina Beauty Room
             </h3>
@@ -129,17 +135,13 @@ const Footer = () => {
               {t("footer.description")}
             </p>
 
-            {/* LOCATIONS (COMPACT PREMIUM) */}
             <div className="w-full flex flex-col gap-3 mb-6">
 
-              {/* Дружба */}
               <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3 bg-secondary/20">
                 <div className="flex items-center gap-2 text-left">
                   <MapPin size={14} className="opacity-60" />
                   <div className="text-xs">
-                    <div className="font-medium leading-none">
-                      Дружба
-                    </div>
+                    <div className="font-medium leading-none">Дружба</div>
                     <div className="text-muted-foreground text-[11px]">
                       +998 90 912 00 26
                     </div>
@@ -154,14 +156,11 @@ const Footer = () => {
                 </a>
               </div>
 
-              {/* Юнусабад */}
               <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3 bg-secondary/20">
                 <div className="flex items-center gap-2 text-left">
                   <MapPin size={14} className="opacity-60" />
                   <div className="text-xs">
-                    <div className="font-medium leading-none">
-                      Юнусабад
-                    </div>
+                    <div className="font-medium leading-none">Юнусабад</div>
                     <div className="text-muted-foreground text-[11px]">
                       +998 94 913 00 26
                     </div>
@@ -178,34 +177,18 @@ const Footer = () => {
 
             </div>
 
-
-            {/* SOCIALS */}
             <div className="flex gap-3">
-              <a
-                href="https://t.me/radionkhusainov"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
-              >
+              <a href="https://t.me/radionkhusainov" target="_blank" rel="noopener noreferrer" className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40">
                 <Send size={18} />
               </a>
 
-              <a
-                href="https://instagram.com/karolinabeautyroom"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
-              >
+              <a href="https://instagram.com/karolinabeautyroom" target="_blank" rel="noopener noreferrer" className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40">
                 <Instagram size={18} />
               </a>
 
-              <a
-                href="mailto:info@karolinabeauty.uz"
-                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40 active:scale-[0.95] transition"
-              >
+              <a href="mailto:info@karolinabeauty.uz" className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40">
                 <Mail size={18} />
               </a>
-
             </div>
 
           </div>
@@ -214,25 +197,70 @@ const Footer = () => {
 
       </div>
 
+      {/* 🔥 MODAL (ТОЛЬКО ДЕСКТОП) */}
+      {isPhoneOpen && (
+        <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center">
+
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setIsPhoneOpen(false)}
+          />
+
+          <div className="relative bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl">
+
+            <h3 className="font-display text-lg font-semibold text-center mb-6">
+              {t("contacts.phone")}
+            </h3>
+
+            <div className="flex flex-col gap-4">
+
+              <div className="flex items-center justify-between border border-border rounded-xl px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium">Дружба</div>
+                  <div className="text-xs text-muted-foreground">
+                    +998 90 912 00 26
+                  </div>
+                </div>
+
+                <a
+                  href="tel:+998909120026"
+                  className="text-xs px-3 py-1.5 rounded-full bg-primary text-white"
+                >
+                  {t("contacts.call")}
+                </a>
+              </div>
+
+              <div className="flex items-center justify-between border border-border rounded-xl px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium">Юнусабад</div>
+                  <div className="text-xs text-muted-foreground">
+                    +998 94 913 00 26
+                  </div>
+                </div>
+
+                <a
+                  href="tel:+998949130026"
+                  className="text-xs px-3 py-1.5 rounded-full bg-primary text-white"
+                >
+                  {t("contacts.call")}
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
       {/* BOTTOM */}
       <div className="mt-8 border-t border-border">
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
 
-          <a
-            href="https://vantalab.uz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-primary transition"
-          >
+          <a href="https://vantalab.uz" target="_blank" rel="noopener noreferrer">
             © {new Date().getFullYear()} by VantaLab. {t("footer.rights")}
           </a>
 
-          <a
-            href="https://vantalab.uz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="opacity-60 hover:opacity-100 hover:text-primary transition"
-          >
+          <a href="https://vantalab.uz" target="_blank" rel="noopener noreferrer">
             {t("footer.developed")}
           </a>
 
