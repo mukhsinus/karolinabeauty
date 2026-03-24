@@ -16,15 +16,15 @@ const Home = () => {
     "Юнусабад": t("branches.yunusabad"),
   }
 
-  // координаты
+  // 🔥 ТОЧНЫЕ координаты (проверены по Google Maps)
   const coordsMap: Record<string, { lat: number; lng: number }> = {
-    "Метро Дружба Народов, Фурката 15/1": {
-      lat: 41.303216,
-      lng: 69.242998
+    "фурката 15/1": {
+      lat: 41.3095113,
+      lng: 69.2432072
     },
-    "Юнусабад 14 квартал, дом 1": {
-      lat: 41.366981,
-      lng: 69.288563
+    "юнусабад 14 квартал": {
+      lat: 41.3731212,
+      lng: 69.2955703
     }
   }
 
@@ -41,7 +41,7 @@ const Home = () => {
   }
 
   const getStaticMap = (lat: number, lng: number) =>
-    `https://static-maps.yandex.ru/1.x/?ll=${lng},${lat}&z=16&size=650,300&l=map&pt=${lng},${lat},pm2rdm`
+    `https://static-maps.yandex.ru/1.x/?ll=${lng},${lat}&z=17&size=650,300&l=map&pt=${lng},${lat},pm2rdl`
 
   const openRoute = (lat: number, lng: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
@@ -134,7 +134,14 @@ const Home = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {branches?.map((branch) => {
-              const coords = coordsMap[branch.address] || DEFAULT_COORDS
+
+              // 🔥 НОРМАЛИЗАЦИЯ
+              const normalizedAddress = branch.address.toLowerCase()
+
+              const coords =
+                Object.entries(coordsMap).find(([key]) =>
+                  normalizedAddress.includes(key)
+                )?.[1] || DEFAULT_COORDS
 
               return (
                 <div
