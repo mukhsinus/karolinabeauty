@@ -253,5 +253,7 @@
   "footer.contacts.phone": "Telefon",
   "footer.contacts.telegram": "Telegram",
   "footer.contacts.instagram": "Instagram",
-  "contacts.call": "Qo'ng'iroq qilish"
+  "contacts.call": "Qo'ng'iroq qilish",
+
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" }
 }

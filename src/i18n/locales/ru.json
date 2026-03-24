@@ -255,5 +255,8 @@
   "footer.contacts.phone": "Телефон",
   "footer.contacts.telegram": "Телеграм",
   "footer.contacts.instagram": "Инстаграм",
-  "contacts.call": "Позвонить"
+  "contacts.call": "Позвонить",
+
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" }
+
 }

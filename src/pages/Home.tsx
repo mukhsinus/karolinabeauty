@@ -16,16 +16,22 @@ const Home = () => {
     "Юнусабад": t("branches.yunusabad"),
   }
 
-  // 🔥 ТОЧНЫЕ координаты (проверены по Google Maps)
-  const coordsMap: Record<string, { lat: number; lng: number }> = {
-    "фурката 15/1": {
+  // 📍 координаты
+  const coordsByName: Record<string, { lat: number; lng: number }> = {
+    "Чиланзар": {
       lat: 41.3095113,
       lng: 69.2432072
     },
-    "юнусабад 14 квартал": {
+    "Юнусабад": {
       lat: 41.3731212,
       lng: 69.2955703
     }
+  }
+
+  // 📞 ЖЁСТКО заданные номера (без i18n)
+  const phonesByName: Record<string, string> = {
+    "Чиланзар": "+998909120026",
+    "Юнусабад": "+998949130026",
   }
 
   const DEFAULT_COORDS = {
@@ -46,6 +52,22 @@ const Home = () => {
   const openRoute = (lat: number, lng: number) => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
     window.location.href = url
+  }
+
+  const normalizePhone = (phone: string) =>
+    phone.replace(/[^\d+]/g, "")
+
+  // 🔥 универсальный подбор номера (устойчивый к любым названиям)
+  const getPhone = (name: string) => {
+    const n = name.toLowerCase()
+
+    if (n.includes("чилан") || n.includes("друж"))
+      return phonesByName["Чиланзар"]
+
+    if (n.includes("юнус"))
+      return phonesByName["Юнусабад"]
+
+    return ""
   }
 
   return (
@@ -135,13 +157,11 @@ const Home = () => {
 
             {branches?.map((branch) => {
 
-              // 🔥 НОРМАЛИЗАЦИЯ
-              const normalizedAddress = branch.address.toLowerCase()
-
               const coords =
-                Object.entries(coordsMap).find(([key]) =>
-                  normalizedAddress.includes(key)
-                )?.[1] || DEFAULT_COORDS
+                coordsByName[branch.name] || DEFAULT_COORDS
+
+              const rawPhone = getPhone(branch.name)
+              const phone = normalizePhone(rawPhone)
 
               return (
                 <div
@@ -177,7 +197,7 @@ const Home = () => {
                     </button>
 
                     <a
-                      href={`tel:${branch.phone}`}
+                      href={`tel:${phone}`}
                       className="block text-center border px-5 py-3 rounded-full text-sm hover:bg-secondary"
                     >
                       {t("contacts.phone")}
