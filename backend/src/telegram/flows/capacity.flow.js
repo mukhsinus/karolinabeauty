@@ -53,9 +53,10 @@ const renderSummary = async (ctx) => {
   }
 
   const service = await Service.findById(serviceId).select("nameKey category").lean()
+  const lang = ctx.session?.language || "ru"
   const capacity = await getSlotCapacity({ branchId, serviceId, serviceLevel, date })
   await ctx.editMessageText(
-    `👨‍🔧 Мастера\n\n💇 Услуга: ${translateService(service?.nameKey || "-")}\n⭐ Уровень: ${serviceLevel}\n📅 Дата: ${formatDate(date)}\n\nСейчас: ${capacity}\n\nВыберите количество (1–5):`,
+    `👨‍🔧 Мастера\n\n💇 Услуга: ${translateService(service?.nameKey || "-", lang)}\n⭐ Уровень: ${serviceLevel}\n📅 Дата: ${formatDate(date)}\n\nСейчас: ${capacity}\n\nВыберите количество (1–5):`,
     capacityKeyboard()
   )
 }
@@ -85,10 +86,11 @@ export const startCapacityFlow = async (ctx) => {
     if (!sorted.length) return ctx.reply("⚠️ Нет активных категорий")
 
     pushNav(ctx, { flow: "capacity", step: "category" })
+    const lang = ctx.session?.language || "ru"
     try {
-      await ctx.editMessageText("Выберите категорию:", categoriesKeyboard(sorted))
+      await ctx.editMessageText("Выберите категорию:", categoriesKeyboard(sorted, lang))
     } catch {
-      await ctx.reply("Выберите категорию:", categoriesKeyboard(sorted))
+      await ctx.reply("Выберите категорию:", categoriesKeyboard(sorted, lang))
     }
     return
   } catch (error) {
@@ -124,7 +126,8 @@ export const selectCapacityCategory = async (ctx, { category }) => {
     }
 
     pushNav(ctx, { flow: "capacity", step: "service", params: { category: c } })
-    return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+    const lang = ctx.session?.language || "ru"
+    return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services, lang))
   } catch (error) {
     console.error("[CRM] selectCapacityCategory error:", error)
     return safeErrorReply(ctx)
@@ -251,7 +254,8 @@ export const backCapacity = async (ctx, { step }) => {
         .select("_id nameKey category")
         .sort({ nameKey: 1 })
         .lean()
-      return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+      const lang = ctx.session?.language || "ru"
+      return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services, lang))
     }
 
     if (step === "level") {

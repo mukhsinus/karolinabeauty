@@ -60,7 +60,7 @@ import {
   backCapacity
 } from "./flows/capacity.flow.js"
 
-import { startStatsFlow, selectStatsPeriod } from "./flows/stats.flow.js"
+import { startStatsFlow, selectStatsPeriod, selectStatsDay, selectStatsMonth } from "./flows/stats.flow.js"
 
 import {
   startAddressFlow,
@@ -527,10 +527,22 @@ bot.action("crm_stats:menu", async (ctx) => {
   return startStatsFlow(ctx)
 })
 
-bot.action(/crm_stats:period:(today|next7)/, async (ctx) => {
+bot.action(/crm_stats:period:(today|month|year)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const period = ctx.match[1]
   return selectStatsPeriod(ctx, { period })
+})
+
+bot.action(/crm_stats:day:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const date = ctx.match[1]
+  return selectStatsDay(ctx, { date })
+})
+
+bot.action(/crm_stats:month:(\d{4}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const yearMonth = ctx.match[1]
+  return selectStatsMonth(ctx, { yearMonth })
 })
 
 // crm_stats:group removed (only by-branch supported)

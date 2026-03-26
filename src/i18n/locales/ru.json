@@ -257,6 +257,14 @@
   "footer.contacts.instagram": "Инстаграм",
   "contacts.call": "Позвонить",
 
-  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" }
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" },
+  "categories": {
+    "brows": "Брови",
+    "hair": "Волосы",
+    "lashes": "Ресницы",
+    "nails": "Ногти",
+    "permanent": "Перманент",
+    "removal": "Удаление"
+  }
 
 }

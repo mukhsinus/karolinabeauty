@@ -12,10 +12,10 @@ export const CAPACITY_CB = {
   BACK: "crm_capacity:back", // crm_capacity:back:<step>
 }
 
-export const categoriesKeyboard = (categories) => {
+export const categoriesKeyboard = (categories, lang = "ru") => {
   const rows = (categories || []).slice(0, 30).map((c) => [
     Markup.button.callback(
-      translateCategory(c).slice(0, 60),
+      translateCategory(c, lang).slice(0, 60),
       `${CAPACITY_CB.CATEGORY}:${c}`
     )
   ])
@@ -24,10 +24,10 @@ export const categoriesKeyboard = (categories) => {
   return Markup.inlineKeyboard(rows)
 }
 
-export const servicesKeyboard = (services) => {
+export const servicesKeyboard = (services, lang = "ru") => {
   const rows = services.slice(0, 30).map((s) => [
     Markup.button.callback(
-      translateService(s.nameKey).slice(0, 60),
+      translateService(s.nameKey, lang).slice(0, 60),
       `${CAPACITY_CB.SERVICE}:${s._id}`
     )
   ])

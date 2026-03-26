@@ -255,5 +255,13 @@
   "footer.contacts.instagram": "Instagram",
   "contacts.call": "Qo'ng'iroq qilish",
 
-  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" }
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" },
+  "categories": {
+    "brows": "Qoshlar",
+    "hair": "Sochlar",
+    "lashes": "Kipriklar",
+    "nails": "Tirnoqlar",
+    "permanent": "Permanent",
+    "removal": "Olib tashlash"
+  }
 }
