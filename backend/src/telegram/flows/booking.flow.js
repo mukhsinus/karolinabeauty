@@ -20,10 +20,11 @@ import {
   rescheduleBooking
 } from "../actions/booking.actions.js"
 
-import { setPayload } from "../core/session.js"
+import { setPayload, setStep } from "../core/session.js"
 import { Markup } from "telegraf"
 import { formatDate } from "../utils/date.js"
 import { pushNav, resetNav } from "../core/nav.js"
+import { STEPS } from "../core/constants.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -187,6 +188,8 @@ const formatBookingCard = (b) => {
 export const startBookingManagement = async (ctx) => {
   try {
     resetNav(ctx)
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_LEVEL)
     const sessionBranchId = ctx.session?.branchId || null
     if (!sessionBranchId) {
       return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
@@ -242,6 +245,8 @@ export const selectBookingBranchFilter = async (ctx, { branchId }) => {
 export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
   try {
     if (!SERVICE_LEVELS.some((l) => l.id === serviceLevel)) return safeErrorReply(ctx)
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_PERIOD)
 
     setPayload(ctx, {
       booking: {
@@ -269,6 +274,7 @@ export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
 
 export const showBookingList = async (ctx, { type, page }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
     const limit = ctx.session?.payload?.booking?.limit || 5
     const safePage = Math.max(0, Number(page) || 0)
 
@@ -281,6 +287,7 @@ export const showBookingList = async (ctx, { type, page }) => {
 
     if (type === "next7") {
       // production calendar UX: next7 -> pick a day first
+      setStep(ctx, STEPS.CRM_BOOKING_DAY_PICKER)
       try {
         await ctx.answerCbQuery()
       } catch {}
@@ -300,6 +307,7 @@ export const showBookingList = async (ctx, { type, page }) => {
     if (type === "day" && !isDateISO(dayDate)) {
       return showNext7DayPicker(ctx)
     }
+    setStep(ctx, STEPS.CRM_BOOKING_LIST)
 
     const result = await listBookings({
       type,
@@ -377,6 +385,8 @@ export const showBookingList = async (ctx, { type, page }) => {
 export const selectNext7Day = async (ctx, { date }) => {
   try {
     if (!isDateISO(date)) return safeErrorReply(ctx)
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_LIST)
 
     setPayload(ctx, {
       booking: {
@@ -396,6 +406,8 @@ export const selectNext7Day = async (ctx, { date }) => {
 
 export const openBookingCard = async (ctx, { bookingId, type, page }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_CARD)
     if (!isValidObjectId(bookingId)) {
       try {
         await ctx.answerCbQuery("Запись не найдена")
@@ -448,6 +460,8 @@ export const openBookingCard = async (ctx, { bookingId, type, page }) => {
 
 export const confirmCancelBooking = async (ctx, { bookingId, type, page }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_CONFIRM)
     if (!isValidObjectId(bookingId)) return safeErrorReply(ctx)
 
     const booking = await getBookingCardData(bookingId)
@@ -483,6 +497,8 @@ export const confirmCancelBooking = async (ctx, { bookingId, type, page }) => {
 
 export const confirmCompleteBooking = async (ctx, { bookingId, type, page }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_BOOKING_CONFIRM)
     if (!isValidObjectId(bookingId)) return safeErrorReply(ctx)
 
     const booking = await getBookingCardData(bookingId)
@@ -558,6 +574,8 @@ export const doCompleteBooking = async (ctx, { bookingId, type, page }) => {
 
 export const startRescheduleBooking = async (ctx, { bookingId, type, page }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_RESCHEDULE_DATES)
     if (!isValidObjectId(bookingId)) {
       try {
         await ctx.answerCbQuery("Запись не найдена")
@@ -607,6 +625,8 @@ export const startRescheduleBooking = async (ctx, { bookingId, type, page }) => 
 
 export const selectRescheduleDate = async (ctx, { date }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_RESCHEDULE_TIMES)
     const rs = ctx.session?.payload?.booking?.reschedule
     const bookingId = rs?.bookingId
 
@@ -639,6 +659,8 @@ export const selectRescheduleDate = async (ctx, { date }) => {
 
 export const selectRescheduleTime = async (ctx, { time }) => {
   try {
+    setPayload(ctx, { flow: "booking" })
+    setStep(ctx, STEPS.CRM_RESCHEDULE_CONFIRM)
     const rs = ctx.session?.payload?.booking?.reschedule
     const bookingId = rs?.bookingId
     const date = rs?.date

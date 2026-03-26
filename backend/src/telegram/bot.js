@@ -10,7 +10,6 @@ import { acquireRuntimeLock, renewRuntimeLock, releaseRuntimeLock } from "./core
 import { initialSession, setStep } from "./core/session.js"
 import { STEPS, BUTTONS } from "./core/constants.js"
 import { isAdmin } from "./core/guards.js"
-import { handleBack } from "./flows/nav.flow.js"
 
 // flows
 import { startFlow } from "./flows/start.flow.js"
@@ -53,6 +52,7 @@ import {
 
 import {
   startCapacityFlow,
+  selectCapacityCategory,
   selectCapacityService,
   selectCapacityLevel,
   selectCapacityDate,
@@ -143,9 +143,107 @@ bot.on("contact", async (ctx) => {
 
 // ================= CALLBACKS =================
 
-bot.action("crm_nav:back", async (ctx) => {
+const goAdminPanel = async (ctx) => {
+  setStep(ctx, STEPS.ADMIN_PANEL)
+  try {
+    await ctx.reply(
+      ctx.session.language === "uz" ? "Siz admin paneldasiz" : "Вы в админ панели",
+      adminKeyboard(ctx.session.language)
+    )
+  } catch {}
+}
+
+const handleInlineBack = async (ctx, backKey) => {
+  try {
+    await ctx.answerCbQuery()
+  } catch {}
+
+  // If session is broken, always fallback to admin panel
+  if (!ctx.session) return goAdminPanel(ctx)
+
+  switch (backKey) {
+    case "admin":
+      return goAdminPanel(ctx)
+
+    // ===== BOOKINGS =====
+    case "booking_level":
+      return startBookingManagement(ctx)
+    case "booking_period": {
+      const lvl = ctx.session?.payload?.booking?.serviceLevel
+      if (!lvl) return startBookingManagement(ctx)
+      return selectBookingLevelFilter(ctx, { serviceLevel: lvl })
+    }
+    case "booking_day_picker":
+      return showBookingList(ctx, { type: "next7", page: 0 })
+    case "booking_list": {
+      const type = ctx.session?.payload?.booking?.type || "today"
+      const page = Number(ctx.session?.payload?.booking?.page || 0)
+      return showBookingList(ctx, { type, page })
+    }
+    case "booking_card": {
+      const bookingId = ctx.session?.payload?.booking?.selectedBookingId
+      const type = ctx.session?.payload?.booking?.type || "today"
+      const page = Number(ctx.session?.payload?.booking?.page || 0)
+      if (!bookingId) return showBookingList(ctx, { type, page })
+      return openBookingCard(ctx, { bookingId, type, page })
+    }
+    case "reschedule_dates": {
+      const rs = ctx.session?.payload?.booking?.reschedule
+      if (!rs?.bookingId) return handleInlineBack(ctx, "booking_card")
+      return startRescheduleBooking(ctx, { bookingId: rs.bookingId, type: rs.type || "today", page: rs.page || 0 })
+    }
+    case "reschedule_times": {
+      const rs = ctx.session?.payload?.booking?.reschedule
+      if (!rs?.date) return handleInlineBack(ctx, "reschedule_dates")
+      return selectRescheduleDate(ctx, { date: rs.date })
+    }
+
+    // ===== STATS =====
+    case "stats_menu":
+      return startStatsFlow(ctx)
+
+    // ===== CAPACITY =====
+    case "capacity_categories":
+      return startCapacityFlow(ctx)
+    case "capacity_services": {
+      const c = ctx.session?.payload?.capacity?.category
+      if (!c) return startCapacityFlow(ctx)
+      return selectCapacityCategory(ctx, { category: c })
+    }
+    case "capacity_levels": {
+      const sid = ctx.session?.payload?.capacity?.serviceId
+      if (!sid) return startCapacityFlow(ctx)
+      return selectCapacityService(ctx, { serviceId: sid })
+    }
+    case "capacity_dates": {
+      const lvl = ctx.session?.payload?.capacity?.serviceLevel
+      if (!lvl) return startCapacityFlow(ctx)
+      return selectCapacityLevel(ctx, { serviceLevel: lvl })
+    }
+
+    // ===== BLOCKING =====
+    case "blocking_branch":
+      return startBlockingFlow(ctx)
+    case "blocking_date": {
+      const bid = ctx.session?.payload?.blocking?.branchId
+      if (!bid) return startBlockingFlow(ctx)
+      return selectBlockingBranch(ctx, { branchId: bid })
+    }
+    case "blocking_actions": {
+      const date = ctx.session?.payload?.blocking?.date
+      if (!date) return handleInlineBack(ctx, "blocking_date")
+      return selectBlockingDate(ctx, { date })
+    }
+
+    default:
+      return goAdminPanel(ctx)
+  }
+}
+
+bot.action(/crm_back:(.+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return handleBack(ctx)
+  const backKey = String(ctx.match[1] || "")
+  return handleInlineBack(ctx, backKey)
 })
 
 // branch (вход)
@@ -181,6 +279,44 @@ bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
 bot.hears(BUTTONS.MASTERS, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startCapacityFlow(ctx)
+})
+
+bot.hears(BUTTONS.BACK, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+
+  // Global fallback back: route by current step
+  const step = ctx.session?.step
+  switch (step) {
+    case STEPS.CRM_BOOKING_PERIOD:
+    case STEPS.CRM_BOOKING_DAY_PICKER:
+    case STEPS.CRM_BOOKING_LIST:
+    case STEPS.CRM_BOOKING_CARD:
+    case STEPS.CRM_BOOKING_CONFIRM:
+    case STEPS.CRM_RESCHEDULE_DATES:
+    case STEPS.CRM_RESCHEDULE_TIMES:
+    case STEPS.CRM_RESCHEDULE_CONFIRM:
+      return startBookingManagement(ctx)
+
+    case STEPS.CRM_CAPACITY_CATEGORY:
+    case STEPS.CRM_CAPACITY_SERVICE:
+    case STEPS.CRM_CAPACITY_LEVEL:
+    case STEPS.CRM_CAPACITY_DATE:
+    case STEPS.CRM_CAPACITY_SUMMARY:
+      return startCapacityFlow(ctx)
+
+    case STEPS.CRM_STATS_MENU:
+    case STEPS.CRM_STATS_PERIOD:
+      return goAdminPanel(ctx)
+
+    case STEPS.CRM_BLOCKING_BRANCH:
+    case STEPS.CRM_BLOCKING_DATE:
+    case STEPS.CRM_BLOCKING_ACTIONS:
+    case STEPS.CRM_BLOCKING_TIMES:
+      return goAdminPanel(ctx)
+
+    default:
+      return goAdminPanel(ctx)
+  }
 })
 
 // quick entrypoint for blocking CRM
@@ -348,6 +484,12 @@ bot.action(/crm_blocking:back:(branch|date|actions)/, async (ctx) => {
 
 // ================= CAPACITY (CRM) =================
 
+bot.action(/crm_capacity:category:([^:]+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const category = ctx.match[1]
+  return selectCapacityCategory(ctx, { category })
+})
+
 bot.action(/crm_capacity:service:([^:]+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const serviceId = ctx.match[1]
@@ -372,7 +514,7 @@ bot.action(/crm_capacity:set:([1-5])/, async (ctx) => {
   return setCapacityValue(ctx, { value })
 })
 
-bot.action(/crm_capacity:back:(service|level|date|summary)/, async (ctx) => {
+bot.action(/crm_capacity:back:(category|service|level|date|summary)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const step = ctx.match[1]
   return backCapacity(ctx, { step })

@@ -10,11 +10,13 @@ export const adminKeyboard = (lang = "ru") => {
           [BUTTONS.BOOKINGS],
           [BUTTONS.MASTERS],
           [BUTTONS.STATS],
+          [BUTTONS.BACK],
         ]
       : [
           [BUTTONS.BOOKINGS],
           [BUTTONS.MASTERS],
           [BUTTONS.STATS],
+          [BUTTONS.BACK],
         ]
 
   return Markup.keyboard(buttons).resize()

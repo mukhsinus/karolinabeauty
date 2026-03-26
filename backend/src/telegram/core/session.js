@@ -10,6 +10,7 @@ export const initialSession = () => ({
   branchId: null,
 
   payload: {
+    flow: null,
     nav: {
       stack: []
     },
@@ -25,6 +26,7 @@ export const initialSession = () => ({
     // capacity crm
     capacity: {
       branchId: null,
+      category: null,
       serviceId: null,
       serviceLevel: null,
       date: null

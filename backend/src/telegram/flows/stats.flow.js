@@ -3,6 +3,8 @@
 import { statsMenuKeyboard, statsPeriodKeyboard } from "../keyboards/stats.keyboard.js"
 import { loadStats, formatStatsMessage } from "../actions/stats.actions.js"
 import { pushNav, resetNav } from "../core/nav.js"
+import { setPayload, setStep } from "../core/session.js"
+import { STEPS } from "../core/constants.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -16,6 +18,8 @@ const safeErrorReply = async (ctx) => {
 export const startStatsFlow = async (ctx) => {
   try {
     resetNav(ctx)
+    setPayload(ctx, { flow: "stats" })
+    setStep(ctx, STEPS.CRM_STATS_MENU)
     pushNav(ctx, { flow: "stats", step: "menu" })
 
     try {
@@ -33,7 +37,14 @@ export const startStatsFlow = async (ctx) => {
 export const selectStatsPeriod = async (ctx, { period }) => {
   try {
     if (!["today", "next7"].includes(period)) return safeErrorReply(ctx)
-    const data = await loadStats({ period })
+    setPayload(ctx, { flow: "stats" })
+    setStep(ctx, STEPS.CRM_STATS_PERIOD)
+    const branchId = ctx.session?.branchId || null
+    if (!branchId) {
+      return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
+    }
+
+    const data = await loadStats({ period, branchId })
     const text = formatStatsMessage({ period, ...data })
 
     pushNav(ctx, { flow: "stats", step: "period", params: { period } })

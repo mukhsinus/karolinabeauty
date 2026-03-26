@@ -1,13 +1,16 @@
 // backend/src/telegram/flows/capacity.flow.js
 
-import { setPayload } from "../core/session.js"
+import { setPayload, setStep } from "../core/session.js"
 import Service from "../../models/Service.js"
 import { pushNav, resetNav } from "../core/nav.js"
 import { formatDate } from "../utils/date.js"
+import { translateService } from "../utils/serviceI18n.js"
+import { STEPS } from "../core/constants.js"
 
 import { getSlotCapacity, upsertSlotCapacity } from "../../services/capacity.service.js"
 
 import {
+  categoriesKeyboard,
   servicesKeyboard,
   levelsKeyboard,
   datesKeyboard,
@@ -52,7 +55,7 @@ const renderSummary = async (ctx) => {
   const service = await Service.findById(serviceId).select("nameKey category").lean()
   const capacity = await getSlotCapacity({ branchId, serviceId, serviceLevel, date })
   await ctx.editMessageText(
-    `👨‍🔧 Мастера\n\n💇 Услуга: ${service?.nameKey || "-"}\n⭐ Уровень: ${serviceLevel}\n📅 Дата: ${formatDate(date)}\n\nСейчас: ${capacity}\n\nВыберите количество (1–5):`,
+    `👨‍🔧 Мастера\n\n💇 Услуга: ${translateService(service?.nameKey || "-")}\n⭐ Уровень: ${serviceLevel}\n📅 Дата: ${formatDate(date)}\n\nСейчас: ${capacity}\n\nВыберите количество (1–5):`,
     capacityKeyboard()
   )
 }
@@ -60,6 +63,8 @@ const renderSummary = async (ctx) => {
 export const startCapacityFlow = async (ctx) => {
   try {
     resetNav(ctx)
+    setPayload(ctx, { flow: "capacity" })
+    setStep(ctx, STEPS.CRM_CAPACITY_CATEGORY)
     const branchId = ctx.session?.branchId || null
     if (!isValidObjectId(branchId)) {
       return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
@@ -68,24 +73,22 @@ export const startCapacityFlow = async (ctx) => {
     setPayload(ctx, {
       capacity: {
         branchId,
+        category: null,
         serviceId: null,
         serviceLevel: null,
         date: null
       }
     })
 
-    const services = await Service.find({ isActive: true })
-      .select("_id nameKey category")
-      .sort({ category: 1, nameKey: 1 })
-      .lean()
+    const categories = await Service.distinct("category", { isActive: true })
+    const sorted = (categories || []).map(String).sort((a, b) => a.localeCompare(b))
+    if (!sorted.length) return ctx.reply("⚠️ Нет активных категорий")
 
-    if (!services?.length) return ctx.reply("⚠️ Нет активных услуг")
-
-    pushNav(ctx, { flow: "capacity", step: "service" })
+    pushNav(ctx, { flow: "capacity", step: "category" })
     try {
-      await ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+      await ctx.editMessageText("Выберите категорию:", categoriesKeyboard(sorted))
     } catch {
-      await ctx.reply("Выберите услугу:", servicesKeyboard(services))
+      await ctx.reply("Выберите категорию:", categoriesKeyboard(sorted))
     }
     return
   } catch (error) {
@@ -94,8 +97,44 @@ export const startCapacityFlow = async (ctx) => {
   }
 }
 
+export const selectCapacityCategory = async (ctx, { category }) => {
+  try {
+    setPayload(ctx, { flow: "capacity" })
+    setStep(ctx, STEPS.CRM_CAPACITY_SERVICE)
+    const c = String(category || "")
+    if (!c) return safeErrorReply(ctx)
+
+    setPayload(ctx, {
+      capacity: {
+        ...ctx.session.payload.capacity,
+        category: c,
+        serviceId: null,
+        serviceLevel: null,
+        date: null
+      }
+    })
+
+    const services = await Service.find({ isActive: true, category: c })
+      .select("_id nameKey category")
+      .sort({ nameKey: 1 })
+      .lean()
+
+    if (!services?.length) {
+      return ctx.editMessageText("⚠️ Нет услуг в этой категории")
+    }
+
+    pushNav(ctx, { flow: "capacity", step: "service", params: { category: c } })
+    return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+  } catch (error) {
+    console.error("[CRM] selectCapacityCategory error:", error)
+    return safeErrorReply(ctx)
+  }
+}
+
 export const selectCapacityService = async (ctx, { serviceId }) => {
   try {
+    setPayload(ctx, { flow: "capacity" })
+    setStep(ctx, STEPS.CRM_CAPACITY_LEVEL)
     if (!isValidObjectId(serviceId)) return safeErrorReply(ctx)
 
     setPayload(ctx, {
@@ -118,6 +157,8 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
 
 export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
   try {
+    setPayload(ctx, { flow: "capacity" })
+    setStep(ctx, STEPS.CRM_CAPACITY_DATE)
     if (!["master", "top", "premium"].includes(serviceLevel)) return safeErrorReply(ctx)
 
     setPayload(ctx, {
@@ -139,6 +180,8 @@ export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
 
 export const selectCapacityDate = async (ctx, { date }) => {
   try {
+    setPayload(ctx, { flow: "capacity" })
+    setStep(ctx, STEPS.CRM_CAPACITY_SUMMARY)
     if (!isDateISO(date)) return safeErrorReply(ctx)
 
     setPayload(ctx, {
@@ -199,7 +242,17 @@ export const backCapacity = async (ctx, { step }) => {
     const p = ctx.session?.payload?.capacity
     if (!p) return safeErrorReply(ctx)
 
-    if (step === "service") return startCapacityFlow(ctx)
+    if (step === "category") return startCapacityFlow(ctx)
+
+    if (step === "service") {
+      const c = p.category
+      if (!c) return startCapacityFlow(ctx)
+      const services = await Service.find({ isActive: true, category: c })
+        .select("_id nameKey category")
+        .sort({ nameKey: 1 })
+        .lean()
+      return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+    }
 
     if (step === "level") {
       return ctx.editMessageText("Выберите уровень:", levelsKeyboard())

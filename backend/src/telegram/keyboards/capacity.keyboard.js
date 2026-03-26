@@ -1,9 +1,10 @@
 // backend/src/telegram/keyboards/capacity.keyboard.js
 
 import { Markup } from "telegraf"
-import { NAV_CB } from "../core/nav.js"
+import { translateCategory, translateService } from "../utils/serviceI18n.js"
 
 export const CAPACITY_CB = {
+  CATEGORY: "crm_capacity:category", // crm_capacity:category:<category>
   SERVICE: "crm_capacity:service", // crm_capacity:service:<serviceId>
   LEVEL: "crm_capacity:level", // crm_capacity:level:<level>
   DATE: "crm_capacity:date", // crm_capacity:date:<YYYY-MM-DD>
@@ -11,24 +12,27 @@ export const CAPACITY_CB = {
   BACK: "crm_capacity:back", // crm_capacity:back:<step>
 }
 
-export const branchesKeyboard = (branches) => {
-  const rows = branches.map((b) => [
-    Markup.button.callback(`🏢 ${b.name}`, `noop:${b._id}`)
+export const categoriesKeyboard = (categories) => {
+  const rows = (categories || []).slice(0, 30).map((c) => [
+    Markup.button.callback(
+      translateCategory(c).slice(0, 60),
+      `${CAPACITY_CB.CATEGORY}:${c}`
+    )
   ])
-  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
+
+  rows.push([Markup.button.callback("⬅️ Назад", "crm_back:admin")])
   return Markup.inlineKeyboard(rows)
 }
 
 export const servicesKeyboard = (services) => {
   const rows = services.slice(0, 30).map((s) => [
     Markup.button.callback(
-      `${s.category ? `${s.category} • ` : ""}${s.nameKey}`.slice(0, 60),
+      translateService(s.nameKey).slice(0, 60),
       `${CAPACITY_CB.SERVICE}:${s._id}`
     )
   ])
 
-  rows.push([Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:service`)])
-  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
+  rows.push([Markup.button.callback("⬅️ Назад", "crm_back:capacity_categories")])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -37,8 +41,7 @@ export const levelsKeyboard = () => {
     [Markup.button.callback("Мастер", `${CAPACITY_CB.LEVEL}:master`)],
     [Markup.button.callback("Топ", `${CAPACITY_CB.LEVEL}:top`)],
     [Markup.button.callback("Премиум", `${CAPACITY_CB.LEVEL}:premium`)],
-    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:service`)],
-    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
+    [Markup.button.callback("⬅️ Назад", "crm_back:capacity_services")],
   ])
 }
 
@@ -53,8 +56,7 @@ export const datesKeyboard = (dates) => {
     )
   }
 
-  rows.push([Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:level`)])
-  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
+  rows.push([Markup.button.callback("⬅️ Назад", "crm_back:capacity_levels")])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -67,8 +69,7 @@ export const capacityKeyboard = () => {
       Markup.button.callback("4", `${CAPACITY_CB.SET}:4`),
       Markup.button.callback("5", `${CAPACITY_CB.SET}:5`),
     ],
-    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:date`)],
-    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
+    [Markup.button.callback("⬅️ Назад", "crm_back:capacity_dates")],
   ])
 }
 

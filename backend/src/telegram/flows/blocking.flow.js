@@ -1,7 +1,8 @@
 // backend/src/telegram/flows/blocking.flow.js
 
-import { setPayload } from "../core/session.js"
+import { setPayload, setStep } from "../core/session.js"
 import { getBranches } from "../services/api.service.js"
+import { STEPS } from "../core/constants.js"
 
 import {
   getBlockedInfoForDate,
@@ -94,6 +95,8 @@ const renderActions = async (ctx) => {
 export const startBlockingFlow = async (ctx) => {
   try {
     resetNav(ctx)
+    setPayload(ctx, { flow: "blocking" })
+    setStep(ctx, STEPS.CRM_BLOCKING_BRANCH)
     setPayload(ctx, {
       blocking: {
         branchId: null,
@@ -119,6 +122,8 @@ export const startBlockingFlow = async (ctx) => {
 
 export const selectBlockingBranch = async (ctx, { branchId }) => {
   try {
+    setPayload(ctx, { flow: "blocking" })
+    setStep(ctx, STEPS.CRM_BLOCKING_DATE)
     if (!isValidObjectId(branchId)) return safeErrorReply(ctx)
 
     setPayload(ctx, {
@@ -139,6 +144,8 @@ export const selectBlockingBranch = async (ctx, { branchId }) => {
 
 export const selectBlockingDate = async (ctx, { date }) => {
   try {
+    setPayload(ctx, { flow: "blocking" })
+    setStep(ctx, STEPS.CRM_BLOCKING_ACTIONS)
     if (!isDateISO(date)) return safeErrorReply(ctx)
 
     const branchId = ctx.session?.payload?.blocking?.branchId
@@ -180,6 +187,8 @@ export const doBlockDay = async (ctx) => {
 
 export const startBlockTimePick = async (ctx) => {
   try {
+    setPayload(ctx, { flow: "blocking" })
+    setStep(ctx, STEPS.CRM_BLOCKING_TIMES)
     const branchId = ctx.session?.payload?.blocking?.branchId
     const date = ctx.session?.payload?.blocking?.date
     if (!isValidObjectId(branchId) || !isDateISO(date)) return safeErrorReply(ctx)

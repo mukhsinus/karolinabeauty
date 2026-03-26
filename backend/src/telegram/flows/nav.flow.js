@@ -24,6 +24,7 @@ import {
 
 import {
   startCapacityFlow,
+  selectCapacityCategory,
   selectCapacityService,
   selectCapacityLevel,
   selectCapacityDate
@@ -67,7 +68,8 @@ const route = async (ctx, entry) => {
   }
 
   if (flow === "capacity") {
-    if (step === "service") return (await startCapacityFlow(ctx), true)
+    if (step === "category") return (await startCapacityFlow(ctx), true)
+    if (step === "service") return (await selectCapacityCategory(ctx, { category: params.category }), true)
     if (step === "level") return (await selectCapacityService(ctx, { serviceId: params.serviceId }), true)
     if (step === "date") return (await selectCapacityLevel(ctx, { serviceLevel: params.serviceLevel }), true)
     if (step === "summary") return (await selectCapacityDate(ctx, { date: params.date }), true)

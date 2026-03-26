@@ -8,11 +8,11 @@ import {
 
 import { formatDate } from "../utils/date.js"
 
-export const loadStats = async ({ period }) => {
+export const loadStats = async ({ period, branchId }) => {
   const { start, end } = getStatsRange(period)
 
-  const totals = await getTotals({ start, end })
-  const rows = await getGroupedByBranch({ start, end })
+  const totals = await getTotals({ start, end, branchId })
+  const rows = await getGroupedByBranch({ start, end, branchId })
 
   return { start, end, totals, rows }
 }
