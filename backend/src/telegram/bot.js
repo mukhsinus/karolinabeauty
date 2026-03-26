@@ -28,7 +28,6 @@ import {
   confirmCompleteBooking,
   doCancelBooking,
   doCompleteBooking,
-  showBookingMenu,
   startRescheduleBooking,
   selectRescheduleDate,
   selectRescheduleTime,
