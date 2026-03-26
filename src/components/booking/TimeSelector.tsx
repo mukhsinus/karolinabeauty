@@ -1,4 +1,5 @@
 // src/components/booking/TimeSelector.tsx
+
 import { Clock } from "lucide-react"
 import { isVipTime } from "@/utils/booking"
 
@@ -42,8 +43,8 @@ export default function TimeSelector({
 
         {timeSlots.map((time) => {
 
-          const isBooked =
-            bookedSlots.includes(`${booking.date}-${time}`)
+          // 🔥 ФИКС: теперь просто time
+          const isBooked = bookedSlots.includes(time)
 
           const isVip = isVipTime(time)
 
@@ -56,7 +57,7 @@ export default function TimeSelector({
               onClick={() => selectTime(time)}
 
               className={`py-3 rounded-xl border text-sm relative
-              ${isBooked && "opacity-30"}
+              ${isBooked && "opacity-30 cursor-not-allowed"}
               ${
                 isVip
                   ? "border-primary bg-primary/5 text-primary"

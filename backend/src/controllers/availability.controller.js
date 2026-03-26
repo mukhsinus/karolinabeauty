@@ -1,20 +1,27 @@
 // backend/src/controllers/availability.controller.js
+
 import { getAvailability as getAvailabilityService } from "../services/booking.service.js";
 
 /*
-GET /availability?branchId=...&date=YYYY-MM-DD
+GET /availability?branchId=...&serviceId=...&serviceLevel=...&date=YYYY-MM-DD
 
 Returns:
 [
- "2026-03-12-10:00",
- "2026-03-12-11:30"
+  "10:00",
+  "11:30"
 ]
 */
 
 export const getAvailability = async (req, res) => {
+
   try {
 
-    const { branchId, date } = req.query;
+    const {
+      branchId,
+      serviceId,
+      serviceLevel,
+      date
+    } = req.query;
 
     /*
     VALIDATION
@@ -22,12 +29,28 @@ export const getAvailability = async (req, res) => {
 
     if (!branchId) {
       return res.status(400).json({
+        success: false,
         message: "branchId query param required"
+      });
+    }
+
+    if (!serviceId) {
+      return res.status(400).json({
+        success: false,
+        message: "serviceId query param required"
+      });
+    }
+
+    if (!serviceLevel) {
+      return res.status(400).json({
+        success: false,
+        message: "serviceLevel query param required"
       });
     }
 
     if (!date) {
       return res.status(400).json({
+        success: false,
         message: "date query param required"
       });
     }
@@ -36,7 +59,12 @@ export const getAvailability = async (req, res) => {
     SERVICE LAYER
     */
 
-    const slots = await getAvailabilityService(branchId, date);
+    const slots = await getAvailabilityService(
+      branchId,
+      serviceId,
+      serviceLevel,
+      date
+    );
 
     return res.status(200).json({
       success: true,
@@ -47,7 +75,15 @@ export const getAvailability = async (req, res) => {
 
     console.error("availability error:", error);
 
+    if (error.message.includes("required")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+
     return res.status(500).json({
+      success: false,
       message: "Server error"
     });
 

@@ -24,10 +24,13 @@ const BookingSchema = new mongoose.Schema(
     trim: true
   },
 
+  // 🔥 ВАЖНО: делаем обязательным
   serviceLevel: {
     type: String,
+    required: true,
     trim: true,
-    default: ""
+    enum: ["master", "top", "premium"], // подгони под свои уровни
+    index: true
   },
 
   serviceDuration: {
@@ -68,7 +71,8 @@ const BookingSchema = new mongoose.Schema(
   phone: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    index: true
   },
 
   status: {
@@ -97,16 +101,28 @@ const BookingSchema = new mongoose.Schema(
 )
 
 /*
-PREVENT DOUBLE BOOKING
+🔥 ГЛАВНЫЙ ИНДЕКС — теперь слот уникален по:
+branch + service + level + date + time
+
+ИГНОРИРУЕМ отменённые записи
 */
 
 BookingSchema.index(
-{ branchId: 1, date: 1, time: 1 },
-{ unique: true }
+{
+  branchId: 1,
+  serviceId: 1,
+  serviceLevel: 1,
+  date: 1,
+  time: 1
+},
+{
+  // Capacity allows multiple bookings per slot; keep this as a query index.
+  // Uniqueness is enforced by business logic (capacity checks).
+}
 )
 
 /*
-SEARCH CLIENT BOOKINGS
+Поиск бронирований клиента
 */
 
 BookingSchema.index({ phone: 1 })

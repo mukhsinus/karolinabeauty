@@ -10,6 +10,14 @@ export const initialSession = () => ({
   branchId: null,
 
   payload: {
+    // booking admin
+    booking: {
+      type: "today",
+      page: 0,
+      limit: 5,
+      selectedBookingId: null
+    },
+
     // price
     serviceId: null,
     newPrice: null,

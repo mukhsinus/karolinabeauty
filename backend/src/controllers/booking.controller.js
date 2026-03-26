@@ -1,6 +1,14 @@
 // backend/src/controllers/booking.controller.js
-import { createBooking as createBookingService } from "../services/booking.service.js"
+
+import {
+  createBooking as createBookingService
+} from "../services/booking.service.js"
+
 import { notifyNewBooking } from "../telegram/bot.js"
+
+/*
+CREATE BOOKING
+*/
 
 export const createBooking = async (req, res) => {
 
@@ -19,7 +27,17 @@ export const createBooking = async (req, res) => {
       notes
     } = req.body
 
-    if (!branchId || !serviceId || !date || !time || !name || !phone) {
+    // 🔥 ВАЖНО: добавили serviceLevel
+
+    if (
+      !branchId ||
+      !serviceId ||
+      !serviceLevel ||
+      !date ||
+      !time ||
+      !name ||
+      !phone
+    ) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields"
@@ -39,6 +57,8 @@ export const createBooking = async (req, res) => {
       notes
     })
 
+    // уведомление в телеграм
+
     await notifyNewBooking(booking)
 
     return res.status(201).json({
@@ -50,24 +70,56 @@ export const createBooking = async (req, res) => {
 
     console.error("createBooking controller error:", error)
 
-    if (error.code === "BRANCH_NOT_FOUND") {
-      return res.status(404).json({
-        success: false,
-        message: "Branch not found"
-      })
-    }
+    // 🔥 Mongo duplicate key (главная защита)
 
-    if (error.code === "SERVICE_NOT_AVAILABLE") {
-      return res.status(400).json({
-        success: false,
-        message: "Service not available"
-      })
-    }
-
-    if (error.code === "SLOT_BOOKED") {
+    if (error.code === 11000) {
       return res.status(409).json({
         success: false,
-        message: "Time slot already booked"
+        message: "Time slot already booked for this level"
+      })
+    }
+
+    // 🔥 ошибки из сервиса (по тексту)
+
+    if (error.message === "Branch not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message === "Service not available") {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message === "Service level is required") {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message.includes("Time slot already booked")) {
+      return res.status(409).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message === "Time slot is full") {
+      return res.status(409).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message === "Time slot is blocked") {
+      return res.status(409).json({
+        success: false,
+        message: error.message
       })
     }
 

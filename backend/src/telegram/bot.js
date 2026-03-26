@@ -19,7 +19,22 @@ import {
   handleBranchSelect
 } from "./flows/branch.flow.js"
 
-import { showTodayBookings } from "./flows/admin.flow.js"
+// legacy admin.flow bookings kept, but CRM booking flow is now used
+import {
+  startBookingManagement,
+  showBookingList,
+  openBookingCard,
+  confirmCancelBooking,
+  confirmCompleteBooking,
+  doCancelBooking,
+  doCompleteBooking,
+  showBookingMenu,
+  startRescheduleBooking,
+  selectRescheduleDate,
+  selectRescheduleTime,
+  doRescheduleBooking,
+  backReschedule
+} from "./flows/booking.flow.js"
 
 import {
   startAddressFlow,
@@ -172,7 +187,92 @@ bot.action("cancel:address", async (ctx) => {
 
 bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
   if (!isAdmin(ctx)) return
-  return showTodayBookings(ctx)
+  return startBookingManagement(ctx)
+})
+
+// ================= BOOKINGS (CRM) =================
+
+bot.action("crm_booking:menu", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return showBookingMenu(ctx)
+})
+
+bot.action(/crm_booking:list:(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const type = ctx.match[1]
+  const page = Number(ctx.match[2]) || 0
+  return showBookingList(ctx, { type, page })
+})
+
+bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return openBookingCard(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return confirmCancelBooking(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return confirmCompleteBooking(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:cancel_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return doCancelBooking(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:complete_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return doCompleteBooking(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:reschedule_start:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const bookingId = ctx.match[1]
+  const type = ctx.match[2]
+  const page = Number(ctx.match[3]) || 0
+  return startRescheduleBooking(ctx, { bookingId, type, page })
+})
+
+bot.action(/crm_booking:reschedule_date:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const date = ctx.match[1]
+  return selectRescheduleDate(ctx, { date })
+})
+
+bot.action(/crm_booking:reschedule_time:(\d{2}:\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const time = ctx.match[1]
+  return selectRescheduleTime(ctx, { time })
+})
+
+bot.action("crm_booking:reschedule_do", async (ctx) => {
+  if (!isAdmin(ctx)) return
+  return doRescheduleBooking(ctx)
+})
+
+bot.action(/crm_booking:reschedule_back:(card|dates|times)/, async (ctx) => {
+  if (!isAdmin(ctx)) return
+  const step = ctx.match[1]
+  return backReschedule(ctx, { step })
 })
 
 bot.hears(BUTTONS.PRICE, async (ctx) => {

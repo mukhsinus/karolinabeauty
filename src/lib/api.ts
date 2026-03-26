@@ -4,18 +4,20 @@ const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:4000/api"
 
 /*
-GET availability
+GET services
 */
-
 
 export const fetchServices = async () => {
   const res = await fetch(`${API_URL}/services`)
   if (!res.ok) {
     throw new Error("Failed to load services")
   }
-  // The backend returns the array directly, not { data: ... }
   return res.json()
 }
+
+/*
+GET branches
+*/
 
 export const fetchBranches = async () => {
   const res = await fetch(`${API_URL}/branches`)
@@ -25,21 +27,41 @@ export const fetchBranches = async () => {
   return res.json()
 }
 
+/*
+GET availability
+*/
+
 export const fetchAvailability = async (
   branchId: string,
+  serviceId: string,
+  serviceLevel: string,
   date: string
 ) => {
+
+  const params = new URLSearchParams({
+    branchId,
+    serviceId,
+    serviceLevel,
+    date
+  })
+
   const res = await fetch(
-    `${API_URL}/availability?branchId=${branchId}&date=${date}`
+    `${API_URL}/availability?${params.toString()}`
   )
+
   if (!res.ok) {
     throw new Error("Failed to load availability")
   }
-  const json = await res.json();
-  // Defensive: if backend returns { data: [...] }, return just the array
-  if (json && Array.isArray(json.data)) return json.data;
-  if (Array.isArray(json)) return json;
-  return [];
+
+  const json = await res.json()
+
+  // backend: { success: true, data: [...] }
+  if (json && Array.isArray(json.data)) return json.data
+
+  // fallback
+  if (Array.isArray(json)) return json
+
+  return []
 }
 
 /*

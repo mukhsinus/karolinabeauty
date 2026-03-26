@@ -32,6 +32,7 @@ export function useBooking() {
 
   const { data: services = [], isLoading, error } = useServices()
   console.log("SERVICES:", services)
+
   const { data: branches = [], isLoading: branchesLoading } = useBranches()
 
   // ======================
@@ -70,10 +71,10 @@ export function useBooking() {
     else setStep(4)
   }, [booking])
 
-    useEffect(() => {
+  useEffect(() => {
     console.log("STEP:", step)
     console.log("BOOKING:", booking)
-    }, [step, booking])
+  }, [step, booking])
 
   // ======================
   // DERIVED
@@ -114,15 +115,11 @@ export function useBooking() {
         : []
       if (prices.length === 0) return undefined
 
-      // Prefer exact level match (multi-level services)
       const match = prices.find((p) => p.level === level)
       if (match) return match
 
-      // For single-price services we still select `"master"` in UI,
-      // so fall back to the only available price.
       if (prices.length === 1) return prices[0]
 
-      // Otherwise try master, then just use first price.
       return prices.find((p) => p.level === "master") ?? prices[0]
     },
     [selectedService, level]
@@ -133,7 +130,6 @@ export function useBooking() {
     [booking.time]
   )
 
-  // VIP price is not counted automatically, only shown in summary
   const finalPrice = useMemo(() => {
     if (!selectedPrice) return 0
     return selectedPrice.price
@@ -144,8 +140,11 @@ export function useBooking() {
     [branches, branchId]
   )
 
+  // 🔥 КРИТИЧЕСКИЙ ФИКС
   const { data: bookedSlots = [] } = useAvailability(
     branchId,
+    serviceId,
+    level,
     booking.date
   )
 
@@ -156,7 +155,6 @@ export function useBooking() {
   const selectBranch = (id: string) => {
     setBranchId(id)
 
-    // ✅ НЕ трогаем name / phone
     setBooking((b) => ({
       ...b,
       service: "",
@@ -206,7 +204,6 @@ export function useBooking() {
     setBooking((b) => ({ ...b, phone }))
   }
 
-  // ✅ ФИКС (добавлен date reset)
   const resetService = () => {
     setBooking((b) => ({
       ...b,
@@ -238,20 +235,11 @@ export function useBooking() {
   const buildPayload = () => {
     if (!selectedService || !branchId) return null
 
-    const levelLabelMap: Record<string, string> = {
-      master: "Мастер",
-      top: "Топ мастер",
-      premium: "Премиум",
-      promo: "Промо"
-    }
-    const serviceLevel = String(selectedPrice?.level || "")
-    const serviceLevelLabel = levelLabelMap[serviceLevel] || serviceLevel
-
     return {
       branchId,
       serviceId: selectedService.mongoId,
-      serviceName: selectedService.nameKey, // перевод делай в UI
-      serviceLevel: serviceLevelLabel,
+      serviceName: selectedService.nameKey,
+      serviceLevel: level, // 🔥 ВАЖНО: НЕ label, а raw значение
       serviceDuration: selectedService.duration,
       price: finalPrice,
       date: booking.date,
