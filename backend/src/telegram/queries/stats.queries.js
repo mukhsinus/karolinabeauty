@@ -1,6 +1,5 @@
 // backend/src/telegram/queries/stats.queries.js
 
-import mongoose from "mongoose"
 import Booking from "../../models/Booking.js"
 
 const toYMDLocal = (d) => {
@@ -80,40 +79,6 @@ export const getGroupedByBranch = async ({ start, end }) => {
     },
     { $project: { _id: 0, branchId: "$_id", branchName: 1, count: 1, revenue: 1 } },
     { $sort: { revenue: -1, count: -1, branchName: 1 } },
-  ])
-}
-
-export const getGroupedByService = async ({ start, end }) => {
-  // serviceId in Booking is a string (mongoId), serviceName is a translation key
-  return await Booking.aggregate([
-    {
-      $match: {
-        status: "confirmed",
-        date: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          serviceId: "$serviceId",
-          serviceName: "$serviceName",
-          serviceLevel: "$serviceLevel",
-        },
-        count: { $sum: 1 },
-        revenue: { $sum: "$price" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        serviceId: "$_id.serviceId",
-        serviceName: "$_id.serviceName",
-        serviceLevel: "$_id.serviceLevel",
-        count: 1,
-        revenue: 1,
-      },
-    },
-    { $sort: { revenue: -1, count: -1, serviceName: 1, serviceLevel: 1 } },
   ])
 }
 

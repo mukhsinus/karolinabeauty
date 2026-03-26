@@ -3,7 +3,6 @@
 import { Markup } from "telegraf"
 
 export const BOOKING_CB = {
-  MENU: "crm_booking:menu",
   LIST: "crm_booking:list", // crm_booking:list:<type>:<page>
   OPEN: "crm_booking:open", // crm_booking:open:<id>:<type>:<page>
   RESCHEDULE_START: "crm_booking:reschedule_start", // crm_booking:reschedule_start:<id>:<type>:<page>
@@ -18,10 +17,10 @@ export const BOOKING_CB = {
   COMPLETE_DO: "crm_booking:complete_do", // crm_booking:complete_do:<id>:<type>:<page>
 }
 
-export const bookingMenuKeyboard = () => {
+export const bookingPeriodKeyboard = () => {
   return Markup.inlineKeyboard([
     [Markup.button.callback("📅 Сегодня", `${BOOKING_CB.LIST}:today:0`)],
-    [Markup.button.callback("🗓 Следующие 7 дней", `${BOOKING_CB.LIST}:next7:0`)],
+    [Markup.button.callback("📅 7 дней", `${BOOKING_CB.LIST}:next7:0`)],
   ])
 }
 
@@ -42,8 +41,6 @@ export const bookingListKeyboard = ({ type, page, hasPrev, hasNext, items }) => 
   if (hasPrev) nav.push(Markup.button.callback("⬅️ Назад", `${BOOKING_CB.LIST}:${type}:${page - 1}`))
   if (hasNext) nav.push(Markup.button.callback("➡️ Вперёд", `${BOOKING_CB.LIST}:${type}:${page + 1}`))
   if (nav.length) rows.push(nav)
-
-  rows.push([Markup.button.callback("🏠 Меню", BOOKING_CB.MENU)])
 
   return Markup.inlineKeyboard(rows)
 }
@@ -67,7 +64,6 @@ export const bookingCardKeyboard = ({ bookingId, type, page }) => {
       ),
     ],
     [Markup.button.callback("⬅️ К списку", `${BOOKING_CB.LIST}:${type}:${page}`)],
-    [Markup.button.callback("🏠 Меню", BOOKING_CB.MENU)],
   ])
 }
 
@@ -99,7 +95,6 @@ export const rescheduleDatesKeyboard = ({ dates }) => {
 
   rows.push([
     Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:card`),
-    Markup.button.callback("🏠 Меню", BOOKING_CB.MENU),
   ])
 
   return Markup.inlineKeyboard(rows)
@@ -118,7 +113,6 @@ export const rescheduleTimesKeyboard = ({ times }) => {
 
   rows.push([
     Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:dates`),
-    Markup.button.callback("🏠 Меню", BOOKING_CB.MENU),
   ])
 
   return Markup.inlineKeyboard(rows)
@@ -130,7 +124,6 @@ export const rescheduleConfirmKeyboard = () => {
       Markup.button.callback("✅ Подтвердить", BOOKING_CB.RESCHEDULE_DO),
       Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:times`),
     ],
-    [Markup.button.callback("🏠 Меню", BOOKING_CB.MENU)],
   ])
 }
 

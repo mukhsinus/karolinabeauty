@@ -59,7 +59,7 @@ import {
   backCapacity
 } from "./flows/capacity.flow.js"
 
-import { startStatsFlow, selectStatsPeriod, showStats } from "./flows/stats.flow.js"
+import { startStatsFlow, selectStatsPeriod } from "./flows/stats.flow.js"
 
 import {
   startAddressFlow,
@@ -245,10 +245,7 @@ bot.command("stats", async (ctx) => {
 
 // ================= BOOKINGS (CRM) =================
 
-bot.action("crm_booking:menu", async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return showBookingMenu(ctx)
-})
+// crm_booking:menu removed (reply keyboard main menu)
 
 bot.action(/crm_booking:list:(today|next7):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
@@ -438,12 +435,7 @@ bot.action(/crm_stats:period:(today|next7)/, async (ctx) => {
   return selectStatsPeriod(ctx, { period })
 })
 
-bot.action(/crm_stats:group:(branch|service):(today|next7)/, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  const group = ctx.match[1]
-  const period = ctx.match[2]
-  return showStats(ctx, { group, period })
-})
+// crm_stats:group removed (only by-branch supported)
 
 bot.hears(BUTTONS.PRICE, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
@@ -453,6 +445,11 @@ bot.hears(BUTTONS.PRICE, async (ctx) => {
 bot.hears(BUTTONS.HOURS, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startHoursFlow(ctx)
+})
+
+bot.hears(BUTTONS.STATS, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  return startStatsFlow(ctx)
 })
 
 // ================= TEXT ROUTER =================

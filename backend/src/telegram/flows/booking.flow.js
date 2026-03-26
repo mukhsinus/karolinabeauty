@@ -1,7 +1,7 @@
 // backend/src/telegram/flows/booking.flow.js
 
 import {
-  bookingMenuKeyboard,
+  bookingPeriodKeyboard,
   bookingListKeyboard,
   bookingCardKeyboard,
   bookingConfirmKeyboard,
@@ -12,7 +12,6 @@ import {
 
 import {
   listBookings,
-  listBranches,
   getBookingCardData,
   cancelBooking,
   completeBooking,
@@ -46,21 +45,10 @@ const SERVICE_LEVELS = [
   { id: "premium", label: "Премиум" }
 ]
 
-const filtersBranchKeyboard = (branches) => {
-  const rows = branches.map((b) => [
-    Markup.button.callback(`🏢 ${b.name}`, `crm_booking:filter_branch:${b._id}`)
-  ])
-
-  rows.push([Markup.button.callback("🏠 Меню", "crm_booking:menu")])
-  return Markup.inlineKeyboard(rows)
-}
-
 const filtersLevelKeyboard = () => {
   const rows = SERVICE_LEVELS.map((l) => [
     Markup.button.callback(l.label, `crm_booking:filter_level:${l.id}`)
   ])
-
-  rows.push([Markup.button.callback("🏠 Меню", "crm_booking:menu")])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -157,7 +145,12 @@ const formatBookingCard = (b) => {
 
 export const startBookingManagement = async (ctx) => {
   try {
-    // reset booking scope + start filter selection
+    const sessionBranchId = ctx.session?.branchId || null
+    if (!sessionBranchId) {
+      return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
+    }
+
+    // reset booking scope + level selection (branch is already selected in onboarding)
     setPayload(ctx, {
       booking: {
         ...ctx.session.payload.booking,
@@ -165,17 +158,12 @@ export const startBookingManagement = async (ctx) => {
         page: 0,
         limit: ctx.session?.payload?.booking?.limit || 5,
         selectedBookingId: null,
-        branchId: null,
+        branchId: sessionBranchId,
         serviceLevel: null
       }
     })
 
-    const branches = await listBranches()
-    if (!branches || branches.length === 0) {
-      return ctx.reply("⚠️ Нет доступных филиалов")
-    }
-
-    return ctx.reply("Выберите филиал:", filtersBranchKeyboard(branches))
+    return ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
   } catch (error) {
     console.error("[CRM] startBookingManagement error:", error)
     return safeErrorReply(ctx)
@@ -184,15 +172,12 @@ export const startBookingManagement = async (ctx) => {
 
 export const selectBookingBranchFilter = async (ctx, { branchId }) => {
   try {
-    if (!isValidObjectId(branchId)) return safeErrorReply(ctx)
-
-    setPayload(ctx, {
-      booking: {
-        ...ctx.session.payload.booking,
-        branchId,
-        serviceLevel: null
-      }
-    })
+    // Branch selection must happen only once during onboarding.
+    // Keep handler for backward-compat if old inline buttons exist.
+    void branchId
+    try {
+      await ctx.answerCbQuery("Филиал выбирается при входе")
+    } catch {}
 
     try {
       await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard())
@@ -217,9 +202,13 @@ export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
     })
 
     try {
-      await ctx.editMessageText("Управление записями:", bookingMenuKeyboard())
+      await ctx.answerCbQuery()
+    } catch {}
+
+    try {
+      await ctx.editMessageText("Выберите период:", bookingPeriodKeyboard())
     } catch {
-      await ctx.reply("Управление записями:", bookingMenuKeyboard())
+      await ctx.reply("Выберите период:", bookingPeriodKeyboard())
     }
   } catch (error) {
     console.error("[CRM] selectBookingLevelFilter error:", error)
@@ -232,8 +221,12 @@ export const showBookingList = async (ctx, { type, page }) => {
     const limit = ctx.session?.payload?.booking?.limit || 5
     const safePage = Math.max(0, Number(page) || 0)
 
-    const branchId = ctx.session?.payload?.booking?.branchId || null
+    const branchId = ctx.session?.branchId || null
     const serviceLevel = ctx.session?.payload?.booking?.serviceLevel || null
+
+    if (!branchId) {
+      return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
+    }
 
     const result = await listBookings({
       type,
@@ -433,18 +426,7 @@ export const doCompleteBooking = async (ctx, { bookingId, type, page }) => {
   }
 }
 
-export const showBookingMenu = async (ctx) => {
-  try {
-    try {
-      await ctx.editMessageText("Управление записями:", bookingMenuKeyboard())
-    } catch {
-      await ctx.reply("Управление записями:", bookingMenuKeyboard())
-    }
-  } catch (error) {
-    console.error("[CRM] showBookingMenu error:", error)
-    return safeErrorReply(ctx)
-  }
-}
+// showBookingMenu removed (main menu is reply keyboard)
 
 // ================= RESCHEDULING =================
 

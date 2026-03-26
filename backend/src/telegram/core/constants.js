@@ -24,7 +24,9 @@ export const STEPS = {
 }
 
 export const BUTTONS = {
-  BOOKINGS: "📅 Сегодняшние записи",
-  PRICE: "💰 Изменить цену",
-  HOURS: "🕐 Изменить часы работы",
+  // main menu
+  BOOKINGS: "📅 Записи",
+  PRICE: "💰 Цены",
+  HOURS: "🕒 Часы работы",
+  STATS: "📊 Статистика",
 }
