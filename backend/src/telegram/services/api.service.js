@@ -4,11 +4,30 @@ import Service from "../../models/Service.js"
 import Booking from "../../models/Booking.js"
 import Branch from "../../models/Branch.js"
 
+const BUSINESS_TZ =
+  process.env.BUSINESS_TIMEZONE ||
+  process.env.TZ ||
+  // default for this project/business (change via env in production)
+  "Asia/Tashkent"
+
+const toYMDInTZ = (d, timeZone = BUSINESS_TZ) => {
+  try {
+    return new Intl.DateTimeFormat("sv-SE", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).format(new Date(d))
+  } catch {
+    return new Date(d).toISOString().slice(0, 10)
+  }
+}
+
 // ================= BOOKINGS =================
 
 export const getTodayBookings = async () => {
   try {
-    const today = new Date().toISOString().slice(0, 10)
+    const today = toYMDInTZ(new Date())
 
     return await Booking.find({
       date: today,
