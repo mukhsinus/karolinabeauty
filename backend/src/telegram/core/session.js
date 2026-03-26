@@ -18,15 +18,6 @@ export const initialSession = () => ({
       selectedBookingId: null
     },
 
-    // price
-    serviceId: null,
-    newPrice: null,
-
-    // hours
-    hoursBranchId: null,
-    newHours: null
-    ,
-
     // capacity crm
     capacity: {
       branchId: null,

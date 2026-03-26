@@ -68,23 +68,6 @@ import {
   cancelAddress
 } from "./flows/address.flow.js"
 
-import {
-  startPriceFlow,
-  handleCategorySelect,
-  handleServiceSelect,
-  handlePriceInput,
-  confirmPrice,
-  cancelPrice
-} from "./flows/price.flow.js"
-
-import {
-  startHoursFlow,
-  handleHoursInput,
-  handleHoursBranchSelect,
-  confirmHours,
-  cancelHours
-} from "./flows/hours.flow.js"
-
 // keyboards
 import { adminKeyboard } from "./keyboards/admin.keyboard.js"
 
@@ -162,50 +145,10 @@ bot.action(/branch_select:(.+)/, async (ctx) => {
   return handleBranchSelect(ctx, ctx.match[1])
 })
 
-// hours branch
-bot.action(/hours_branch:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return handleHoursBranchSelect(ctx, ctx.match[1])
-})
-
 // address branch
 bot.action(/address_branch:(.+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleAddressBranchSelect(ctx, ctx.match[1])
-})
-
-// price category
-bot.action(/price_category:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return handleCategorySelect(ctx, ctx.match[1])
-})
-
-// price service
-bot.action(/price_service:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return handleServiceSelect(ctx, ctx.match[1])
-})
-
-// confirm / cancel price
-bot.action("confirm:price", async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return confirmPrice(ctx)
-})
-
-bot.action("cancel:price", async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return cancelPrice(ctx)
-})
-
-// confirm / cancel hours
-bot.action("confirm:hours", async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return confirmHours(ctx)
-})
-
-bot.action("cancel:hours", async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  return cancelHours(ctx)
 })
 
 // confirm / cancel address
@@ -436,16 +379,6 @@ bot.action(/crm_stats:period:(today|next7)/, async (ctx) => {
 
 // crm_stats:group removed (only by-branch supported)
 
-bot.hears(BUTTONS.PRICE, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
-  return startPriceFlow(ctx)
-})
-
-bot.hears(BUTTONS.HOURS, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
-  return startHoursFlow(ctx)
-})
-
 bot.hears(BUTTONS.STATS, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startStatsFlow(ctx)
@@ -459,13 +392,6 @@ bot.on("text", async (ctx) => {
   const step = ctx.session.step
 
   switch (step) {
-
-    case STEPS.WAITING_PRICE:
-      return handlePriceInput(ctx)
-
-    case STEPS.WAITING_HOURS:
-      return handleHoursInput(ctx)
-
     default:
       setStep(ctx, STEPS.ADMIN_PANEL)
 
