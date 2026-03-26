@@ -25,3 +25,29 @@ export const isBlockedSlot = async ({ branchId, date, time }) => {
   return !!exists
 }
 
+export const blockDay = async ({ branchId, date }) => {
+  const doc = await BlockedSlot.findOneAndUpdate(
+    { branchId, date, time: null },
+    { $setOnInsert: { branchId, date, time: null } },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  )
+  return doc
+}
+
+export const blockTime = async ({ branchId, date, time }) => {
+  const doc = await BlockedSlot.findOneAndUpdate(
+    { branchId, date, time },
+    { $setOnInsert: { branchId, date, time } },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  )
+  return doc
+}
+
+export const unblockDay = async ({ branchId, date }) => {
+  return await BlockedSlot.deleteOne({ branchId, date, time: null })
+}
+
+export const unblockTime = async ({ branchId, date, time }) => {
+  return await BlockedSlot.deleteOne({ branchId, date, time })
+}
+

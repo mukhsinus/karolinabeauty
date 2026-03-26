@@ -25,6 +25,15 @@ export const initialSession = () => ({
     // hours
     hoursBranchId: null,
     newHours: null
+    ,
+
+    // capacity crm
+    capacity: {
+      branchId: null,
+      serviceId: null,
+      serviceLevel: null,
+      date: null
+    }
   }
 })
 

@@ -29,7 +29,7 @@ export const bookingListKeyboard = ({ type, page, hasPrev, hasNext, items }) => 
   const rows = []
 
   for (const b of items) {
-    const title = `🕒 ${b.time} • ${b.name}`
+    const title = `📅 ${b.date} 🕒 ${b.time} • ${b.name}`
     rows.push([
       Markup.button.callback(
         title.slice(0, 60),

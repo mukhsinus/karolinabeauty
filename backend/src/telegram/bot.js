@@ -35,6 +35,31 @@ import {
   doRescheduleBooking,
   backReschedule
 } from "./flows/booking.flow.js"
+import { selectBookingBranchFilter, selectBookingLevelFilter } from "./flows/booking.flow.js"
+
+import {
+  startBlockingFlow,
+  selectBlockingBranch,
+  selectBlockingDate,
+  doBlockDay,
+  startBlockTimePick,
+  doBlockTime,
+  doUnblockDay,
+  doUnblockTime,
+  backBlocking
+} from "./flows/blocking.flow.js"
+
+import {
+  startCapacityFlow,
+  selectCapacityBranch,
+  selectCapacityService,
+  selectCapacityLevel,
+  selectCapacityDate,
+  setCapacityValue,
+  backCapacity
+} from "./flows/capacity.flow.js"
+
+import { startStatsFlow, selectStatsPeriod, showStats } from "./flows/stats.flow.js"
 
 import {
   startAddressFlow,
@@ -202,6 +227,22 @@ bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
   return startBookingManagement(ctx)
 })
 
+// quick entrypoint for blocking CRM
+bot.command("blocking", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  return startBlockingFlow(ctx)
+})
+
+bot.command("capacity", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  return startCapacityFlow(ctx)
+})
+
+bot.command("stats", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  return startStatsFlow(ctx)
+})
+
 // ================= BOOKINGS (CRM) =================
 
 bot.action("crm_booking:menu", async (ctx) => {
@@ -214,6 +255,18 @@ bot.action(/crm_booking:list:(today|next7):(\d+)/, async (ctx) => {
   const type = ctx.match[1]
   const page = Number(ctx.match[2]) || 0
   return showBookingList(ctx, { type, page })
+})
+
+bot.action(/crm_booking:filter_branch:([^:]+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const branchId = ctx.match[1]
+  return selectBookingBranchFilter(ctx, { branchId })
+})
+
+bot.action(/crm_booking:filter_level:(master|top|premium)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const serviceLevel = ctx.match[1]
+  return selectBookingLevelFilter(ctx, { serviceLevel })
 })
 
 bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
@@ -285,6 +338,111 @@ bot.action(/crm_booking:reschedule_back:(card|dates|times)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const step = ctx.match[1]
   return backReschedule(ctx, { step })
+})
+
+// ================= BLOCKING (CRM) =================
+
+bot.action(/crm_blocking:branch:([^:]+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const branchId = ctx.match[1]
+  return selectBlockingBranch(ctx, { branchId })
+})
+
+bot.action(/crm_blocking:date:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const date = ctx.match[1]
+  return selectBlockingDate(ctx, { date })
+})
+
+bot.action("crm_blocking:block_day", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  return doBlockDay(ctx)
+})
+
+bot.action("crm_blocking:block_time_pick", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  return startBlockTimePick(ctx)
+})
+
+bot.action(/crm_blocking:time:(\d{2}:\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const time = ctx.match[1]
+  return doBlockTime(ctx, { time })
+})
+
+bot.action("crm_blocking:unblock_day", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  return doUnblockDay(ctx)
+})
+
+bot.action(/crm_blocking:unblock_time:(\d{2}:\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const time = ctx.match[1]
+  return doUnblockTime(ctx, { time })
+})
+
+bot.action(/crm_blocking:back:(branch|date|actions)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const step = ctx.match[1]
+  return backBlocking(ctx, { step })
+})
+
+// ================= CAPACITY (CRM) =================
+
+bot.action(/crm_capacity:branch:([^:]+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const branchId = ctx.match[1]
+  return selectCapacityBranch(ctx, { branchId })
+})
+
+bot.action(/crm_capacity:service:([^:]+)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const serviceId = ctx.match[1]
+  return selectCapacityService(ctx, { serviceId })
+})
+
+bot.action(/crm_capacity:level:(master|top|premium)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const serviceLevel = ctx.match[1]
+  return selectCapacityLevel(ctx, { serviceLevel })
+})
+
+bot.action(/crm_capacity:date:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const date = ctx.match[1]
+  return selectCapacityDate(ctx, { date })
+})
+
+bot.action(/crm_capacity:set:([1-5])/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const value = Number(ctx.match[1])
+  return setCapacityValue(ctx, { value })
+})
+
+bot.action(/crm_capacity:back:(branch|service|level|date|summary)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const step = ctx.match[1]
+  return backCapacity(ctx, { step })
+})
+
+// ================= STATS (CRM) =================
+
+bot.action("crm_stats:menu", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  return startStatsFlow(ctx)
+})
+
+bot.action(/crm_stats:period:(today|next7)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const period = ctx.match[1]
+  return selectStatsPeriod(ctx, { period })
+})
+
+bot.action(/crm_stats:group:(branch|service):(today|next7)/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const group = ctx.match[1]
+  const period = ctx.match[2]
+  return showStats(ctx, { group, period })
 })
 
 bot.hears(BUTTONS.PRICE, async (ctx) => {

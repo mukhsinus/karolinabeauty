@@ -2,6 +2,7 @@
 
 import {
   getBookingById,
+  getActiveBranches,
   getBookingsNext7DaysPage,
   getBookingsTodayPage
 } from "../queries/booking.queries.js"
@@ -23,21 +24,25 @@ export const listBookings = async ({
   const normalizedPage = Math.max(0, Number(page) || 0)
   const normalizedLimit = Math.min(10, Math.max(3, Number(limit) || 5))
 
-  // filters are reserved for future; intentionally unused for now
-  void branchId
-  void serviceLevel
-
   if (type === "next7") {
     return await getBookingsNext7DaysPage({
       page: normalizedPage,
-      limit: normalizedLimit
+      limit: normalizedLimit,
+      branchId,
+      serviceLevel
     })
   }
 
   return await getBookingsTodayPage({
     page: normalizedPage,
-    limit: normalizedLimit
+    limit: normalizedLimit,
+    branchId,
+    serviceLevel
   })
+}
+
+export const listBranches = async () => {
+  return await getActiveBranches()
 }
 
 export const getBookingCardData = async (bookingId) => {

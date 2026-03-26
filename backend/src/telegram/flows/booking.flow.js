@@ -12,6 +12,7 @@ import {
 
 import {
   listBookings,
+  listBranches,
   getBookingCardData,
   cancelBooking,
   completeBooking,
@@ -20,6 +21,7 @@ import {
 } from "../actions/booking.actions.js"
 
 import { setPayload } from "../core/session.js"
+import { Markup } from "telegraf"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -37,6 +39,30 @@ const toISODate = (d) => d.toISOString().slice(0, 10)
 
 const isDateISO = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s)
 const isTimeHHMM = (s) => typeof s === "string" && /^\d{2}:\d{2}$/.test(s)
+
+const SERVICE_LEVELS = [
+  { id: "master", label: "Мастер" },
+  { id: "top", label: "Топ" },
+  { id: "premium", label: "Премиум" }
+]
+
+const filtersBranchKeyboard = (branches) => {
+  const rows = branches.map((b) => [
+    Markup.button.callback(`🏢 ${b.name}`, `crm_booking:filter_branch:${b._id}`)
+  ])
+
+  rows.push([Markup.button.callback("🏠 Меню", "crm_booking:menu")])
+  return Markup.inlineKeyboard(rows)
+}
+
+const filtersLevelKeyboard = () => {
+  const rows = SERVICE_LEVELS.map((l) => [
+    Markup.button.callback(l.label, `crm_booking:filter_level:${l.id}`)
+  ])
+
+  rows.push([Markup.button.callback("🏠 Меню", "crm_booking:menu")])
+  return Markup.inlineKeyboard(rows)
+}
 
 const getNextDays = (count) => {
   const days = []
@@ -130,16 +156,75 @@ const formatBookingCard = (b) => {
 }
 
 export const startBookingManagement = async (ctx) => {
-  setPayload(ctx, {
-    booking: {
-      type: "today",
-      page: 0,
-      limit: 5,
-      selectedBookingId: null,
-    },
-  })
+  try {
+    // reset booking scope + start filter selection
+    setPayload(ctx, {
+      booking: {
+        ...ctx.session.payload.booking,
+        type: "today",
+        page: 0,
+        limit: ctx.session?.payload?.booking?.limit || 5,
+        selectedBookingId: null,
+        branchId: null,
+        serviceLevel: null
+      }
+    })
 
-  return ctx.reply("Управление записями:", bookingMenuKeyboard())
+    const branches = await listBranches()
+    if (!branches || branches.length === 0) {
+      return ctx.reply("⚠️ Нет доступных филиалов")
+    }
+
+    return ctx.reply("Выберите филиал:", filtersBranchKeyboard(branches))
+  } catch (error) {
+    console.error("[CRM] startBookingManagement error:", error)
+    return safeErrorReply(ctx)
+  }
+}
+
+export const selectBookingBranchFilter = async (ctx, { branchId }) => {
+  try {
+    if (!isValidObjectId(branchId)) return safeErrorReply(ctx)
+
+    setPayload(ctx, {
+      booking: {
+        ...ctx.session.payload.booking,
+        branchId,
+        serviceLevel: null
+      }
+    })
+
+    try {
+      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard())
+    } catch {
+      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
+    }
+  } catch (error) {
+    console.error("[CRM] selectBookingBranchFilter error:", error)
+    return safeErrorReply(ctx)
+  }
+}
+
+export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
+  try {
+    if (!SERVICE_LEVELS.some((l) => l.id === serviceLevel)) return safeErrorReply(ctx)
+
+    setPayload(ctx, {
+      booking: {
+        ...ctx.session.payload.booking,
+        serviceLevel
+      }
+    })
+
+    try {
+      await ctx.editMessageText("Управление записями:", bookingMenuKeyboard())
+    } catch {
+      await ctx.reply("Управление записями:", bookingMenuKeyboard())
+    }
+  } catch (error) {
+    console.error("[CRM] selectBookingLevelFilter error:", error)
+    return safeErrorReply(ctx)
+  }
 }
 
 export const showBookingList = async (ctx, { type, page }) => {
@@ -147,7 +232,16 @@ export const showBookingList = async (ctx, { type, page }) => {
     const limit = ctx.session?.payload?.booking?.limit || 5
     const safePage = Math.max(0, Number(page) || 0)
 
-    const result = await listBookings({ type, page: safePage, limit })
+    const branchId = ctx.session?.payload?.booking?.branchId || null
+    const serviceLevel = ctx.session?.payload?.booking?.serviceLevel || null
+
+    const result = await listBookings({
+      type,
+      page: safePage,
+      limit,
+      branchId,
+      serviceLevel
+    })
 
     setPayload(ctx, {
       booking: {
