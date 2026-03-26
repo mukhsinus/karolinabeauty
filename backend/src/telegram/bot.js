@@ -64,6 +64,18 @@ import {
 // keyboards
 import { adminKeyboard } from "./keyboards/admin.keyboard.js"
 
+const denyAdminAction = async (ctx) => {
+  try {
+    await ctx.answerCbQuery("⛔ Access denied", { show_alert: true })
+  } catch {}
+}
+
+const denyAdminMessage = async (ctx) => {
+  try {
+    await ctx.reply("⛔ Access denied")
+  } catch {}
+}
+
 // ================= INIT =================
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
@@ -112,7 +124,7 @@ bot.hears(["🇷🇺 Русский", "🇺🇿 O'zbekcha"], async (ctx) => {
 // ================= CONTACT =================
 
 bot.on("contact", async (ctx) => {
-  if (!isAdmin(ctx)) return ctx.reply("⛔ Access denied")
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   if (ctx.session.step !== STEPS.PHONE) return
 
   return handleContact(ctx)
@@ -122,90 +134,90 @@ bot.on("contact", async (ctx) => {
 
 // branch (вход)
 bot.action(/branch_select:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleBranchSelect(ctx, ctx.match[1])
 })
 
 // hours branch
 bot.action(/hours_branch:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleHoursBranchSelect(ctx, ctx.match[1])
 })
 
 // address branch
 bot.action(/address_branch:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleAddressBranchSelect(ctx, ctx.match[1])
 })
 
 // price category
 bot.action(/price_category:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleCategorySelect(ctx, ctx.match[1])
 })
 
 // price service
 bot.action(/price_service:(.+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return handleServiceSelect(ctx, ctx.match[1])
 })
 
 // confirm / cancel price
 bot.action("confirm:price", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return confirmPrice(ctx)
 })
 
 bot.action("cancel:price", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return cancelPrice(ctx)
 })
 
 // confirm / cancel hours
 bot.action("confirm:hours", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return confirmHours(ctx)
 })
 
 bot.action("cancel:hours", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return cancelHours(ctx)
 })
 
 // confirm / cancel address
 bot.action("confirm:address", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return confirmAddress(ctx)
 })
 
 bot.action("cancel:address", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return cancelAddress(ctx)
 })
 
 // ================= ADMIN =================
 
 bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startBookingManagement(ctx)
 })
 
 // ================= BOOKINGS (CRM) =================
 
 bot.action("crm_booking:menu", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return showBookingMenu(ctx)
 })
 
 bot.action(/crm_booking:list:(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const type = ctx.match[1]
   const page = Number(ctx.match[2]) || 0
   return showBookingList(ctx, { type, page })
 })
 
 bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -213,7 +225,7 @@ bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
 })
 
 bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -221,7 +233,7 @@ bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7):(\d+)/, async (ctx)
 })
 
 bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -229,7 +241,7 @@ bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7):(\d+)/, async (ct
 })
 
 bot.action(/crm_booking:cancel_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -237,7 +249,7 @@ bot.action(/crm_booking:cancel_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
 })
 
 bot.action(/crm_booking:complete_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -245,7 +257,7 @@ bot.action(/crm_booking:complete_do:([^:]+):(today|next7):(\d+)/, async (ctx) =>
 })
 
 bot.action(/crm_booking:reschedule_start:([^:]+):(today|next7):(\d+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
   const page = Number(ctx.match[3]) || 0
@@ -253,42 +265,42 @@ bot.action(/crm_booking:reschedule_start:([^:]+):(today|next7):(\d+)/, async (ct
 })
 
 bot.action(/crm_booking:reschedule_date:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const date = ctx.match[1]
   return selectRescheduleDate(ctx, { date })
 })
 
 bot.action(/crm_booking:reschedule_time:(\d{2}:\d{2})/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const time = ctx.match[1]
   return selectRescheduleTime(ctx, { time })
 })
 
 bot.action("crm_booking:reschedule_do", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   return doRescheduleBooking(ctx)
 })
 
 bot.action(/crm_booking:reschedule_back:(card|dates|times)/, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const step = ctx.match[1]
   return backReschedule(ctx, { step })
 })
 
 bot.hears(BUTTONS.PRICE, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startPriceFlow(ctx)
 })
 
 bot.hears(BUTTONS.HOURS, async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startHoursFlow(ctx)
 })
 
 // ================= TEXT ROUTER =================
 
 bot.on("text", async (ctx) => {
-  if (!isAdmin(ctx)) return
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
 
   const step = ctx.session.step
 

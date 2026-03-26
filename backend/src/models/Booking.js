@@ -125,6 +125,4 @@ BookingSchema.index(
 Поиск бронирований клиента
 */
 
-BookingSchema.index({ phone: 1 })
-
 export default mongoose.model("Booking", BookingSchema)
