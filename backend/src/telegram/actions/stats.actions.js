@@ -6,6 +6,8 @@ import {
   getGroupedByBranch,
 } from "../queries/stats.queries.js"
 
+import { formatDate } from "../utils/date.js"
+
 export const loadStats = async ({ period }) => {
   const { start, end } = getStatsRange(period)
 
@@ -18,8 +20,8 @@ export const loadStats = async ({ period }) => {
 export const formatStatsMessage = ({ period, start, end, totals, rows }) => {
   const header =
     period === "next7"
-      ? `📊 Статистика (следующие 7 дней)\n📅 ${start} — ${end}`
-      : `📊 Статистика (сегодня)\n📅 ${start}`
+      ? `📊 Статистика (следующие 7 дней)\n📅 ${formatDate(start)} — ${formatDate(end)}`
+      : `📊 Статистика (сегодня)\n📅 ${formatDate(start)}`
 
   const totalLine = `\n\nВсего записей: ${totals.count}\nВыручка: ${totals.revenue}`
 

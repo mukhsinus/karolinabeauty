@@ -4,11 +4,13 @@ dotenv.config()
 
 import { Telegraf, session } from "telegraf"
 import Branch from "../models/Branch.js"
+import { acquireRuntimeLock, renewRuntimeLock, releaseRuntimeLock } from "./core/runtimeLock.js"
 
 // core
 import { initialSession, setStep } from "./core/session.js"
 import { STEPS, BUTTONS } from "./core/constants.js"
 import { isAdmin } from "./core/guards.js"
+import { handleBack } from "./flows/nav.flow.js"
 
 // flows
 import { startFlow } from "./flows/start.flow.js"
@@ -23,6 +25,7 @@ import {
 import {
   startBookingManagement,
   showBookingList,
+  selectNext7Day,
   openBookingCard,
   confirmCancelBooking,
   confirmCompleteBooking,
@@ -50,7 +53,6 @@ import {
 
 import {
   startCapacityFlow,
-  selectCapacityBranch,
   selectCapacityService,
   selectCapacityLevel,
   selectCapacityDate,
@@ -88,6 +90,8 @@ const denyAdminMessage = async (ctx) => {
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
 let isStarted = false
+let lockRenewTimer = null
+const BOT_LOCK_KEY = "telegram_polling"
 
 // ================= SESSION =================
 
@@ -139,6 +143,11 @@ bot.on("contact", async (ctx) => {
 
 // ================= CALLBACKS =================
 
+bot.action("crm_nav:back", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  return handleBack(ctx)
+})
+
 // branch (вход)
 bot.action(/branch_select:(.+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
@@ -169,6 +178,11 @@ bot.hears(BUTTONS.BOOKINGS, async (ctx) => {
   return startBookingManagement(ctx)
 })
 
+bot.hears(BUTTONS.MASTERS, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  return startCapacityFlow(ctx)
+})
+
 // quick entrypoint for blocking CRM
 bot.command("blocking", async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
@@ -189,11 +203,17 @@ bot.command("stats", async (ctx) => {
 
 // crm_booking:menu removed (reply keyboard main menu)
 
-bot.action(/crm_booking:list:(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:list:(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const type = ctx.match[1]
   const page = Number(ctx.match[2]) || 0
   return showBookingList(ctx, { type, page })
+})
+
+bot.action(/crm_booking:day_select:(\d{4}-\d{2}-\d{2})/, async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminAction(ctx)
+  const date = ctx.match[1]
+  return selectNext7Day(ctx, { date })
 })
 
 bot.action(/crm_booking:filter_branch:([^:]+)/, async (ctx) => {
@@ -208,7 +228,7 @@ bot.action(/crm_booking:filter_level:(master|top|premium)/, async (ctx) => {
   return selectBookingLevelFilter(ctx, { serviceLevel })
 })
 
-bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:open:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -216,7 +236,7 @@ bot.action(/crm_booking:open:([^:]+):(today|next7):(\d+)/, async (ctx) => {
   return openBookingCard(ctx, { bookingId, type, page })
 })
 
-bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -224,7 +244,7 @@ bot.action(/crm_booking:cancel_confirm:([^:]+):(today|next7):(\d+)/, async (ctx)
   return confirmCancelBooking(ctx, { bookingId, type, page })
 })
 
-bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -232,7 +252,7 @@ bot.action(/crm_booking:complete_confirm:([^:]+):(today|next7):(\d+)/, async (ct
   return confirmCompleteBooking(ctx, { bookingId, type, page })
 })
 
-bot.action(/crm_booking:cancel_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:cancel_do:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -240,7 +260,7 @@ bot.action(/crm_booking:cancel_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
   return doCancelBooking(ctx, { bookingId, type, page })
 })
 
-bot.action(/crm_booking:complete_do:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:complete_do:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -248,7 +268,7 @@ bot.action(/crm_booking:complete_do:([^:]+):(today|next7):(\d+)/, async (ctx) =>
   return doCompleteBooking(ctx, { bookingId, type, page })
 })
 
-bot.action(/crm_booking:reschedule_start:([^:]+):(today|next7):(\d+)/, async (ctx) => {
+bot.action(/crm_booking:reschedule_start:([^:]+):(today|next7|day):(\d+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const bookingId = ctx.match[1]
   const type = ctx.match[2]
@@ -328,12 +348,6 @@ bot.action(/crm_blocking:back:(branch|date|actions)/, async (ctx) => {
 
 // ================= CAPACITY (CRM) =================
 
-bot.action(/crm_capacity:branch:([^:]+)/, async (ctx) => {
-  if (!isAdmin(ctx)) return denyAdminAction(ctx)
-  const branchId = ctx.match[1]
-  return selectCapacityBranch(ctx, { branchId })
-})
-
 bot.action(/crm_capacity:service:([^:]+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const serviceId = ctx.match[1]
@@ -358,7 +372,7 @@ bot.action(/crm_capacity:set:([1-5])/, async (ctx) => {
   return setCapacityValue(ctx, { value })
 })
 
-bot.action(/crm_capacity:back:(branch|service|level|date|summary)/, async (ctx) => {
+bot.action(/crm_capacity:back:(service|level|date|summary)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const step = ctx.match[1]
   return backCapacity(ctx, { step })
@@ -460,16 +474,44 @@ export const startBot = async () => {
   } catch {}
 
   try {
+    const ttlSec = Number(process.env.BOT_LOCK_TTL_SEC || 55)
+    const lock = await acquireRuntimeLock({ key: BOT_LOCK_KEY, ttlSec })
+    if (!lock.acquired) {
+      console.warn("Telegram bot lock is held by another instance. Skipping polling start.")
+      return
+    }
+
     await bot.launch()
     isStarted = true
     console.log("✅ Bot started")
+
+    const renewEveryMs = Math.max(10000, Math.floor((ttlSec * 1000) / 2))
+    lockRenewTimer = setInterval(async () => {
+      try {
+        const r = await renewRuntimeLock({ key: BOT_LOCK_KEY, ttlSec })
+        if (!r.ok) {
+          console.error("Lost Telegram bot lock. Stopping bot to avoid conflicts.")
+          stopBot()
+        }
+      } catch (e) {
+        console.error("Telegram bot lock renew error:", e?.message || e)
+      }
+    }, renewEveryMs)
   } catch (e) {
     console.error("❌ Bot launch error:", e.message)
+    try {
+      await releaseRuntimeLock({ key: BOT_LOCK_KEY })
+    } catch {}
   }
 }
 
 export const stopBot = () => {
   if (!isStarted) return
+  if (lockRenewTimer) {
+    clearInterval(lockRenewTimer)
+    lockRenewTimer = null
+  }
   bot.stop()
   isStarted = false
+  void releaseRuntimeLock({ key: BOT_LOCK_KEY })
 }

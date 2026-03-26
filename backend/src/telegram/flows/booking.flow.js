@@ -2,6 +2,7 @@
 
 import {
   bookingPeriodKeyboard,
+  bookingNext7DaysKeyboard,
   bookingListKeyboard,
   bookingCardKeyboard,
   bookingConfirmKeyboard,
@@ -21,6 +22,8 @@ import {
 
 import { setPayload } from "../core/session.js"
 import { Markup } from "telegraf"
+import { formatDate } from "../utils/date.js"
+import { pushNav, resetNav } from "../core/nav.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -38,6 +41,44 @@ const toISODate = (d) => d.toISOString().slice(0, 10)
 
 const isDateISO = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s)
 const isTimeHHMM = (s) => typeof s === "string" && /^\d{2}:\d{2}$/.test(s)
+
+const BUSINESS_TZ =
+  process.env.BUSINESS_TIMEZONE ||
+  process.env.TZ ||
+  "Asia/Tashkent"
+
+const todayYMDInTZ = () => {
+  try {
+    return new Intl.DateTimeFormat("sv-SE", {
+      timeZone: BUSINESS_TZ,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).format(new Date())
+  } catch {
+    return toISODate(new Date())
+  }
+}
+
+const addDaysYMD = (ymd, days) => {
+  const [y, m, d] = String(ymd).split("-").map(Number)
+  const dt = new Date(y, (m || 1) - 1, d || 1)
+  dt.setDate(dt.getDate() + days)
+  return toISODate(dt)
+}
+
+const getNext7DaysRange = () => {
+  const start = todayYMDInTZ()
+  const dates = []
+  for (let i = 0; i < 7; i++) dates.push(addDaysYMD(start, i))
+  return dates
+}
+
+const showNext7DayPicker = async (ctx) => {
+  const dates = getNext7DaysRange()
+  pushNav(ctx, { flow: "booking", step: "day_picker" })
+  await ctx.editMessageText("Выберите день:", bookingNext7DaysKeyboard({ dates }))
+}
 
 const SERVICE_LEVELS = [
   { id: "master", label: "Мастер" },
@@ -115,14 +156,14 @@ const showRescheduleTimesForDate = async (ctx, { bookingId, date }) => {
   if (availableSlots.length === 0) {
     const dates = getNextDays(14)
     await ctx.editMessageText(
-      `❌ Нет свободных слотов на ${date}`,
+      `❌ Нет свободных слотов на ${formatDate(date)}`,
       rescheduleDatesKeyboard({ dates })
     )
     return
   }
 
   await ctx.editMessageText(
-    `Выберите время на ${date}:`,
+    `Выберите время на ${formatDate(date)}:`,
     rescheduleTimesKeyboard({ times: availableSlots })
   )
 }
@@ -138,13 +179,14 @@ const formatBookingCard = (b) => {
 💰 ${b.price}
 🏢 ${branchName}
 
-📅 ${b.date}
+📅 ${formatDate(b.date)}
 🆔 ${b._id}
 `
 }
 
 export const startBookingManagement = async (ctx) => {
   try {
+    resetNav(ctx)
     const sessionBranchId = ctx.session?.branchId || null
     if (!sessionBranchId) {
       return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
@@ -163,7 +205,14 @@ export const startBookingManagement = async (ctx) => {
       }
     })
 
-    return ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
+    pushNav(ctx, { flow: "booking", step: "level" })
+
+    try {
+      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard())
+    } catch {
+      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
+    }
+    return
   } catch (error) {
     console.error("[CRM] startBookingManagement error:", error)
     return safeErrorReply(ctx)
@@ -205,6 +254,8 @@ export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
       await ctx.answerCbQuery()
     } catch {}
 
+    pushNav(ctx, { flow: "booking", step: "period", params: { serviceLevel } })
+
     try {
       await ctx.editMessageText("Выберите период:", bookingPeriodKeyboard())
     } catch {
@@ -228,12 +279,35 @@ export const showBookingList = async (ctx, { type, page }) => {
       return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
     }
 
+    if (type === "next7") {
+      // production calendar UX: next7 -> pick a day first
+      try {
+        await ctx.answerCbQuery()
+      } catch {}
+      try {
+        return await showNext7DayPicker(ctx)
+      } catch {
+        // fallback to reply if message can't be edited
+        const dates = getNext7DaysRange()
+        pushNav(ctx, { flow: "booking", step: "day_picker" })
+        await ctx.reply("Выберите день:", bookingNext7DaysKeyboard({ dates }))
+        return
+      }
+    }
+
+    const selectedDate = ctx.session?.payload?.booking?.selectedDate || null
+    const dayDate = type === "day" ? selectedDate : null
+    if (type === "day" && !isDateISO(dayDate)) {
+      return showNext7DayPicker(ctx)
+    }
+
     const result = await listBookings({
       type,
       page: safePage,
       limit,
       branchId,
-      serviceLevel
+      serviceLevel,
+      date: dayDate
     })
 
     setPayload(ctx, {
@@ -246,15 +320,29 @@ export const showBookingList = async (ctx, { type, page }) => {
       },
     })
 
+    pushNav(ctx, { flow: "booking", step: "list", params: { type, page: result.page } })
+
     const header =
-      type === "next7"
-        ? "Записи на ближайшие 7 дней:"
+      type === "day"
+        ? `Записи на ${formatDate(dayDate)}:`
         : "Записи на сегодня:"
 
-    const text =
-      result.items.length === 0
-        ? `${header}\n\n(пусто)`
-        : header
+    const text = (() => {
+      if (result.items.length === 0) {
+        return type === "day"
+          ? `${header}\n\nНет записей на этот день`
+          : `${header}\n\n(пусто)`
+      }
+
+      if (type !== "day") return header
+
+      const blocks = result.items.map((b) => {
+        const lvl =
+          b.serviceLevel === "master" ? "Мастер" : b.serviceLevel === "top" ? "Топ" : "Премиум"
+        return `📅 ${formatDate(b.date)}\n🕒 ${b.time}\n👤 ${b.name}\n💇 ${b.serviceName || "-"} (${lvl})\n💰 ${b.price}`
+      })
+      return `${header}\n\n${blocks.join("\n\n")}`
+    })()
 
     // Prefer editing message when coming from callback; fallback to reply.
     try {
@@ -286,6 +374,26 @@ export const showBookingList = async (ctx, { type, page }) => {
   }
 }
 
+export const selectNext7Day = async (ctx, { date }) => {
+  try {
+    if (!isDateISO(date)) return safeErrorReply(ctx)
+
+    setPayload(ctx, {
+      booking: {
+        ...ctx.session.payload.booking,
+        selectedDate: date
+      }
+    })
+
+    pushNav(ctx, { flow: "booking", step: "day_list", params: { date, page: 0 } })
+
+    return showBookingList(ctx, { type: "day", page: 0 })
+  } catch (error) {
+    console.error("[CRM] selectNext7Day error:", error)
+    return safeErrorReply(ctx)
+  }
+}
+
 export const openBookingCard = async (ctx, { bookingId, type, page }) => {
   try {
     if (!isValidObjectId(bookingId)) {
@@ -312,6 +420,12 @@ export const openBookingCard = async (ctx, { bookingId, type, page }) => {
       } catch {}
       return showBookingList(ctx, { type, page: Math.max(0, Number(page) || 0) })
     }
+
+    pushNav(ctx, {
+      flow: "booking",
+      step: "card",
+      params: { bookingId, type, page: Math.max(0, Number(page) || 0) }
+    })
 
     const text = formatBookingCard(booking)
 
@@ -351,6 +465,12 @@ export const confirmCancelBooking = async (ctx, { bookingId, type, page }) => {
       },
     })
 
+    pushNav(ctx, {
+      flow: "booking",
+      step: "confirm_cancel",
+      params: { bookingId, type, page: Math.max(0, Number(page) || 0) }
+    })
+
     await ctx.editMessageText(
       "Подтвердить отмену записи?",
       bookingConfirmKeyboard({ kind: "cancel", bookingId, type, page: Math.max(0, Number(page) || 0) })
@@ -378,6 +498,12 @@ export const confirmCompleteBooking = async (ctx, { bookingId, type, page }) => 
         ...ctx.session.payload.booking,
         selectedBookingId: bookingId,
       },
+    })
+
+    pushNav(ctx, {
+      flow: "booking",
+      step: "confirm_complete",
+      params: { bookingId, type, page: Math.max(0, Number(page) || 0) }
     })
 
     await ctx.editMessageText(
@@ -463,6 +589,12 @@ export const startRescheduleBooking = async (ctx, { bookingId, type, page }) => 
       }
     })
 
+    pushNav(ctx, {
+      flow: "booking",
+      step: "reschedule_dates",
+      params: { bookingId, type, page: Math.max(0, Number(page) || 0) }
+    })
+
     const dates = getNextDays(14)
     const text = `Выберите дату переноса:\n\n🆔 ${bookingId}`
 
@@ -492,6 +624,12 @@ export const selectRescheduleDate = async (ctx, { date }) => {
       }
     })
 
+    pushNav(ctx, {
+      flow: "booking",
+      step: "reschedule_times",
+      params: { bookingId, date }
+    })
+
     return showRescheduleTimesForDate(ctx, { bookingId, date })
   } catch (error) {
     console.error("[CRM] selectRescheduleDate error:", error)
@@ -519,6 +657,12 @@ export const selectRescheduleTime = async (ctx, { time }) => {
       }
     })
 
+    pushNav(ctx, {
+      flow: "booking",
+      step: "reschedule_confirm",
+      params: { bookingId, date, time }
+    })
+
     const booking = await getBookingCardData(bookingId)
     if (!booking || booking.status !== "confirmed") {
       try {
@@ -528,7 +672,7 @@ export const selectRescheduleTime = async (ctx, { time }) => {
     }
 
     await ctx.editMessageText(
-      `Текущая запись:\n📅 ${booking.date}\n🕒 ${booking.time}\n\nНовая:\n📅 ${date}\n🕒 ${time}\n\nПеренести?`,
+      `Текущая запись:\n📅 ${formatDate(booking.date)}\n🕒 ${booking.time}\n\nНовая:\n📅 ${formatDate(date)}\n🕒 ${time}\n\nПеренести?`,
       rescheduleConfirmKeyboard()
     )
   } catch (error) {

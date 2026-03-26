@@ -1,13 +1,13 @@
 // backend/src/telegram/flows/capacity.flow.js
 
 import { setPayload } from "../core/session.js"
-import { getBranches } from "../services/api.service.js"
 import Service from "../../models/Service.js"
+import { pushNav, resetNav } from "../core/nav.js"
+import { formatDate } from "../utils/date.js"
 
 import { getSlotCapacity, upsertSlotCapacity } from "../../services/capacity.service.js"
 
 import {
-  branchesKeyboard,
   servicesKeyboard,
   levelsKeyboard,
   datesKeyboard,
@@ -49,36 +49,21 @@ const renderSummary = async (ctx) => {
     return safeErrorReply(ctx)
   }
 
+  const service = await Service.findById(serviceId).select("nameKey category").lean()
   const capacity = await getSlotCapacity({ branchId, serviceId, serviceLevel, date })
   await ctx.editMessageText(
-    `Мастера / Capacity\n\n🏢 ${branchId}\n💇 ${serviceId}\n⭐ ${serviceLevel}\n📅 ${date}\n\nТекущая capacity: ${capacity}\n\nВыберите новую (1–5):`,
+    `👨‍🔧 Мастера\n\n💇 Услуга: ${service?.nameKey || "-"}\n⭐ Уровень: ${serviceLevel}\n📅 Дата: ${formatDate(date)}\n\nСейчас: ${capacity}\n\nВыберите количество (1–5):`,
     capacityKeyboard()
   )
 }
 
 export const startCapacityFlow = async (ctx) => {
   try {
-    setPayload(ctx, {
-      capacity: {
-        branchId: null,
-        serviceId: null,
-        serviceLevel: null,
-        date: null
-      }
-    })
-
-    const branches = await getBranches()
-    if (!branches?.length) return ctx.reply("⚠️ Нет доступных филиалов")
-    return ctx.reply("Выберите филиал:", branchesKeyboard(branches))
-  } catch (error) {
-    console.error("[CRM] startCapacityFlow error:", error)
-    return safeErrorReply(ctx)
-  }
-}
-
-export const selectCapacityBranch = async (ctx, { branchId }) => {
-  try {
-    if (!isValidObjectId(branchId)) return safeErrorReply(ctx)
+    resetNav(ctx)
+    const branchId = ctx.session?.branchId || null
+    if (!isValidObjectId(branchId)) {
+      return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
+    }
 
     setPayload(ctx, {
       capacity: {
@@ -94,13 +79,17 @@ export const selectCapacityBranch = async (ctx, { branchId }) => {
       .sort({ category: 1, nameKey: 1 })
       .lean()
 
-    if (!services?.length) {
-      return ctx.editMessageText("⚠️ Нет активных услуг")
-    }
+    if (!services?.length) return ctx.reply("⚠️ Нет активных услуг")
 
-    return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+    pushNav(ctx, { flow: "capacity", step: "service" })
+    try {
+      await ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
+    } catch {
+      await ctx.reply("Выберите услугу:", servicesKeyboard(services))
+    }
+    return
   } catch (error) {
-    console.error("[CRM] selectCapacityBranch error:", error)
+    console.error("[CRM] startCapacityFlow error:", error)
     return safeErrorReply(ctx)
   }
 }
@@ -112,12 +101,14 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
     setPayload(ctx, {
       capacity: {
         ...ctx.session.payload.capacity,
+        branchId: ctx.session?.branchId || ctx.session.payload.capacity?.branchId,
         serviceId,
         serviceLevel: null,
         date: null
       }
     })
 
+    pushNav(ctx, { flow: "capacity", step: "level", params: { serviceId } })
     return ctx.editMessageText("Выберите уровень:", levelsKeyboard())
   } catch (error) {
     console.error("[CRM] selectCapacityService error:", error)
@@ -138,6 +129,7 @@ export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
     })
 
     const dates = getNextDays(14)
+    pushNav(ctx, { flow: "capacity", step: "date", params: { serviceLevel } })
     return ctx.editMessageText("Выберите дату:", datesKeyboard(dates))
   } catch (error) {
     console.error("[CRM] selectCapacityLevel error:", error)
@@ -156,6 +148,7 @@ export const selectCapacityDate = async (ctx, { date }) => {
       }
     })
 
+    pushNav(ctx, { flow: "capacity", step: "summary", params: { date } })
     return renderSummary(ctx)
   } catch (error) {
     console.error("[CRM] selectCapacityDate error:", error)
@@ -188,7 +181,13 @@ export const setCapacityValue = async (ctx, { value }) => {
       await ctx.answerCbQuery("Сохранено")
     } catch {}
 
-    return renderSummary(ctx)
+    try {
+      await ctx.editMessageText(`✅ На ${formatDate(date)} установлено ${v} мастера(ов)`, capacityKeyboard())
+    } catch {
+      // fallback to summary if we cannot edit this message
+      return renderSummary(ctx)
+    }
+    return
   } catch (error) {
     console.error("[CRM] setCapacityValue error:", error)
     return safeErrorReply(ctx)
@@ -200,19 +199,7 @@ export const backCapacity = async (ctx, { step }) => {
     const p = ctx.session?.payload?.capacity
     if (!p) return safeErrorReply(ctx)
 
-    if (step === "branch") return startCapacityFlow(ctx)
-
-    if (step === "service") {
-      const branchId = p.branchId
-      if (!isValidObjectId(branchId)) return safeErrorReply(ctx)
-
-      const services = await Service.find({ isActive: true })
-        .select("_id nameKey category")
-        .sort({ category: 1, nameKey: 1 })
-        .lean()
-
-      return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services))
-    }
+    if (step === "service") return startCapacityFlow(ctx)
 
     if (step === "level") {
       return ctx.editMessageText("Выберите уровень:", levelsKeyboard())

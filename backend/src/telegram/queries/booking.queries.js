@@ -120,3 +120,37 @@ export const getBookingsNext7DaysPage = async ({
   }
 }
 
+export const getBookingsByDatePage = async ({
+  date,
+  page = 0,
+  limit = 5,
+  branchId = null,
+  serviceLevel = null
+}) => {
+  const query = {
+    date,
+    status: "confirmed"
+  }
+
+  if (branchId) query.branchId = branchId
+  if (serviceLevel) query.serviceLevel = serviceLevel
+
+  const docs = await Booking.find(query)
+    .populate("branchId", "name address")
+    .sort({ time: 1 })
+    .skip(page * limit)
+    .limit(limit + 1)
+    .lean()
+
+  const hasNext = docs.length > limit
+  const items = hasNext ? docs.slice(0, limit) : docs
+
+  return {
+    items,
+    page,
+    limit,
+    hasPrev: page > 0,
+    hasNext
+  }
+}
+

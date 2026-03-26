@@ -1,9 +1,9 @@
 // backend/src/telegram/keyboards/capacity.keyboard.js
 
 import { Markup } from "telegraf"
+import { NAV_CB } from "../core/nav.js"
 
 export const CAPACITY_CB = {
-  BRANCH: "crm_capacity:branch", // crm_capacity:branch:<branchId>
   SERVICE: "crm_capacity:service", // crm_capacity:service:<serviceId>
   LEVEL: "crm_capacity:level", // crm_capacity:level:<level>
   DATE: "crm_capacity:date", // crm_capacity:date:<YYYY-MM-DD>
@@ -13,8 +13,9 @@ export const CAPACITY_CB = {
 
 export const branchesKeyboard = (branches) => {
   const rows = branches.map((b) => [
-    Markup.button.callback(`🏢 ${b.name}`, `${CAPACITY_CB.BRANCH}:${b._id}`)
+    Markup.button.callback(`🏢 ${b.name}`, `noop:${b._id}`)
   ])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -26,7 +27,8 @@ export const servicesKeyboard = (services) => {
     )
   ])
 
-  rows.push([Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:branch`)])
+  rows.push([Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:service`)])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -35,7 +37,8 @@ export const levelsKeyboard = () => {
     [Markup.button.callback("Мастер", `${CAPACITY_CB.LEVEL}:master`)],
     [Markup.button.callback("Топ", `${CAPACITY_CB.LEVEL}:top`)],
     [Markup.button.callback("Премиум", `${CAPACITY_CB.LEVEL}:premium`)],
-    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:service`)]
+    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:service`)],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 
@@ -51,6 +54,7 @@ export const datesKeyboard = (dates) => {
   }
 
   rows.push([Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:level`)])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -63,7 +67,8 @@ export const capacityKeyboard = () => {
       Markup.button.callback("4", `${CAPACITY_CB.SET}:4`),
       Markup.button.callback("5", `${CAPACITY_CB.SET}:5`),
     ],
-    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:date`)]
+    [Markup.button.callback("↩️ Назад", `${CAPACITY_CB.BACK}:date`)],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 

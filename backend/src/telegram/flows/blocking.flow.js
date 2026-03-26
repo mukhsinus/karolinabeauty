@@ -17,6 +17,7 @@ import {
   blockingActionsKeyboard,
   timesKeyboard
 } from "../keyboards/blocking.keyboard.js"
+import { pushNav, resetNav } from "../core/nav.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -92,6 +93,7 @@ const renderActions = async (ctx) => {
 
 export const startBlockingFlow = async (ctx) => {
   try {
+    resetNav(ctx)
     setPayload(ctx, {
       blocking: {
         branchId: null,
@@ -102,7 +104,13 @@ export const startBlockingFlow = async (ctx) => {
     const branches = await getBranches()
     if (!branches?.length) return ctx.reply("⚠️ Нет доступных филиалов")
 
-    return ctx.reply("Выберите филиал для блокировки:", branchesKeyboard(branches))
+    pushNav(ctx, { flow: "blocking", step: "branch" })
+    try {
+      await ctx.editMessageText("Выберите филиал для блокировки:", branchesKeyboard(branches))
+    } catch {
+      await ctx.reply("Выберите филиал для блокировки:", branchesKeyboard(branches))
+    }
+    return
   } catch (error) {
     console.error("[CRM] startBlockingFlow error:", error)
     return safeErrorReply(ctx)
@@ -121,6 +129,7 @@ export const selectBlockingBranch = async (ctx, { branchId }) => {
     })
 
     const dates = getNextDays(14)
+    pushNav(ctx, { flow: "blocking", step: "date", params: { branchId } })
     await ctx.editMessageText("Выберите дату:", datesKeyboard(dates))
   } catch (error) {
     console.error("[CRM] selectBlockingBranch error:", error)
@@ -142,6 +151,7 @@ export const selectBlockingDate = async (ctx, { date }) => {
       }
     })
 
+    pushNav(ctx, { flow: "blocking", step: "actions", params: { date } })
     return renderActions(ctx)
   } catch (error) {
     console.error("[CRM] selectBlockingDate error:", error)
@@ -175,6 +185,7 @@ export const startBlockTimePick = async (ctx) => {
     if (!isValidObjectId(branchId) || !isDateISO(date)) return safeErrorReply(ctx)
 
     const slots = generateTimeSlots(date)
+    pushNav(ctx, { flow: "blocking", step: "times" })
     await ctx.editMessageText(`Выберите время для блокировки (${date}):`, timesKeyboard(slots))
   } catch (error) {
     console.error("[CRM] startBlockTimePick error:", error)

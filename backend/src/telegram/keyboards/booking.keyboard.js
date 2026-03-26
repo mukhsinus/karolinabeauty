@@ -1,10 +1,13 @@
 // backend/src/telegram/keyboards/booking.keyboard.js
 
 import { Markup } from "telegraf"
+import { formatDate } from "../utils/date.js"
+import { NAV_CB } from "../core/nav.js"
 
 export const BOOKING_CB = {
   LIST: "crm_booking:list", // crm_booking:list:<type>:<page>
   OPEN: "crm_booking:open", // crm_booking:open:<id>:<type>:<page>
+  DAY_SELECT: "crm_booking:day_select", // crm_booking:day_select:<YYYY-MM-DD>
   RESCHEDULE_START: "crm_booking:reschedule_start", // crm_booking:reschedule_start:<id>:<type>:<page>
   RESCHEDULE_DATE: "crm_booking:reschedule_date", // crm_booking:reschedule_date:<YYYY-MM-DD>
   RESCHEDULE_TIME: "crm_booking:reschedule_time", // crm_booking:reschedule_time:<HH:MM>
@@ -21,6 +24,18 @@ export const bookingPeriodKeyboard = () => {
   return Markup.inlineKeyboard([
     [Markup.button.callback("📅 Сегодня", `${BOOKING_CB.LIST}:today:0`)],
     [Markup.button.callback("📅 7 дней", `${BOOKING_CB.LIST}:next7:0`)],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
+  ])
+}
+
+export const bookingNext7DaysKeyboard = ({ dates }) => {
+  const row = (dates || []).slice(0, 7).map((d) =>
+    Markup.button.callback(d.slice(8, 10), `${BOOKING_CB.DAY_SELECT}:${d}`)
+  )
+
+  return Markup.inlineKeyboard([
+    row,
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 
@@ -28,7 +43,9 @@ export const bookingListKeyboard = ({ type, page, hasPrev, hasNext, items }) => 
   const rows = []
 
   for (const b of items) {
-    const title = `📅 ${b.date} 🕒 ${b.time} • ${b.name}`
+    const title = type === "day"
+      ? `🕒 ${b.time} • ${b.name}`
+      : `📅 ${formatDate(b.date)} 🕒 ${b.time} • ${b.name}`
     rows.push([
       Markup.button.callback(
         title.slice(0, 60),
@@ -42,6 +59,7 @@ export const bookingListKeyboard = ({ type, page, hasPrev, hasNext, items }) => 
   if (hasNext) nav.push(Markup.button.callback("➡️ Вперёд", `${BOOKING_CB.LIST}:${type}:${page + 1}`))
   if (nav.length) rows.push(nav)
 
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -64,6 +82,7 @@ export const bookingCardKeyboard = ({ bookingId, type, page }) => {
       ),
     ],
     [Markup.button.callback("⬅️ К списку", `${BOOKING_CB.LIST}:${type}:${page}`)],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 
@@ -79,23 +98,25 @@ export const bookingConfirmKeyboard = ({ kind, bookingId, type, page }) => {
       Markup.button.callback("↩️ Назад", `${BOOKING_CB.OPEN}:${bookingId}:${type}:${page}`),
     ],
     [Markup.button.callback("⬅️ К списку", `${BOOKING_CB.LIST}:${type}:${page}`)],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 
 export const rescheduleDatesKeyboard = ({ dates }) => {
   const rows = []
-  const perRow = 7
+  const perRow = 4
 
   for (let i = 0; i < dates.length; i += perRow) {
     const chunk = dates.slice(i, i + perRow)
     rows.push(
-      chunk.map((d) => Markup.button.callback(d.slice(8, 10), `${BOOKING_CB.RESCHEDULE_DATE}:${d}`))
+      chunk.map((d) => Markup.button.callback(formatDate(d), `${BOOKING_CB.RESCHEDULE_DATE}:${d}`))
     )
   }
 
   rows.push([
     Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:card`),
   ])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
 
   return Markup.inlineKeyboard(rows)
 }
@@ -114,6 +135,7 @@ export const rescheduleTimesKeyboard = ({ times }) => {
   rows.push([
     Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:dates`),
   ])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
 
   return Markup.inlineKeyboard(rows)
 }
@@ -124,6 +146,7 @@ export const rescheduleConfirmKeyboard = () => {
       Markup.button.callback("✅ Подтвердить", BOOKING_CB.RESCHEDULE_DO),
       Markup.button.callback("↩️ Назад", `${BOOKING_CB.RESCHEDULE_BACK}:times`),
     ],
+    [Markup.button.callback("↩️ Назад", NAV_CB.BACK)],
   ])
 }
 

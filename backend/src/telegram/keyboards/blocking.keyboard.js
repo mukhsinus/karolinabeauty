@@ -1,6 +1,7 @@
 // backend/src/telegram/keyboards/blocking.keyboard.js
 
 import { Markup } from "telegraf"
+import { NAV_CB } from "../core/nav.js"
 
 export const BLOCKING_CB = {
   START: "crm_blocking:start",
@@ -19,6 +20,7 @@ export const branchesKeyboard = (branches) => {
     Markup.button.callback(`🏢 ${b.name}`, `${BLOCKING_CB.BRANCH}:${b._id}`)
   ])
 
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -36,6 +38,7 @@ export const datesKeyboard = (dates) => {
   }
 
   rows.push([Markup.button.callback("↩️ Назад", `${BLOCKING_CB.BACK}:branch`)])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -64,6 +67,7 @@ export const blockingActionsKeyboard = ({ isDayBlocked, blockedTimes }) => {
     Markup.button.callback("🏢 Сменить филиал", `${BLOCKING_CB.BACK}:branch`),
   ])
 
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 
@@ -77,6 +81,7 @@ export const timesKeyboard = (times) => {
   }
 
   rows.push([Markup.button.callback("↩️ Назад", `${BLOCKING_CB.BACK}:actions`)])
+  rows.push([Markup.button.callback("↩️ Назад", NAV_CB.BACK)])
   return Markup.inlineKeyboard(rows)
 }
 

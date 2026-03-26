@@ -4,7 +4,8 @@ import {
   getBookingById,
   getActiveBranches,
   getBookingsNext7DaysPage,
-  getBookingsTodayPage
+  getBookingsTodayPage,
+  getBookingsByDatePage
 } from "../queries/booking.queries.js"
 
 import {
@@ -19,10 +20,22 @@ export const listBookings = async ({
   page = 0,
   limit = 5,
   branchId = null,
-  serviceLevel = null
+  serviceLevel = null,
+  date = null
 }) => {
   const normalizedPage = Math.max(0, Number(page) || 0)
   const normalizedLimit = Math.min(10, Math.max(3, Number(limit) || 5))
+
+  if (type === "day") {
+    if (!date) throw new Error("Date is required")
+    return await getBookingsByDatePage({
+      date,
+      page: normalizedPage,
+      limit: normalizedLimit,
+      branchId,
+      serviceLevel
+    })
+  }
 
   if (type === "next7") {
     return await getBookingsNext7DaysPage({

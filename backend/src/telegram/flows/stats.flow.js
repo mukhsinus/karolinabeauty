@@ -2,6 +2,7 @@
 
 import { statsMenuKeyboard, statsPeriodKeyboard } from "../keyboards/stats.keyboard.js"
 import { loadStats, formatStatsMessage } from "../actions/stats.actions.js"
+import { pushNav, resetNav } from "../core/nav.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -14,7 +15,15 @@ const safeErrorReply = async (ctx) => {
 
 export const startStatsFlow = async (ctx) => {
   try {
-    return ctx.reply("Статистика:", statsMenuKeyboard())
+    resetNav(ctx)
+    pushNav(ctx, { flow: "stats", step: "menu" })
+
+    try {
+      await ctx.editMessageText("Статистика:", statsMenuKeyboard())
+    } catch {
+      await ctx.reply("Статистика:", statsMenuKeyboard())
+    }
+    return
   } catch (error) {
     console.error("[CRM] startStatsFlow error:", error)
     return safeErrorReply(ctx)
@@ -27,6 +36,7 @@ export const selectStatsPeriod = async (ctx, { period }) => {
     const data = await loadStats({ period })
     const text = formatStatsMessage({ period, ...data })
 
+    pushNav(ctx, { flow: "stats", step: "period", params: { period } })
     await ctx.editMessageText(text, statsPeriodKeyboard())
   } catch (error) {
     console.error("[CRM] selectStatsPeriod error:", error)

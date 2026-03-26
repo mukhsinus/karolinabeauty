@@ -8,10 +8,12 @@ export const adminKeyboard = (lang = "ru") => {
     lang === "uz"
       ? [
           [BUTTONS.BOOKINGS],
+          [BUTTONS.MASTERS],
           [BUTTONS.STATS],
         ]
       : [
           [BUTTONS.BOOKINGS],
+          [BUTTONS.MASTERS],
           [BUTTONS.STATS],
         ]
 

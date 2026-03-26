@@ -10,6 +10,10 @@ export const initialSession = () => ({
   branchId: null,
 
   payload: {
+    nav: {
+      stack: []
+    },
+
     // booking admin
     booking: {
       type: "today",
