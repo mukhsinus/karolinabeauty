@@ -1,0 +1,270 @@
+{
+  "nav.home": "Главная",
+  "nav.services": "Услуги",
+  "nav.gallery": "Галерея",
+  "nav.booking": "Запись",
+  "nav.contacts": "Контакты",
+  "nav.prices": "Цены",
+
+  "hero.title": "Студия красоты",
+  "hero.tagline": "Ваша красота — наше искусство",
+  "hero.book": "Записаться",
+  "hero.services": "Смотреть услуги",
+
+  "services.title": "Наши услуги",
+  "services.subtitle": "Премиальные процедуры красоты",
+  "services.book": "Записаться",
+  "services.from": "от",
+  "services.currency": "сум",
+
+  "gallery.title": "Наши работы",
+  "gallery.subtitle": "Посмотрите красоту, которую мы создаём",
+  "gallery.view_all": "Смотреть галерею",
+
+  "home.popular.title": "Популярные услуги",
+  "home.popular.subtitle": "Самые востребованные процедуры",
+
+  "home.popular.lashes.title": "Классическое наращивание",
+  "home.popular.lashes.desc": "Натуральный эффект и долговечный результат",
+
+  "home.popular.lamination.title": "Ламинирование ресниц",
+  "home.popular.lamination.desc": "Красивый изгиб и питание ресниц",
+
+  "home.popular.manicure.title": "Маникюр + покрытие",
+  "home.popular.manicure.desc": "Идеальная форма и стойкое покрытие",
+
+  "home.locations.title": "Наши салоны",
+  "home.locations.subtitle": "Выберите ближайший салон",
+  "home.locations.hours": "График работы",
+  "home.locations.route": "Маршрут",
+
+  "home.cta.title": "Готовы к идеальному образу?",
+  "home.cta.subtitle": "Запишитесь прямо сейчас",
+
+  "branches.friendship": "Метро Дружба Народов",
+  "branches.friendship.address": "ул. Фурката 15/1",
+  "branches.friendship.landmark": "Ориентир: Usmanov Dental Clinic",
+
+  "branches.yunusabad": "Юнусабад 14 квартал",
+  "branches.yunusabad.address": "дом 1",
+  "branches.yunusabad.landmark": "Ориентир: Корзинка Петушок",
+
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP отдельная запись",
+
+  "contacts.title": "Контакты",
+  "contacts.phone": "Позвонить",
+
+  "footer.rights": "Все права защищены",
+
+
+  "services.basic_master": "Мастер",
+  "services.top_master_regina": "ТОП мастер",
+  "services.premium_master_karolina": "Премиум мастер",
+
+  "services.classic_extension": "Классическое наращивание",
+  "services.led_extension": "LED наращивание",
+  "services.colored_lashes": "Цветные ресницы",
+  "services.lash_removal": "Снятие ресниц",
+
+  "services.classic": "Классика",
+  "services.lashes_2_3d": "2–3D объём",
+  "services.author_effect": "Авторский эффект",
+  "services.lashes_4_6d": "4–6D объём",
+
+  "services.lash_lamination": "Ламинирование ресниц",
+  "services.lash_lamination_plus": "Ламинирование + окрашивание + витамины",
+
+  "services.promo": "Акция",
+
+  "services.lashes": "Ресницы",
+  "services.nails": "Ногти",
+  "services.brows": "Брови",
+  "services.depilation": "Депиляция",
+  "services.hair": "Волосы",
+  "services.permanent": "Перманент",
+  "services.removal": "Удаление",
+
+
+  "services.manicure_pedicure": "Маникюр и педикюр",
+  "services.manicure": "Маникюр",
+  "services.manicure_plus": "Маникюр + укрепление + покрытие",
+  "services.pedicure": "Педикюр",
+  "services.pedicure_plus": "Педикюр + покрытие",
+  "services.combo_four_hands": "Комбо 4 руки",
+  "services.combo_promo": "Комбо по акции",
+
+  "services.japanese": "Японский уход",
+  "services.japanese_manicure": "Японский маникюр",
+  "services.japanese_pedicure": "Японский педикюр",
+  "services.japanese_combo": "Японское комбо",
+
+  "services.extra_services": "Дополнительные услуги",
+  "services.nail_removal": "Снятие",
+  "services.designs": "Дизайны",
+  "services.french": "Френч",
+  "services.vtirka": "Втирка",
+  "services.nail_repair": "Ремонт ногтя",
+  "services.paraffin_spa": "Парафин SPA",
+  "services.smart_oil_spa": "Smart oil SPA",
+
+  "services.brows_basic": "Брови",
+  "services.brow_architecture": "Архитектура бровей",
+  "services.brow_styling": "Долговременная укладка",
+  "services.brow_coloring": "Окрашивание бровей",
+  "services.muslim_lightening": "Мусульманское осветление",
+
+  "services.karolina_brows": "Брови — Каролина",
+
+  "services.depilation_main": "Депиляция",
+  "services.promo_depilation": "Акция: глубокое бикини + подмышки + ноги до колена",
+  "services.deep_bikini": "Глубокое бикини",
+  "services.armpits": "Подмышки",
+  "services.legs_to_knee": "Ноги до колена",
+  "services.full_legs": "Полные ноги",
+  "services.arms_to_elbow": "Руки до локтя",
+  "services.full_arms": "Полные руки",
+  "services.face": "Лицо",
+  "services.stomach": "Живот",
+  "services.back": "Спина",
+  "services.upper_lip": "Верхняя губа",
+
+  "services.hair_natural": "Натуральные волосы + работа",
+  "services.hair_40_45": "Натуральные волосы 40–45 см",
+  "services.hair_50_55": "Натуральные волосы 50–55 см",
+  "services.hair_60_65": "Натуральные волосы 60–65 см",
+  "services.hair_70_75": "Натуральные волосы 70–75 см",
+  "services.hair_80_85": "Натуральные волосы 80–85 см",
+
+  "services.hair_bioprotein": "Биопротеин волосы + работа",
+  "services.bio_60_70": "Биопротеин 60–70 см",
+  "services.bio_80_90": "Биопротеин 80–90 см",
+
+  "services.hair_extension_work": "Наращивание волос (только работа)",
+  "services.hair_100g_work": "Наращивание волос 100 г (только работа)",
+
+  "services.permanent_makeup": "Перманентный макияж",
+  "services.permanent_lips": "Перманент губ",
+  "services.permanent_brows": "Перманент бровей",
+  "services.interlash": "Межресничка",
+
+  "services.permanent_removal": "Удаление перманента",
+  "services.laser_removal": "Удаление лазером",
+  "services.remover_removal": "Удаление ремувером",
+
+  "branch.center.name": "Karolina Beauty Center",
+  "branch.center.address": "Ташкент • Центр",
+
+  "branch.chilanzar.name": "Филиал Чиланзар",
+  "branch.chilanzar.address": "Ул. Фурката 15/1",
+
+  "common.empty": "—",
+
+  "booking.title": "Онлайн запись",
+  "booking.select_branch": "Выберите салон",
+  "booking.select_date": "Выберите дату",
+  "booking.select_time": "Выберите время",
+  "booking.summary": "Детали записи",
+  "booking.branch": "Салон",
+  "booking.service": "Услуга",
+  "booking.date": "Дата",
+  "booking.time": "Время",
+  "booking.price": "Стоимость",
+  "booking.name": "Ваше имя",
+  "booking.phone": "Телефон",
+  "booking.confirm_booking": "Подтвердить запись",
+  "booking.success": "Запись подтверждена",
+  "booking.success_message": "Мы свяжемся с вами для подтверждения.",
+
+  "booking.details": "Ваши данные",
+
+  "contacts.address": "Адрес",
+  "contacts.instagram": "Instagram",
+  "contacts.working_hours": "Часы работы",
+
+  "footer.description": "Премиальный салон красоты в Ташкенте. Маникюр, ресницы, брови и депиляция от профессиональных мастеров.",
+  "footer.navigation": "Навигация",
+  "footer.contacts": "Контакты",
+  "footer.developed": "Разработано с заботой",
+  "contacts.telegram": "Телеграм",
+
+  "hero.alt": "Студия красоты Karolina Beauty Room",
+
+  "promo.badge": "Акция",
+  "promo.default": "Специальное предложение",
+  "promo.lamination_bonus": "С витаминами и окрашиванием",
+  "promo.cta": "Записаться",
+
+  "home.locations.map_alt": "Карта расположения салона",
+
+  "services.top_master": "Топ мастер",
+  "services.premium_master": "Премиум мастер",
+
+  "common.loading_services": "Загрузка услуг...",
+  "common.error_loading": "Ошибка загрузки",
+  "common.no_services": "Нет доступных услуг",
+  "common.details": "Подробнее",
+
+
+  "common.loading": "Загрузка...",
+  "common.close": "Закрыть",
+
+  "services.details.classic.title": "Наращивание ресниц",
+  "services.details.classic.description": "Используется обычный клей",
+  "services.details.classic.extra": "Любой объем / эффект / изгиб",
+
+  "services.details.led.title": "LED наращивание ресниц",
+  "services.details.led.description": "Нано-клей нового поколения",
+  "services.details.led.extra": "Любой объем / эффект / изгиб",
+
+  "services.details.removal.title": "Снятие ресниц",
+  "services.details.removal.description": "Без последующего наращивания",
+
+  "services.details.colored.title": "Цветные ресницы",
+
+  "services.details.brow_architecture.title": "Архитектура бровей",
+  "services.details.brow_architecture.description": "Подбор формы под лицо",
+
+  "services.details.brow_correction.title": "Коррекция бровей",
+  "services.details.brow_correction.description": "Воском или пинцетом",
+
+  "services.details.brow_coloring.title": "Окрашивание бровей",
+  "services.details.brow_coloring.description": "Хна или краска",
+
+  "services.details.brow_lamination.title": "Укладка бровей",
+  "services.details.brow_lamination.description": "Эффект уложенных бровей",
+
+  "services.details.brow_muslim.title": "Мусульманская коррекция",
+  "services.details.brow_muslim.description": "Осветление волосков",
+
+  "services.details.brow_set.title": "Сет бровей",
+  "services.details.brow_set.description": "Полный комплекс",
+  "services.details.brow_set.extra": "Выгоднее чем отдельно",
+
+  "common.change": "Изменить",
+
+  "booking.level": "Уровень",
+  "booking.vip": "VIP",
+
+
+  "contacts.phone.value": "+998 93 129 99 55",
+  "contacts.instagram.value": "@karolinabeautyroom",
+  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
+
+  "footer.contacts.email": "Почта",
+  "footer.contacts.phone": "Телефон",
+  "footer.contacts.telegram": "Телеграм",
+  "footer.contacts.instagram": "Инстаграм",
+  "contacts.call": "Позвонить",
+
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" },
+  "categories": {
+    "brows": "Брови",
+    "hair": "Волосы",
+    "lashes": "Ресницы",
+    "nails": "Ногти",
+    "permanent": "Перманент",
+    "removal": "Удаление"
+  }
+
+}

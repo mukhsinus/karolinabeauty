@@ -1,0 +1,259 @@
+{
+  "nav.home": "Home",
+  "nav.services": "Services",
+  "nav.gallery": "Gallery",
+  "nav.booking": "Booking",
+  "nav.contacts": "Contacts",
+  "nav.prices": "Prices",
+
+  "hero.title": "Beauty Studio",
+  "hero.tagline": "Your beauty is our art",
+  "hero.book": "Book Appointment",
+  "hero.services": "View services",
+
+  "services.title": "Our Services",
+  "services.subtitle": "Premium beauty treatments",
+  "services.book": "Book now",
+  "services.from": "from",
+  "services.currency": "UZS",
+
+  "gallery.title": "Our Work",
+  "gallery.subtitle": "See the beauty we create",
+  "gallery.view_all": "View gallery",
+
+  "home.popular.title": "Popular services",
+  "home.popular.subtitle": "Our clients' most requested treatments",
+
+  "home.popular.lashes.title": "Classic eyelash extension",
+  "home.popular.lashes.desc": "Natural look and long-lasting result",
+
+  "home.popular.lamination.title": "Lash lamination",
+  "home.popular.lamination.desc": "Beautiful curl and lash nutrition",
+
+  "home.popular.manicure.title": "Manicure + coating",
+  "home.popular.manicure.desc": "Perfect shape and durable coating",
+
+  "home.locations.title": "Our salons",
+  "home.locations.subtitle": "Choose the nearest location",
+  "home.locations.hours": "Working hours",
+  "home.locations.route": "Route",
+
+  "home.cta.title": "Ready for the perfect look?",
+  "home.cta.subtitle": "Book your beauty treatment now",
+
+  "branches.friendship": "Halqlar dostligi metro",
+  "branches.friendship.address": "Furkat street 15/1",
+  "branches.friendship.landmark": "Near Usmanov Dental Clinic",
+
+  "branches.yunusabad": "Yunusabad 14 quarter",
+  "branches.yunusabad.address": "House 1",
+  "branches.yunusabad.landmark": "Near Korzinka Petushok",
+
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP by extra appointment",
+
+  "contacts.title": "Contact us",
+  "contacts.phone": "Call",
+
+  "footer.rights": "All rights reserved",
+
+
+    "services.basic_master": "Master",
+    "services.top_master_regina": "Top master",
+    "services.premium_master_karolina": "Premium master",
+
+    "services.classic_extension": "Classic eyelash extension",
+    "services.led_extension": "LED eyelash extension",
+    "services.colored_lashes": "Colored lashes",
+    "services.lash_removal": "Lash removal",
+
+    "services.classic": "Classic",
+    "services.lashes_2_3d": "2–3D volume",
+    "services.author_effect": "Signature effect",
+    "services.lashes_4_6d": "4–6D volume",
+
+    "services.lash_lamination": "Lash lamination",
+    "services.lash_lamination_plus": "Lamination + coloring + vitamins",
+
+    "services.promo": "Promotion",
+
+    "services.lashes": "Lashes",
+    "services.nails": "Nails",
+    "services.brows": "Brows",
+    "services.depilation": "Depilation",
+    "services.hair": "Hair",
+    "services.permanent": "Permanent",
+    "services.removal": "Removal",
+
+    "services.manicure_pedicure": "Manicure & Pedicure",
+    "services.manicure": "Manicure",
+    "services.manicure_plus": "Manicure + strengthening + coating",
+    "services.pedicure": "Pedicure",
+    "services.pedicure_plus": "Pedicure + coating",
+    "services.combo_four_hands": "4-hands combo",
+    "services.combo_promo": "Promo combo",
+
+    "services.japanese": "Japanese care",
+    "services.japanese_manicure": "Japanese manicure",
+    "services.japanese_pedicure": "Japanese pedicure",
+    "services.japanese_combo": "Japanese combo",
+
+    "services.extra_services": "Extra services",
+    "services.nail_removal": "Removal",
+    "services.designs": "Designs",
+    "services.french": "French",
+    "services.vtirka": "Chrome powder",
+    "services.nail_repair": "Nail repair",
+    "services.paraffin_spa": "Paraffin SPA",
+    "services.smart_oil_spa": "Smart oil SPA",
+
+    "services.brows_basic": "Brows",
+    "services.brow_architecture": "Brow architecture",
+    "services.brow_styling": "Long-term brow styling",
+    "services.brow_coloring": "Brow coloring",
+    "services.muslim_lightening": "Muslim lightening",
+
+    "services.karolina_brows": "Brows — Karolina",
+
+    "services.depilation_main": "Depilation",
+    "services.promo_depilation": "Promo: deep bikini + armpits + legs to knee",
+    "services.deep_bikini": "Deep bikini",
+    "services.armpits": "Armpits",
+    "services.legs_to_knee": "Legs to knee",
+    "services.full_legs": "Full legs",
+    "services.arms_to_elbow": "Arms to elbow",
+    "services.full_arms": "Full arms",
+    "services.face": "Face",
+    "services.stomach": "Stomach",
+    "services.back": "Back",
+    "services.upper_lip": "Upper lip",
+
+    "services.hair_natural": "Natural hair + work",
+    "services.hair_40_45": "Natural hair 40–45 cm",
+    "services.hair_50_55": "Natural hair 50–55 cm",
+    "services.hair_60_65": "Natural hair 60–65 cm",
+    "services.hair_70_75": "Natural hair 70–75 cm",
+    "services.hair_80_85": "Natural hair 80–85 cm",
+
+    "services.hair_bioprotein": "Bioprotein hair + work",
+    "services.bio_60_70": "Bioprotein 60–70 cm",
+    "services.bio_80_90": "Bioprotein 80–90 cm",
+
+    "services.hair_extension_work": "Hair extension (work only)",
+    "services.hair_100g_work": "Hair extension 100g (work only)",
+
+    "services.permanent_makeup": "Permanent makeup",
+    "services.permanent_lips": "Permanent lips",
+    "services.permanent_brows": "Permanent brows",
+    "services.interlash": "Interlash",
+
+    "services.permanent_removal": "Permanent removal",
+    "services.laser_removal": "Laser removal",
+    "services.remover_removal": "Remover removal",
+
+    "branch.center.name": "Karolina Beauty Center",
+    "branch.center.address": "Tashkent • Center",
+
+    "branch.chilanzar.name": "Branch Chilanzar",
+    "branch.chilanzar.address": "Furkat street 15/1",
+
+    "common.empty": "—",
+
+    "booking.title": "Book an appointment",
+    "booking.select_branch": "Select a salon",
+    "booking.select_date": "Select a date",
+    "booking.select_time": "Select a time",
+    "booking.summary": "Booking summary",
+    "booking.branch": "Salon",
+    "booking.service": "Service",
+    "booking.date": "Date",
+    "booking.time": "Time",
+    "booking.price": "Price",
+    "booking.name": "Your name",
+    "booking.phone": "Phone",
+    "booking.confirm_booking": "Confirm booking",
+    "booking.success": "Booking confirmed",
+    "booking.success_message": "We will contact you shortly.",
+
+    "booking.details": "Your details",
+
+    "contacts.address": "Address",
+    "contacts.instagram": "Instagram",
+    "contacts.working_hours": "Working hours",
+
+    "footer.description": "Premium beauty salon in Tashkent. Manicure, lashes, brows and depilation by professional masters.",
+    "footer.navigation": "Navigation",
+    "footer.contacts": "Contacts",
+    "footer.developed": "Developed with care",
+    "contacts.telegram": "Telegram",
+
+    "hero.alt": "Karolina Beauty Room beauty studio",
+
+    "promo.badge": "Promo",
+    "promo.default": "Special offer",
+    "promo.lamination_bonus": "With vitamins and tinting",
+    "promo.cta": "Book now",
+
+    "home.locations.map_alt": "Salon location map",
+
+    "services.top_master": "Top master",
+    "services.premium_master": "Premium master",
+
+    "common.loading_services": "Loading services...",
+    "common.error_loading": "Loading error",
+    "common.no_services": "No services available",
+    "common.details": "Details",
+
+
+    "common.loading": "Loading...",
+    "common.close": "Close",
+
+    "services.details.classic.title": "Eyelash Extensions",
+    "services.details.classic.description": "Standard adhesive is used",
+    "services.details.classic.extra": "Any volume / effect / curl",
+
+    "services.details.led.title": "LED Lash Extensions",
+    "services.details.led.description": "Next-generation nano adhesive",
+    "services.details.led.extra": "Any volume / effect / curl",
+
+    "services.details.removal.title": "Lash Removal",
+    "services.details.removal.description": "Without re-application",
+
+    "services.details.colored.title": "Colored Lashes",
+
+    "services.details.brow_architecture.title": "Brow Architecture",
+    "services.details.brow_architecture.description": "Customized to face shape",
+
+    "services.details.brow_correction.title": "Brow Correction",
+    "services.details.brow_correction.description": "Wax or tweezers",
+
+    "services.details.brow_coloring.title": "Brow Coloring",
+    "services.details.brow_coloring.description": "Henna or dye",
+
+    "services.details.brow_lamination.title": "Brow Lamination",
+    "services.details.brow_lamination.description": "Sleek, styled brow effect",
+
+    "services.details.brow_muslim.title": "Muslim Brow Treatment",
+    "services.details.brow_muslim.description": "Lightening unwanted hair",
+
+    "services.details.brow_set.title": "Full Brow Set",
+    "services.details.brow_set.description": "Complete brow treatment",
+    "services.details.brow_set.extra": "Better value than individual services",
+
+    "common.change": "Change",
+
+    "booking.level": "Level",
+    "booking.vip": "VIP",
+
+    "contacts.phone.value": "+998 93 129 99 55",
+    "contacts.instagram.value": "@karolinabeautyroom",
+    "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
+
+    "footer.contacts.email": "Email",
+    "footer.contacts.phone": "Phone",
+    "footer.contacts.telegram": "Telegram",
+    "footer.contacts.instagram": "Instagram",
+    "contacts.call": "Call",
+
+    "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" }
+}

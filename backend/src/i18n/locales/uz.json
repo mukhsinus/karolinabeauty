@@ -1,0 +1,267 @@
+{
+  "nav.home": "Bosh sahifa",
+  "nav.services": "Xizmatlar",
+  "nav.gallery": "Galereya",
+  "nav.booking": "Yozilish",
+  "nav.contacts": "Aloqa",
+  "nav.prices": "Narxlar",
+
+  "hero.title": "Go'zallik studiyasi",
+  "hero.tagline": "Sizning go'zalligingiz — bizning san'atimiz",
+  "hero.book": "Yozilish",
+  "hero.services": "Xizmatlarni ko'rish",
+
+  "services.title": "Bizning xizmatlar",
+  "services.subtitle": "Premium go'zallik muolajalari",
+  "services.book": "Yozilish",
+  "services.from": "dan",
+  "services.currency": "so'm",
+
+  "gallery.title": "Bizning ishlar",
+  "gallery.subtitle": "Har kuni yaratayotgan go'zallik",
+  "gallery.view_all": "Galereyani ko'rish",
+
+  "home.popular.title": "Mashhur xizmatlar",
+  "home.popular.subtitle": "Mijozlarimiz eng ko'p tanlaydigan xizmatlar",
+
+  "home.popular.lashes.title": "Klassik kiprik uzaytirish",
+  "home.popular.lashes.desc": "Tabiiy ko'rinish va uzoq muddatli natija",
+
+  "home.popular.lamination.title": "Kiprik laminatsiyasi",
+  "home.popular.lamination.desc": "Chiroyli bukilish va kiprik parvarishi",
+
+  "home.popular.manicure.title": "Manikyur + qoplama",
+  "home.popular.manicure.desc": "Mukammal shakl va mustahkam qoplama",
+
+  "home.locations.title": "Bizning salonlar",
+  "home.locations.subtitle": "Eng yaqin salonni tanlang",
+  "home.locations.hours": "Ish vaqti",
+  "home.locations.route": "Yo'nalish",
+
+  "home.cta.title": "Mukammal obrazga tayyormisiz?",
+  "home.cta.subtitle": "Hozir yoziling",
+
+  "branches.friendship": "Halqlar do'stligi metro",
+  "branches.friendship.address": "Furqat ko'chasi 15/1",
+  "branches.friendship.landmark": "Usmanov Dental yonida",
+
+  "branches.yunusabad": "Yunusobod 14 kvartal",
+  "branches.yunusabad.address": "1-uy",
+  "branches.yunusabad.landmark": "Korzinka Petushok yonida",
+
+  "booking.weekdays": "10:00 — 20:00",
+  "booking.weekends": "VIP alohida yozilish",
+
+  "contacts.phone": "Qo'ng'iroq",
+
+  "footer.rights": "Barcha huquqlar himoyalangan",
+
+
+  "services.basic_master": "Usta",
+  "services.top_master_regina": "TOP usta",
+  "services.premium_master_karolina": "Premium usta",
+
+  "services.classic_extension": "Klassik kiprik uzaytirish",
+  "services.led_extension": "LED kiprik uzaytirish",
+  "services.colored_lashes": "Rangli kipriklar",
+  "services.lash_removal": "Kiprik olib tashlash",
+
+  "services.classic": "Klassika",
+  "services.lashes_2_3d": "2–3D hajm",
+  "services.author_effect": "Muallif effekti",
+  "services.lashes_4_6d": "4–6D hajm",
+
+  "services.lash_lamination": "Kiprik laminatsiyasi",
+  "services.lash_lamination_plus": "Laminatsiya + bo'yash + vitaminlar",
+
+  "services.promo": "Aksiya",
+
+  "services.lashes": "Kipriklar",
+  "services.nails": "Tirnoqlar",
+  "services.brows": "Qoshlar",
+  "services.depilation": "Depilatsiya",
+  "services.hair": "Sochlar",
+  "services.permanent": "Permanent makiyaj",
+  "services.removal": "Olib tashlash",
+
+  "services.manicure_pedicure": "Manikyur va pedikyur",
+  "services.manicure": "Manikyur",
+  "services.manicure_plus": "Manikyur + mustahkamlash + qoplama",
+  "services.pedicure": "Pedikyur",
+  "services.pedicure_plus": "Pedikyur + qoplama",
+  "services.combo_four_hands": "4 qo‘l kombo",
+  "services.combo_promo": "Aksiya kombo",
+
+  "services.japanese": "Yapon parvarishi",
+  "services.japanese_manicure": "Yapon manikyuri",
+  "services.japanese_pedicure": "Yapon pedikyuri",
+  "services.japanese_combo": "Yapon kombo",
+
+  "services.extra_services": "Qo‘shimcha xizmatlar",
+  "services.nail_removal": "Olib tashlash",
+  "services.designs": "Dizaynlar",
+  "services.french": "French",
+  "services.vtirka": "Vtirka",
+  "services.nail_repair": "Tirnoq ta'mirlash",
+  "services.paraffin_spa": "Parafin SPA",
+  "services.smart_oil_spa": "Smart oil SPA",
+
+  "services.brows_basic": "Qoshlar",
+  "services.brow_architecture": "Qosh arxitekturasi",
+  "services.brow_styling": "Uzoq muddatli qosh shakllantirish",
+  "services.brow_coloring": "Qosh bo‘yash",
+  "services.muslim_lightening": "Muslim oqartirish",
+
+  "services.karolina_brows": "Karolina qosh",
+
+  "services.depilation_main": "Depilatsiya",
+  "services.promo_depilation": "Aksiya: chuqur bikini + qo‘ltiq osti + tizzagacha oyoq",
+  "services.deep_bikini": "Chuqur bikini",
+  "services.armpits": "Qo‘ltiq osti",
+  "services.legs_to_knee": "Tizzagacha oyoq",
+  "services.full_legs": "To‘liq oyoq",
+  "services.arms_to_elbow": "Tirsakkacha qo‘l",
+  "services.full_arms": "To‘liq qo‘l",
+  "services.face": "Yuz",
+  "services.stomach": "Qorin",
+  "services.back": "Orqa",
+  "services.upper_lip": "Yuqori lab",
+
+  "services.hair_natural": "Tabiiy soch + ish",
+  "services.hair_40_45": "Tabiiy soch 40–45 sm",
+  "services.hair_50_55": "Tabiiy soch 50–55 sm",
+  "services.hair_60_65": "Tabiiy soch 60–65 sm",
+  "services.hair_70_75": "Tabiiy soch 70–75 sm",
+  "services.hair_80_85": "Tabiiy soch 80–85 sm",
+
+  "services.hair_bioprotein": "Bioprotein soch",
+  "services.bio_60_70": "Bioprotein 60–70 sm",
+  "services.bio_80_90": "Bioprotein 80–90 sm",
+
+  "services.hair_extension_work": "Soch uzaytirish (faqat ish)",
+  "services.hair_100g_work": "Soch uzaytirish 100 g (faqat ish)",
+
+  "services.permanent_makeup": "Permanent makiyaj",
+  "services.permanent_lips": "Lab permanent",
+  "services.permanent_brows": "Qosh permanent",
+  "services.interlash": "Kirpik oralig‘i",
+
+  "services.permanent_removal": "Permanent olib tashlash",
+  "services.laser_removal": "Lazer bilan olib tashlash",
+  "services.remover_removal": "Remover bilan olib tashlash",
+
+  "branch.center.name": "Karolina Beauty Center",
+  "branch.center.address": "Toshkent • Markaz",
+
+  "branch.chilanzar.name": "Chilonzor filiali",
+  "branch.chilanzar.address": "Furqat ko'chasi, 15/1",
+
+  "common.empty": "—",
+
+  "booking.title": "Onlayn yozilish",
+  "booking.select_branch": "Salon tanlang",
+  "booking.select_date": "Sanani tanlang",
+  "booking.select_time": "Vaqtni tanlang",
+  "booking.summary": "Yozuv tafsilotlari",
+  "booking.branch": "Salon",
+  "booking.service": "Xizmat",
+  "booking.date": "Sana",
+  "booking.time": "Vaqt",
+  "booking.price": "Narxi",
+  "booking.name": "Ismingiz",
+  "booking.phone": "Telefon",
+  "booking.confirm_booking": "Yozilishni tasdiqlash",
+  "booking.success": "Yozilish tasdiqlandi",
+  "booking.success_message": "Tasdiqlash uchun siz bilan bog‘lanamiz.",
+
+  "booking.details": "Ma'lumotlaringiz",
+
+  "contacts.address": "Manzil",
+  "contacts.instagram": "Instagram",
+  "contacts.working_hours": "Ish vaqti",
+
+  "footer.description": "Toshkentdagi premium go‘zallik saloni. Manikyur, kiprik, qosh va depilyatsiya professional ustalar tomonidan.",
+  "footer.navigation": "Navigatsiya",
+  "footer.contacts": "Kontaktlar",
+  "footer.developed": "Mehr bilan ishlab chiqilgan",
+  "contacts.telegram": "Telegram",
+
+  "hero.alt": "Karolina Beauty Room go‘zallik studiyasi",
+
+  "promo.badge": "Aksiya",
+  "promo.default": "Maxsus taklif",
+  "promo.lamination_bonus": "Vitaminlar va bo‘yash bilan",
+  "promo.cta": "Yozilish",
+
+  "home.locations.map_alt": "Salon joylashuvi xaritasi",
+
+  "services.top_master": "Top usta",
+  "services.premium_master": "Premium usta",
+
+  "common.loading_services": "Xizmatlar yuklanmoqda...",
+  "common.error_loading": "Yuklashda xatolik",
+  "common.no_services": "Xizmatlar mavjud emas",
+  "common.details": "Batafsil",
+
+
+  "common.loading": "Yuklanmoqda...",
+  "common.close": "Yopish",
+
+  "services.details.classic.title": "Kipriklarni uzaytirish",
+  "services.details.classic.description": "Oddiy kley ishlatiladi",
+  "services.details.classic.extra": "Har qanday hajm / effekt / egilish",
+
+  "services.details.led.title": "LED kiprik uzaytirish",
+  "services.details.led.description": "Yangi avlod nano-kley",
+  "services.details.led.extra": "Har qanday hajm / effekt / egilish",
+
+  "services.details.removal.title": "Kipriklarni olib tashlash",
+  "services.details.removal.description": "Qayta uzaytirishsiz",
+
+  "services.details.colored.title": "Rangli kipriklar",
+
+  "services.details.brow_architecture.title": "Qosh arxitekturasi",
+  "services.details.brow_architecture.description": "Yuz shakliga moslash",
+
+  "services.details.brow_correction.title": "Qosh korreksiyasi",
+  "services.details.brow_correction.description": "Vosk yoki pinset bilan",
+
+  "services.details.brow_coloring.title": "Qosh bo‘yash",
+  "services.details.brow_coloring.description": "Xna yoki bo‘yoq",
+
+  "services.details.brow_lamination.title": "Qosh laminatsiyasi",
+  "services.details.brow_lamination.description": "Tartibli qosh effekti",
+
+  "services.details.brow_muslim.title": "Musulmoncha korreksiya",
+  "services.details.brow_muslim.description": "Keraksiz tuklarni ochartirish",
+
+  "services.details.brow_set.title": "To‘liq qosh seti",
+  "services.details.brow_set.description": "To‘liq kompleks xizmat",
+  "services.details.brow_set.extra": "Alohida xizmatlarga qaraganda foydaliroq",
+
+  "common.change": "O'zgartirish",
+
+  "booking.level": "Daraja",
+  "booking.vip": "VIP",
+
+
+  "contacts.phone.value": "+998 93 129 99 55",
+  "contacts.instagram.value": "@karolinabeautyroom",
+  "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
+
+  "footer.contacts.email": "Pochta",
+  "footer.contacts.phone": "Telefon",
+  "footer.contacts.telegram": "Telegram",
+  "footer.contacts.instagram": "Instagram",
+  "contacts.call": "Qo'ng'iroq qilish",
+
+  "mapsphone": { "friendship": "+998909120026", "yunusabad": "+998949130026" },
+  "categories": {
+    "brows": "Qoshlar",
+    "hair": "Sochlar",
+    "lashes": "Kipriklar",
+    "nails": "Tirnoqlar",
+    "permanent": "Permanent",
+    "removal": "Olib tashlash"
+  }
+}
