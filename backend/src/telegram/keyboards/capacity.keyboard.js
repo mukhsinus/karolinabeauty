@@ -27,7 +27,11 @@ export const categoriesKeyboard = (categories, lang = "ru") => {
 export const servicesKeyboard = (services, lang = "ru") => {
   const rows = services.slice(0, 30).map((s) => [
     Markup.button.callback(
-      translateService(s.nameKey, lang).slice(0, 60),
+      (() => {
+        const result = translateService(s.nameKey, lang)
+        console.log({ lang, key: s.nameKey, result })
+        return result.slice(0, 60)
+      })(),
       `${CAPACITY_CB.SERVICE}:${s._id}`
     )
   ])
