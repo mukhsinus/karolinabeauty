@@ -17,6 +17,7 @@ import adminRoutes from "./routes/admin.routes.js"
 dotenv.config()
 
 const app = express()
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI
 
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")
@@ -61,8 +62,18 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 4000
 
+if (!mongoUri) {
+  console.error("Mongo connection error: Missing MONGO_URI (or MONGODB_URI) in environment variables")
+  process.exit(1)
+}
+
+if (!mongoUri.startsWith("mongodb://") && !mongoUri.startsWith("mongodb+srv://")) {
+  console.error("Mongo connection error: Invalid Mongo URI scheme. Expected mongodb:// or mongodb+srv://")
+  process.exit(1)
+}
+
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(mongoUri)
   .then(() => {
     console.log("MongoDB connected")
 
