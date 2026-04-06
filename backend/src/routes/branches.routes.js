@@ -7,9 +7,19 @@ const router = express.Router()
 // GET /api/branches
 router.get("/", async (req, res) => {
   try {
-    const branches = await Branch.find({ isActive: true })
+    let branches = await Branch.find({ isActive: true })
       .select("_id name address workingHoursWeekdays")
+      .sort({ name: 1 })
       .lean()
+
+    // Backward-compatible fallback for older data where isActive
+    // may be missing/false for all documents.
+    if (!branches.length) {
+      branches = await Branch.find({})
+        .select("_id name address workingHoursWeekdays")
+        .sort({ name: 1 })
+        .lean()
+    }
 
     return res.json(branches)
   } catch (error) {

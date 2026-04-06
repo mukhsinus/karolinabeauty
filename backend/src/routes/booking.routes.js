@@ -31,7 +31,7 @@ router.patch("/:id", async (req, res) => {
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
       { status: "cancelled" },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     if (!booking) {

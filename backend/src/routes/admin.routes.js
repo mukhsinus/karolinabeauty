@@ -22,7 +22,7 @@ router.patch("/services/:id/price", async (req, res) => {
     const service = await Service.findByIdAndUpdate(
       req.params.id,
       { price },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     if (!service) {
@@ -57,7 +57,7 @@ router.patch("/branches/:id/address", async (req, res) => {
     const branch = await Branch.findByIdAndUpdate(
       req.params.id,
       { address },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     if (!branch) {
@@ -90,7 +90,7 @@ router.patch("/branches/:id/hours", async (req, res) => {
     const branch = await Branch.findByIdAndUpdate(
       req.params.id,
       { workingHoursWeekdays: hours },
-      { new: true }
+      { returnDocument: "after" }
     )
 
     if (!branch) {

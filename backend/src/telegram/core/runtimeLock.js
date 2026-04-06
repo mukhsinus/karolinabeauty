@@ -19,7 +19,7 @@ export const acquireRuntimeLock = async ({ key, ttlSec = DEFAULT_TTL_SEC }) => {
   const renewed = await RuntimeLock.findOneAndUpdate(
     { key, ownerId },
     { $set: { expiresAt } },
-    { new: true }
+    { returnDocument: "after" }
   ).lean()
   if (renewed) return { acquired: true, ownerId, expiresAt }
 
@@ -27,7 +27,7 @@ export const acquireRuntimeLock = async ({ key, ttlSec = DEFAULT_TTL_SEC }) => {
   const taken = await RuntimeLock.findOneAndUpdate(
     { key, expiresAt: { $lte: now } },
     { $set: { ownerId, expiresAt } },
-    { new: true }
+    { returnDocument: "after" }
   ).lean()
   if (taken) return { acquired: true, ownerId, expiresAt }
 

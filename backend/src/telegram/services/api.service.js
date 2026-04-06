@@ -81,7 +81,7 @@ export const updateServicePrice = async (id, price) => {
     const updated = await Service.findByIdAndUpdate(
       id,
       { price },
-      { new: true }
+      { returnDocument: "after" }
     ).lean()
 
     if (!updated) {
@@ -113,7 +113,7 @@ export const updateBranchAddress = async (id, address) => {
     const updated = await Branch.findByIdAndUpdate(
       id,
       { address },
-      { new: true }
+      { returnDocument: "after" }
     ).lean()
 
     if (!updated) {
@@ -134,7 +134,7 @@ export const updateBranchHours = async (id, hours) => {
       {
         workingHoursWeekdays: hours
       },
-      { new: true }
+      { returnDocument: "after" }
     ).lean()
 
     if (!updated) {

@@ -51,7 +51,7 @@ export const upsertSlotCapacity = async ({
       },
     },
     {
-      new: true,
+      returnDocument: "after",
       upsert: true,
       setDefaultsOnInsert: true,
     }

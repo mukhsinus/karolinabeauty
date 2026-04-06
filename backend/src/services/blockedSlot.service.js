@@ -29,7 +29,7 @@ export const blockDay = async ({ branchId, date }) => {
   const doc = await BlockedSlot.findOneAndUpdate(
     { branchId, date, time: null },
     { $setOnInsert: { branchId, date, time: null } },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true }
   )
   return doc
 }
@@ -38,7 +38,7 @@ export const blockTime = async ({ branchId, date, time }) => {
   const doc = await BlockedSlot.findOneAndUpdate(
     { branchId, date, time },
     { $setOnInsert: { branchId, date, time } },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, returnDocument: "after", setDefaultsOnInsert: true }
   )
   return doc
 }
