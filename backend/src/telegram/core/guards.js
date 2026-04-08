@@ -2,8 +2,10 @@
 
 const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "")
   .split(",")
-  .filter(Boolean)
-  .map(id => Number(id))
+  .map((id) => id.trim())
+  .filter((id) => id.length > 0)
+  .map((id) => Number(id))
+  .filter((id) => Number.isFinite(id))
 
 export const isAdmin = (ctx) => {
   const id = ctx.from?.id

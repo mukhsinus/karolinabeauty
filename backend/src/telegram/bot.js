@@ -583,8 +583,10 @@ bot.catch((err, ctx) => {
 
 const ADMIN_IDS = (process.env.TELEGRAM_ADMIN_IDS || "")
   .split(",")
-  .filter(Boolean)
-  .map(id => Number(id))
+  .map((id) => id.trim())
+  .filter((id) => id.length > 0)
+  .map((id) => Number(id))
+  .filter((id) => Number.isFinite(id))
 
 export const notifyNewBooking = async (booking) => {
   let branchName = ""
