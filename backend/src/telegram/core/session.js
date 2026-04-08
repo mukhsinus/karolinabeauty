@@ -5,7 +5,7 @@ import { STEPS } from "./constants.js"
 export const initialSession = () => ({
   step: STEPS.IDLE,
 
-  language: null,
+  language: "ru",
   phone: null,
   branchId: null,
 

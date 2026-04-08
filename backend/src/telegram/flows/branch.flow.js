@@ -1,12 +1,39 @@
 // src/telegram/flows/branch.flow.js
 
-import { setStep } from "../core/session.js"
+import { Markup } from "telegraf"
+
+import { setStep, clearPayload } from "../core/session.js"
 import { STEPS } from "../core/constants.js"
 
 import { branchesInline } from "../keyboards/inline.keyboard.js"
 import { adminKeyboard } from "../keyboards/admin.keyboard.js"
 
 import { getBranches } from "../services/api.service.js"
+
+// ================= BRANCH SELECTION (re-entry from admin) =================
+
+export const goBranchSelection = async (ctx) => {
+  try {
+    clearPayload(ctx)
+    if (ctx.session) ctx.session.branchId = null
+
+    const branches = await getBranches()
+
+    setStep(ctx, STEPS.BRANCH)
+
+    const text =
+      ctx.session.language === "uz"
+        ? "Filialni tanlang"
+        : "Выберите филиал"
+
+    await ctx.reply(text, Markup.removeKeyboard())
+    // Second message carries inline keyboard (API cannot combine remove_keyboard + inline_keyboard).
+    return ctx.reply("\u2060", branchesInline(branches, "branch_select"))
+  } catch (error) {
+    console.error("goBranchSelection error:", error)
+    return ctx.reply("⚠️ Ошибка. Попробуйте снова")
+  }
+}
 
 // ================= CONTACT =================
 

@@ -14,11 +14,10 @@ import { isAdmin } from "./core/guards.js"
 
 // flows
 import { startFlow } from "./flows/start.flow.js"
-import { handleLanguage } from "./flows/auth.flow.js"
-
 import {
   handleContact,
-  handleBranchSelect
+  handleBranchSelect,
+  goBranchSelection
 } from "./flows/branch.flow.js"
 
 // legacy admin.flow bookings kept, but CRM booking flow is now used
@@ -125,13 +124,6 @@ bot.use((ctx, next) => {
 // ================= START =================
 
 bot.start(startFlow)
-
-// ================= LANGUAGE =================
-
-bot.hears(["🇷🇺 Русский", "🇺🇿 O'zbekcha"], async (ctx) => {
-  if (ctx.session.step !== STEPS.LANGUAGE) return
-  return handleLanguage(ctx)
-})
 
 // ================= CONTACT =================
 
@@ -314,6 +306,9 @@ bot.hears(BUTTONS.BACK, async (ctx) => {
     case STEPS.CRM_BLOCKING_ACTIONS:
     case STEPS.CRM_BLOCKING_TIMES:
       return goAdminPanel(ctx)
+
+    case STEPS.ADMIN_PANEL:
+      return goBranchSelection(ctx)
 
     default:
       return goAdminPanel(ctx)

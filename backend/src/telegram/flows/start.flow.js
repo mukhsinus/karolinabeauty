@@ -2,28 +2,27 @@
 
 import { setStep, resetSession } from "../core/session.js"
 import { STEPS } from "../core/constants.js"
-import { languageKeyboard } from "../keyboards/main.keyboard.js"
+import { requestPhoneKeyboard } from "../keyboards/main.keyboard.js"
 
 // ================= START =================
 
 export const startFlow = async (ctx) => {
   try {
-    // полностью сбрасываем состояние
     resetSession(ctx)
+
+    ctx.session.language = "ru"
 
     const name = ctx.from?.first_name || "Admin"
 
-    setStep(ctx, STEPS.LANGUAGE)
+    setStep(ctx, STEPS.PHONE)
 
-    // универсальный стартовый текст
     const message = `👋 Добро пожаловать, ${name}
 
 Это админ-панель Karolina Beauty
 
-Выберите язык:`
+Отправьте номер телефона`
 
-    return ctx.reply(message, languageKeyboard())
-
+    return ctx.reply(message, requestPhoneKeyboard("ru"))
   } catch (error) {
     console.error("startFlow error:", error)
 

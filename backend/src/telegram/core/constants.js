@@ -4,7 +4,6 @@ export const STEPS = {
   IDLE: "IDLE",
 
   // onboarding
-  LANGUAGE: "LANGUAGE",
   PHONE: "PHONE",
   BRANCH: "BRANCH",
 
