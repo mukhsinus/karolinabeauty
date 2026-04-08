@@ -4,6 +4,7 @@ dotenv.config()
 
 import { Telegraf, session } from "telegraf"
 import Branch from "../models/Branch.js"
+import RuntimeLock from "../models/RuntimeLock.js"
 import { acquireRuntimeLock, renewRuntimeLock, releaseRuntimeLock } from "./core/runtimeLock.js"
 
 // core
@@ -633,7 +634,26 @@ export const startBot = async () => {
     const ttlSec = Number(process.env.BOT_LOCK_TTL_SEC || 55)
     const lock = await acquireRuntimeLock({ key: BOT_LOCK_KEY, ttlSec })
     if (!lock.acquired) {
-      console.warn("Telegram bot lock is held by another instance. Skipping polling start.")
+      try {
+        const holder = await RuntimeLock.findOne({ key: BOT_LOCK_KEY }).lean()
+        if (holder) {
+          const exp =
+            holder.expiresAt instanceof Date
+              ? holder.expiresAt.toISOString()
+              : holder.expiresAt
+          console.warn(
+            `Telegram bot lock busy: key=${BOT_LOCK_KEY} owner=${holder.ownerId} expiresAt=${exp}. Another replica or an old deploy may still be running. Skipping polling start.`
+          )
+        } else {
+          console.warn(
+            "Telegram bot lock not acquired (race or DB state). Skipping polling start."
+          )
+        }
+      } catch {
+        console.warn(
+          "Telegram bot lock is held by another instance. Skipping polling start."
+        )
+      }
       return
     }
 
