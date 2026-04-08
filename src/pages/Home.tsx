@@ -19,8 +19,8 @@ const Home = () => {
   // 📍 координаты
   const coordsByName: Record<string, { lat: number; lng: number }> = {
     "Чиланзар": {
-      lat: 41.3095113,
-      lng: 69.2432072
+      lat: 41.30850461072583,
+      lng: 69.24368275209899
     },
     "Юнусабад": {
       lat: 41.3731212,
@@ -35,8 +35,8 @@ const Home = () => {
   }
 
   const DEFAULT_COORDS = {
-    lat: 41.311081,
-    lng: 69.240562
+    lat: 41.30850461072583,
+    lng: 69.24368275209899
   }
 
   const formatPrice = (price: number) => {
