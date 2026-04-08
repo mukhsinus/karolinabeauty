@@ -123,6 +123,23 @@ export const createBooking = async (req, res) => {
       })
     }
 
+    if (
+      error.message?.includes("manually") ||
+      error.message?.includes("Manual booking")
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      })
+    }
+
+    if (error.message?.includes("VIP time not allowed")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      })
+    }
+
     return res.status(500).json({
       success: false,
       message: "Internal server error"

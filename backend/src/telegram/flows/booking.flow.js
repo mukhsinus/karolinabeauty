@@ -108,21 +108,6 @@ const getNextDays = (count) => {
   return days
 }
 
-const generateTimeSlots = (date) => {
-  const d = new Date(date)
-  const isWeekend = d.getDay() === 0 || d.getDay() === 6
-  const start = isWeekend ? 10 : 9
-  const end = isWeekend ? 22 : 21
-
-  const slots = []
-  for (let h = start; h < end; h++) {
-    slots.push(`${String(h).padStart(2, "0")}:00`)
-    slots.push(`${String(h).padStart(2, "0")}:30`)
-  }
-
-  return slots
-}
-
 const showRescheduleDates = async (ctx) => {
   const dates = getNextDays(14)
   await ctx.editMessageText("Выберите дату переноса:", rescheduleDatesKeyboard({ dates }))
@@ -143,16 +128,27 @@ const showRescheduleTimesForDate = async (ctx, { bookingId, date }) => {
   const serviceId = booking?.serviceId
   const serviceLevel = booking?.serviceLevel
 
-  const unavailable = await getUnavailableSlots({
+  const availability = await getUnavailableSlots({
     branchId,
     serviceId,
     serviceLevel,
     date
   })
 
-  const allSlots = generateTimeSlots(date)
-  const unavailableSet = new Set(Array.isArray(unavailable) ? unavailable : [])
-  const availableSlots = allSlots.filter((t) => !unavailableSet.has(t))
+  let availableSlots = []
+  if (availability?.type === "manual") {
+    await ctx.editMessageText(
+      "Эта услуга записывается вручную. Свяжитесь с администратором.",
+      rescheduleDatesKeyboard({ dates: getNextDays(14) })
+    )
+    return
+  }
+  if (availability?.type === "slots" && Array.isArray(availability.slots)) {
+    availableSlots = availability.slots
+      .filter((s) => s.available)
+      .map((s) => s.time)
+      .sort((a, b) => a.localeCompare(b))
+  }
 
   if (availableSlots.length === 0) {
     const dates = getNextDays(14)

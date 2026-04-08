@@ -179,6 +179,10 @@
   "booking.success_message": "Tasdiqlash uchun siz bilan bog‘lanamiz.",
 
   "booking.details": "Ma'lumotlaringiz",
+  "booking.manual_contact": "Bu xizmat administrator orqali yoziladi. Salon bilan bog'laning.",
+  "booking.slots_hint": "Erta (10:00 gacha) va kechki (19:00 dan) vaqtlar VIP bo'lishi mumkin. Kulrang vaqt band.",
+  "booking.loading_slots": "Bo'sh vaqtlar yuklanmoqda…",
+  "booking.slot_unavailable": "Band",
 
   "contacts.address": "Manzil",
   "contacts.instagram": "Instagram",

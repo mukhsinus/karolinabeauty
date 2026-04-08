@@ -27,8 +27,18 @@ export const fetchBranches = async () => {
   return res.json()
 }
 
+export type AvailabilitySlot = {
+  time: string
+  available: boolean
+  isVip: boolean
+}
+
+export type AvailabilityPayload =
+  | { type: "manual" }
+  | { type: "slots"; slots: AvailabilitySlot[] }
+
 /*
-GET availability
+GET availability — server-driven slots only (no client-side grid).
 */
 
 export const fetchAvailability = async (
@@ -36,13 +46,12 @@ export const fetchAvailability = async (
   serviceId: string,
   serviceLevel: string,
   date: string
-) => {
-
+): Promise<AvailabilityPayload> => {
   const params = new URLSearchParams({
     branchId,
     serviceId,
     serviceLevel,
-    date
+    date,
   })
 
   const res = await fetch(
@@ -54,14 +63,17 @@ export const fetchAvailability = async (
   }
 
   const json = await res.json()
+  const data = json?.data
 
-  // backend: { success: true, data: [...] }
-  if (json && Array.isArray(json.data)) return json.data
+  if (data?.type === "manual") {
+    return { type: "manual" }
+  }
 
-  // fallback
-  if (Array.isArray(json)) return json
+  if (data?.type === "slots" && Array.isArray(data.slots)) {
+    return { type: "slots", slots: data.slots }
+  }
 
-  return []
+  return { type: "slots", slots: [] }
 }
 
 /*

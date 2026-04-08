@@ -18,6 +18,19 @@ const BookingSchema = new mongoose.Schema(
     index: true
   },
 
+  masters: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Master" }],
+    default: [],
+  },
+
+  start: {
+    type: Date,
+  },
+
+  end: {
+    type: Date,
+  },
+
   serviceName: {
     type: String,
     required: true,
@@ -29,7 +42,7 @@ const BookingSchema = new mongoose.Schema(
     type: String,
     required: true,
     trim: true,
-    enum: ["master", "top", "premium"], // подгони под свои уровни
+    enum: ["master", "top", "premium", "promo"],
     index: true
   },
 

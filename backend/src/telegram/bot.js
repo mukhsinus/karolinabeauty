@@ -5,6 +5,7 @@ dotenv.config()
 import { Telegraf, session } from "telegraf"
 import Branch from "../models/Branch.js"
 import RuntimeLock from "../models/RuntimeLock.js"
+import { addAvailabilityOverride } from "../services/availability.service.js"
 import { acquireRuntimeLock, renewRuntimeLock, releaseRuntimeLock } from "./core/runtimeLock.js"
 
 // core
@@ -329,6 +330,33 @@ bot.command("capacity", async (ctx) => {
 bot.command("stats", async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminMessage(ctx)
   return startStatsFlow(ctx)
+})
+
+// /add_shift <masterId> <branchId> <YYYY-MM-DD> <HH:mm> <HH:mm> — расширение графика (override)
+bot.command("add_shift", async (ctx) => {
+  if (!isAdmin(ctx)) return denyAdminMessage(ctx)
+  const parts = String(ctx.message.text || "")
+    .trim()
+    .split(/\s+/)
+    .slice(1)
+  if (parts.length < 5) {
+    return ctx.reply(
+      "Формат:\n/add_shift <masterId> <branchId> <YYYY-MM-DD> <HH:mm> <HH:mm>"
+    )
+  }
+  const [masterId, branchId, date, start, end] = parts
+  try {
+    await addAvailabilityOverride({
+      masterId,
+      branchId,
+      date,
+      start,
+      end,
+    })
+    return ctx.reply("✅ Интервал сохранён (override)")
+  } catch (e) {
+    return ctx.reply(`⚠️ ${e?.message || e}`)
+  }
 })
 
 // ================= BOOKINGS (CRM) =================

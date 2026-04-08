@@ -7,8 +7,6 @@ import { useAvailability } from "@/hooks/useAvailability"
 
 import {
   getNextDays,
-  generateTimeSlots,
-  isVipTime,
   getAllServices,
   getCategoryServices,
   parseServiceKey,
@@ -82,11 +80,6 @@ export function useBooking() {
 
   const dates = useMemo(() => getNextDays(14), [])
 
-  const timeSlots = useMemo(() => {
-    if (!booking.date) return []
-    return generateTimeSlots(booking.date)
-  }, [booking.date])
-
   const allServices = useMemo(
     () => getAllServices(services),
     [services]
@@ -125,10 +118,19 @@ export function useBooking() {
     [selectedService, level]
   )
 
-  const isVipSelected = useMemo(
-    () => (booking.time ? isVipTime(booking.time) : false),
-    [booking.time]
-  )
+  const { data: availabilityData, isLoading: availabilityLoading } =
+    useAvailability(branchId, serviceId, level, booking.date)
+
+  const availabilitySlots =
+    availabilityData?.type === "slots" ? availabilityData.slots : []
+
+  const isManualAvailability = availabilityData?.type === "manual"
+
+  const isVipSelected = useMemo(() => {
+    if (!booking.time) return false
+    const row = availabilitySlots.find((s) => s.time === booking.time)
+    return Boolean(row?.isVip)
+  }, [booking.time, availabilitySlots])
 
   const finalPrice = useMemo(() => {
     if (!selectedPrice) return 0
@@ -138,14 +140,6 @@ export function useBooking() {
   const branch = useMemo(
     () => getBranchById(branches, branchId),
     [branches, branchId]
-  )
-
-  // 🔥 КРИТИЧЕСКИЙ ФИКС
-  const { data: bookedSlots = [] } = useAvailability(
-    branchId,
-    serviceId,
-    level,
-    booking.date
   )
 
   // ======================
@@ -257,7 +251,9 @@ export function useBooking() {
     // data
     services,
     branches,
-    bookedSlots,
+    availabilitySlots,
+    availabilityLoading,
+    isManualAvailability,
 
     // loading
     isLoading,
@@ -274,7 +270,6 @@ export function useBooking() {
 
     // derived
     dates,
-    timeSlots,
     categoryServices,
     selectedService,
     selectedPrice,

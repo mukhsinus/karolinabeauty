@@ -54,6 +54,32 @@ const ServiceSchema = new mongoose.Schema(
       min: 5,
     },
 
+    /** Шаг сетки слотов (минуты) */
+    slotInterval: {
+      type: Number,
+      default: 30,
+      min: 5,
+    },
+
+    /** Сколько мастеров нужно одновременно (например 2 для «4 руки») */
+    requiredMasters: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
+
+    /** Ранние/поздние слоты (VIP) разрешены для этой услуги */
+    vipAllowed: {
+      type: Boolean,
+      default: true,
+    },
+
+    /** Время по договорённости — без онлайн-слотов */
+    isManualBooking: {
+      type: Boolean,
+      default: false,
+    },
+
     // для цен "от 50 000"
     isFrom: {
       type: Boolean,

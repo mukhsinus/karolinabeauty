@@ -4,8 +4,12 @@ import Booking from "../models/Booking.js";
 import Service from "../models/Service.js";
 import Branch from "../models/Branch.js";
 import mongoose from "mongoose";
-import { getSlotCapacity } from "./capacity.service.js";
-import { getBlockedInfoForDate, isBlockedSlot } from "./blockedSlot.service.js";
+import { isBlockedSlot } from "./blockedSlot.service.js";
+import {
+  generateAvailableSlots,
+  assignMastersForSlot,
+  assertServiceAllowsTime,
+} from "./availability.service.js";
 
 /*
 NORMALIZE PHONE
@@ -13,23 +17,6 @@ NORMALIZE PHONE
 
 const normalizePhone = (phone) => {
   return phone.replace(/[^\d+]/g, "");
-};
-
-const generateTimeSlots = (date) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  const isWeekend = day === 0 || day === 6;
-
-  const start = isWeekend ? 10 : 9;
-  const end = isWeekend ? 22 : 21;
-
-  const slots = [];
-  for (let h = start; h < end; h++) {
-    slots.push(`${String(h).padStart(2, "0")}:00`);
-    slots.push(`${String(h).padStart(2, "0")}:30`);
-  }
-
-  return slots;
 };
 
 /*
@@ -73,26 +60,30 @@ export const createBooking = async (payload) => {
     throw new Error("Service not available");
   }
 
-  const capacity = await getSlotCapacity({
-    branchId,
-    serviceId,
-    serviceLevel,
-    date
-  });
+  if (service.isManualBooking) {
+    throw new Error("This service is booked manually — contact the salon");
+  }
 
   const blocked = await isBlockedSlot({ branchId, date, time });
   if (blocked) {
     throw new Error("Time slot is blocked");
   }
 
+  assertServiceAllowsTime(service, time);
+
   // цена
+
+  const levelPrice = Array.isArray(service.prices)
+    ? service.prices.find((p) => p.level === serviceLevel)
+    : null;
 
   const resolvedPrice =
     typeof price === "number" && !Number.isNaN(price)
       ? price
-      : Array.isArray(service.prices) && service.prices.length > 0
-        ? service.prices[0].price
-        : null;
+      : levelPrice?.price ??
+        (Array.isArray(service.prices) && service.prices.length > 0
+          ? service.prices[0].price
+          : null);
 
   if (typeof resolvedPrice !== "number") {
     throw new Error("Service price is not defined");
@@ -100,40 +91,13 @@ export const createBooking = async (payload) => {
 
   // создаем запись
 
-  const assertSlotAvailable = async (
-    { branchId, serviceId, serviceLevel, date, time, capacity, excludeBookingId },
-    session
-  ) => {
-    const query = {
+  const createWithinSession = async (session) => {
+    const { masterIds, start, end } = await assignMastersForSlot({
       branchId,
       serviceId,
-      serviceLevel,
       date,
       time,
-      status: "confirmed"
-    };
-
-    if (excludeBookingId) {
-      query._id = { $ne: excludeBookingId };
-    }
-
-    const count = await Booking.countDocuments(
-      query,
-      session ? { session } : undefined
-    );
-
-    if (count >= capacity) {
-      throw new Error("Time slot is full");
-    }
-  };
-
-  // Try to enforce capacity atomically (replica set / transactions),
-  // fallback to non-transactional check if transactions aren't available.
-  const createWithinSession = async (session) => {
-    await assertSlotAvailable(
-      { branchId, serviceId, serviceLevel, date, time, capacity },
-      session
-    );
+    });
 
     const [created] = await Booking.create(
       [
@@ -153,6 +117,10 @@ export const createBooking = async (payload) => {
 
           date,
           time,
+
+          masters: masterIds,
+          start,
+          end,
 
           name,
 
@@ -218,41 +186,12 @@ export const getAvailability = async (
     throw new Error("serviceId and serviceLevel are required");
   }
 
-  const capacity = await getSlotCapacity({
+  return generateAvailableSlots({
     branchId,
     serviceId,
+    date,
     serviceLevel,
-    date
   });
-
-  const { isDayBlocked, times: blockedTimes } = await getBlockedInfoForDate({
-    branchId,
-    date
-  });
-
-  if (isDayBlocked) {
-    return generateTimeSlots(date);
-  }
-
-  const fullTimesAgg = await Booking.aggregate([
-    {
-      $match: {
-        branchId: typeof branchId === "string" ? new mongoose.Types.ObjectId(branchId) : branchId,
-        serviceId,
-        serviceLevel,
-        date,
-        status: "confirmed"
-      }
-    },
-    { $group: { _id: "$time", count: { $sum: 1 } } },
-    { $match: { count: { $gte: capacity } } },
-    { $project: { _id: 0, time: "$_id" } },
-    { $sort: { time: 1 } }
-  ]);
-
-  const fullTimes = fullTimesAgg.map((x) => x.time);
-  const merged = new Set([...(blockedTimes || []), ...fullTimes]);
-  return Array.from(merged).sort();
 };
 
 /*
@@ -288,33 +227,30 @@ export const rescheduleBooking = async (
       throw new Error("Time slot is blocked");
     }
 
-    const capacity = await getSlotCapacity({
-      branchId: newBranchId,
-      serviceId: newServiceId,
-      serviceLevel: newServiceLevel,
-      date: newDate
-    });
+    const svcDoc = await Service.findById(newServiceId, null, opts).lean();
+    if (!svcDoc || svcDoc.isManualBooking) {
+      throw new Error("Service not available for online reschedule");
+    }
 
-    const query = {
+    assertServiceAllowsTime(svcDoc, newTime);
+
+    const { masterIds, start, end } = await assignMastersForSlot({
       branchId: newBranchId,
       serviceId: newServiceId,
-      serviceLevel: newServiceLevel,
       date: newDate,
       time: newTime,
-      status: "confirmed",
-      _id: { $ne: booking._id }
-    };
-
-    const count = await Booking.countDocuments(query, opts);
-    if (count >= capacity) {
-      throw new Error("Time slot is full");
-    }
+      excludeBookingId: booking._id,
+    });
 
     booking.branchId = newBranchId;
     booking.serviceId = newServiceId;
     booking.serviceLevel = newServiceLevel;
     booking.date = newDate;
     booking.time = newTime;
+    booking.masters = masterIds;
+    booking.start = start;
+    booking.end = end;
+    booking.serviceDuration = svcDoc.duration || booking.serviceDuration;
 
     await booking.save(opts);
     return booking;

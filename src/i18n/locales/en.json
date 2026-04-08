@@ -180,6 +180,10 @@
     "booking.success_message": "We will contact you shortly.",
 
     "booking.details": "Your details",
+    "booking.manual_contact": "This service is scheduled with the administrator. Please contact the salon.",
+    "booking.slots_hint": "Early (before 10:00) and late (from 19:00) slots are VIP where applicable. Grey slots are unavailable.",
+    "booking.loading_slots": "Loading available times…",
+    "booking.slot_unavailable": "Unavailable",
 
     "contacts.address": "Address",
     "contacts.instagram": "Instagram",

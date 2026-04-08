@@ -29,7 +29,9 @@ export default function BookingSection() {
   const {
     services,
     branches,
-    bookedSlots,
+    availabilitySlots,
+    availabilityLoading,
+    isManualAvailability,
 
     isLoading,
     branchesLoading,
@@ -43,7 +45,6 @@ export default function BookingSection() {
     confirmed,
 
     dates,
-    timeSlots,
     categoryServices,
     selectedService,
     selectedPrice,
@@ -206,9 +207,10 @@ export default function BookingSection() {
               {booking.date && (
                 !booking.time ? (
                   <TimeSelector
-                    timeSlots={timeSlots}
+                    slots={availabilitySlots}
                     booking={booking}
-                    bookedSlots={bookedSlots}
+                    isLoading={availabilityLoading}
+                    isManual={isManualAvailability}
                     selectTime={selectTime}
                     resetTime={resetTime}
                     t={t}

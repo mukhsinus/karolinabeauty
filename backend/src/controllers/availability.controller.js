@@ -1,91 +1,105 @@
 // backend/src/controllers/availability.controller.js
 
-import { getAvailability as getAvailabilityService } from "../services/booking.service.js";
+import { getAvailability as getAvailabilityService } from "../services/booking.service.js"
+import { addAvailabilityOverride } from "../services/availability.service.js"
 
-/*
-GET /availability?branchId=...&serviceId=...&serviceLevel=...&date=YYYY-MM-DD
-
-Returns:
-[
-  "10:00",
-  "11:30"
-]
-*/
+const overrideSecret = process.env.AVAILABILITY_OVERRIDE_SECRET || ""
 
 export const getAvailability = async (req, res) => {
-
   try {
-
-    const {
-      branchId,
-      serviceId,
-      serviceLevel,
-      date
-    } = req.query;
-
-    /*
-    VALIDATION
-    */
+    const { branchId, serviceId, serviceLevel, date } = req.query
 
     if (!branchId) {
       return res.status(400).json({
         success: false,
-        message: "branchId query param required"
-      });
+        message: "branchId query param required",
+      })
     }
 
     if (!serviceId) {
       return res.status(400).json({
         success: false,
-        message: "serviceId query param required"
-      });
+        message: "serviceId query param required",
+      })
     }
 
     if (!serviceLevel) {
       return res.status(400).json({
         success: false,
-        message: "serviceLevel query param required"
-      });
+        message: "serviceLevel query param required",
+      })
     }
 
     if (!date) {
       return res.status(400).json({
         success: false,
-        message: "date query param required"
-      });
+        message: "date query param required",
+      })
     }
 
-    /*
-    SERVICE LAYER
-    */
-
-    const slots = await getAvailabilityService(
+    const data = await getAvailabilityService(
       branchId,
       serviceId,
       serviceLevel,
       date
-    );
+    )
 
     return res.status(200).json({
       success: true,
-      data: slots
-    });
-
+      data,
+    })
   } catch (error) {
+    console.error("availability error:", error)
 
-    console.error("availability error:", error);
-
-    if (error.message.includes("required")) {
+    if (error.message?.includes("required")) {
       return res.status(400).json({
         success: false,
-        message: error.message
-      });
+        message: error.message,
+      })
     }
 
     return res.status(500).json({
       success: false,
-      message: "Server error"
-    });
-
+      message: "Server error",
+    })
   }
-};
+}
+
+export const postAvailabilityOverride = async (req, res) => {
+  try {
+    if (!overrideSecret || req.headers["x-override-secret"] !== overrideSecret) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      })
+    }
+
+    const { masterId, branchId, date, start, end } = req.body || {}
+
+    if (!masterId || !branchId || !date || start == null || end == null) {
+      return res.status(400).json({
+        success: false,
+        message: "masterId, branchId, date, start, end are required",
+      })
+    }
+
+    const doc = await addAvailabilityOverride({
+      masterId,
+      branchId,
+      date,
+      start,
+      end,
+    })
+
+    return res.status(201).json({
+      success: true,
+      data: doc,
+    })
+  } catch (error) {
+    console.error("availability override error:", error)
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Bad request",
+    })
+  }
+}

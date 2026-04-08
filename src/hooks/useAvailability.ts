@@ -1,7 +1,10 @@
 // src/hooks/useAvailability.ts
 
 import { useQuery } from "@tanstack/react-query"
-import { fetchAvailability } from "@/lib/api"
+import {
+  fetchAvailability,
+  type AvailabilityPayload,
+} from "@/lib/api"
 
 export const useAvailability = (
   branchId?: string | null,
@@ -9,13 +12,13 @@ export const useAvailability = (
   serviceLevel?: string,
   date?: string
 ) => {
-  return useQuery({
+  return useQuery<AvailabilityPayload>({
     queryKey: [
       "availability",
       branchId,
       serviceId,
       serviceLevel,
-      date
+      date,
     ],
 
     queryFn: () =>
@@ -30,6 +33,6 @@ export const useAvailability = (
       !!branchId &&
       !!serviceId &&
       !!serviceLevel &&
-      !!date
+      !!date,
   })
 }

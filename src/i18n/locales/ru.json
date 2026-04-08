@@ -181,6 +181,10 @@
   "booking.success_message": "Мы свяжемся с вами для подтверждения.",
 
   "booking.details": "Ваши данные",
+  "booking.manual_contact": "Эта услуга записывается через администратора. Свяжитесь с салоном.",
+  "booking.slots_hint": "Ранние (до 10:00) и поздние (с 19:00) слоты — VIP, где это применимо. Серые слоты недоступны.",
+  "booking.loading_slots": "Загрузка свободного времени…",
+  "booking.slot_unavailable": "Недоступно",
 
   "contacts.address": "Адрес",
   "contacts.instagram": "Instagram",
