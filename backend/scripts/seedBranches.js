@@ -11,6 +11,7 @@ const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI
 const branchesData = [
   {
     name: "Чиланзар",
+    slug: "chilanzar",
     address: "ул. Фурката 15/1",
     phone: "+998909120026",
     workingHoursWeekdays: "09:00 - 21:00",
@@ -19,6 +20,7 @@ const branchesData = [
   },
   {
     name: "Юнусабад",
+    slug: "yunusabad",
     address: "Юнусабад 14 квартал, дом 1",
     phone: "+998949130026",
     workingHoursWeekdays: "09:00 - 21:00",

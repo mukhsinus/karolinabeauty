@@ -185,6 +185,7 @@
   "booking.slots_hint": "Ранние (до 10:00) и поздние (с 19:00) слоты — VIP, где это применимо. Серые слоты недоступны.",
   "booking.loading_slots": "Загрузка свободного времени…",
   "booking.slot_unavailable": "Недоступно",
+  "booking.premium_not_at_branch": "Уровень «премиум» недоступен в этом филиале. Выберите другой уровень или филиал.",
 
   "contacts.address": "Адрес",
   "contacts.instagram": "Instagram",

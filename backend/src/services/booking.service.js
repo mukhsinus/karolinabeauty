@@ -10,6 +10,7 @@ import {
   assignMastersForSlot,
   assertServiceAllowsTime,
 } from "./availability.service.js";
+import { assertPremiumAllowedForBranch } from "../utils/branchPremium.util.js";
 
 /*
 NORMALIZE PHONE
@@ -51,6 +52,8 @@ export const createBooking = async (payload) => {
   if (!branch) {
     throw new Error("Branch not found");
   }
+
+  assertPremiumAllowedForBranch(branch, serviceLevel);
 
   // проверяем услугу
 
@@ -231,6 +234,10 @@ export const rescheduleBooking = async (
     if (!svcDoc || svcDoc.isManualBooking) {
       throw new Error("Service not available for online reschedule");
     }
+
+    const branchDoc = await Branch.findById(newBranchId, null, opts);
+    if (!branchDoc) throw new Error("Branch not found");
+    assertPremiumAllowedForBranch(branchDoc, newServiceLevel);
 
     assertServiceAllowsTime(svcDoc, newTime);
 

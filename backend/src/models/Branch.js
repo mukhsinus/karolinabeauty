@@ -9,6 +9,14 @@ const BranchSchema = new mongoose.Schema(
       trim: true
     },
 
+    /** Stable id for rules (e.g. yunusabad, chilanzar) — do not use display name */
+    slug: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      index: true,
+    },
+
     address: {
       type: String,
       required: true,

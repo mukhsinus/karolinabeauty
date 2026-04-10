@@ -184,6 +184,7 @@
     "booking.slots_hint": "Early (before 10:00) and late (from 19:00) slots are VIP where applicable. Grey slots are unavailable.",
     "booking.loading_slots": "Loading available times…",
     "booking.slot_unavailable": "Unavailable",
+    "booking.premium_not_at_branch": "Premium tier is not available at this salon. Choose another level or branch.",
 
     "contacts.address": "Address",
     "contacts.instagram": "Instagram",

@@ -141,6 +141,7 @@ export default function BookingSection() {
                 <ServiceList
                   services={categoryServices}
                   booking={booking}
+                  branch={branch}
                   isLoading={isLoading}
                   error={error}
                   formatPrice={(p: number) => formatPrice(p, lang)}

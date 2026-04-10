@@ -1,9 +1,11 @@
 // src/components/booking/ServiceList.tsx
 import { motion, AnimatePresence } from "framer-motion"
+import { isPremiumLevelSelectableForBranch } from "@/utils/branchPremium"
 
 interface Props {
   services: any[]
   booking: any
+  branch: { slug?: string } | null | undefined
   isLoading: boolean
   error: any
 
@@ -37,6 +39,7 @@ const getCurrencyByService = (service: any, t: (key: string) => string) => {
 export default function ServiceList({
   services,
   booking,
+  branch,
   isLoading,
   error,
   formatPrice,
@@ -97,10 +100,33 @@ export default function ServiceList({
                     ? service.prices
                     : []
 
-                  const isMulti = servicePrices.length > 1
+                  if (servicePrices.length === 0) {
+                    return (
+                      <div className="text-sm text-muted-foreground px-2">
+                        {t("common.no_services")}
+                      </div>
+                    )
+                  }
+
+                  const visiblePrices = servicePrices.filter((p) =>
+                    isPremiumLevelSelectableForBranch(
+                      branch,
+                      String((p as { level?: string }).level ?? "master")
+                    )
+                  )
+
+                  if (visiblePrices.length === 0) {
+                    return (
+                      <div className="text-sm text-muted-foreground px-2">
+                        {t("booking.premium_not_at_branch")}
+                      </div>
+                    )
+                  }
+
+                  const isMulti = visiblePrices.length > 1
 
                   if (isMulti) {
-                    return servicePrices.map((price) => {
+                    return visiblePrices.map((price) => {
                       const level = String((price as { level?: string }).level ?? "")
                       const priceValue = Number(
                         (price as { price?: number }).price
@@ -130,20 +156,21 @@ export default function ServiceList({
                     })
                   }
 
-                  const singlePrice = servicePrices[0]
+                  const singlePrice = visiblePrices[0]
+                  const singleLevel = String(singlePrice?.level ?? "master")
                   const singleValue = Number(singlePrice?.price)
                   const currency = getCurrencyByService(service, t)
 
                   return (
                     <div
-                      key={`${service.id}_master`}
+                      key={`${service.id}_${singleLevel}`}
                       className={`flex justify-center px-3 py-2 rounded-lg border cursor-pointer
                       ${
-                        booking.service === `${service.id}_master`
+                        booking.service === `${service.id}_${singleLevel}`
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary"
                       }`}
-                      onClick={() => selectService(service.id, "master")}
+                      onClick={() => selectService(service.id, singleLevel)}
                     >
                       <span className="text-primary font-medium">
                         {formatPrice(singleValue)} {currency}

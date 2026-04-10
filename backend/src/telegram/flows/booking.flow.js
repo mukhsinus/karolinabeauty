@@ -25,6 +25,8 @@ import { Markup } from "telegraf"
 import { formatDate } from "../utils/date.js"
 import { pushNav, resetNav } from "../core/nav.js"
 import { STEPS } from "../core/constants.js"
+import Branch from "../../models/Branch.js"
+import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
 
 const safeErrorReply = async (ctx) => {
   try {
@@ -87,11 +89,21 @@ const SERVICE_LEVELS = [
   { id: "premium", label: "Премиум" }
 ]
 
-const filtersLevelKeyboard = () => {
-  const rows = SERVICE_LEVELS.map((l) => [
+/** branch: lean doc with slug (or null) — premium only when slug === yunusabad */
+const filtersLevelKeyboard = (branch) => {
+  const levels = SERVICE_LEVELS.filter((l) =>
+    isPremiumLevelAllowedForBranch(branch, l.id)
+  )
+  const rows = levels.map((l) => [
     Markup.button.callback(l.label, `crm_booking:filter_level:${l.id}`)
   ])
   return Markup.inlineKeyboard(rows)
+}
+
+async function loadSessionBranchLean(ctx) {
+  const bid = ctx.session?.branchId
+  if (!bid || !isValidObjectId(String(bid))) return null
+  return Branch.findById(bid).select("slug").lean()
 }
 
 const getNextDays = (count) => {
@@ -191,6 +203,8 @@ export const startBookingManagement = async (ctx) => {
       return ctx.reply("⚠️ Сначала выберите филиал при входе (/start).")
     }
 
+    const branch = await loadSessionBranchLean(ctx)
+
     // reset booking scope + level selection (branch is already selected in onboarding)
     setPayload(ctx, {
       booking: {
@@ -207,9 +221,9 @@ export const startBookingManagement = async (ctx) => {
     pushNav(ctx, { flow: "booking", step: "level" })
 
     try {
-      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard())
+      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard(branch))
     } catch {
-      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
+      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard(branch))
     }
     return
   } catch (error) {
@@ -227,10 +241,11 @@ export const selectBookingBranchFilter = async (ctx, { branchId }) => {
       await ctx.answerCbQuery("Филиал выбирается при входе")
     } catch {}
 
+    const branch = await loadSessionBranchLean(ctx)
     try {
-      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard())
+      await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard(branch))
     } catch {
-      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard())
+      await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard(branch))
     }
   } catch (error) {
     console.error("[CRM] selectBookingBranchFilter error:", error)
@@ -241,6 +256,21 @@ export const selectBookingBranchFilter = async (ctx, { branchId }) => {
 export const selectBookingLevelFilter = async (ctx, { serviceLevel }) => {
   try {
     if (!SERVICE_LEVELS.some((l) => l.id === serviceLevel)) return safeErrorReply(ctx)
+
+    const branch = await loadSessionBranchLean(ctx)
+    if (!isPremiumLevelAllowedForBranch(branch, serviceLevel)) {
+      try {
+        await ctx.answerCbQuery("Премиум недоступен в этом филиале", { show_alert: true })
+      } catch {}
+      setStep(ctx, STEPS.CRM_BOOKING_LEVEL)
+      try {
+        await ctx.editMessageText("Выберите уровень мастера:", filtersLevelKeyboard(branch))
+      } catch {
+        await ctx.reply("Выберите уровень мастера:", filtersLevelKeyboard(branch))
+      }
+      return
+    }
+
     setPayload(ctx, { flow: "booking" })
     setStep(ctx, STEPS.CRM_BOOKING_PERIOD)
 

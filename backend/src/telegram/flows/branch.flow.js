@@ -2,8 +2,11 @@
 
 import { Markup } from "telegraf"
 
-import { setStep, clearPayload } from "../core/session.js"
+import { setStep, clearPayload, setPayload } from "../core/session.js"
 import { STEPS } from "../core/constants.js"
+
+import Branch from "../../models/Branch.js"
+import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
 
 import { branchesInline } from "../keyboards/inline.keyboard.js"
 import { adminKeyboard } from "../keyboards/admin.keyboard.js"
@@ -67,6 +70,19 @@ export const handleContact = async (ctx) => {
 export const handleBranchSelect = async (ctx, branchId) => {
   try {
     ctx.session.branchId = branchId
+
+    const booking = ctx.session?.payload?.booking
+    if (booking?.serviceLevel === "premium") {
+      const branch = await Branch.findById(branchId).select("slug").lean()
+      if (!isPremiumLevelAllowedForBranch(branch, "premium")) {
+        setPayload(ctx, {
+          booking: {
+            ...booking,
+            serviceLevel: null
+          }
+        })
+      }
+    }
 
     setStep(ctx, STEPS.ADMIN_PANEL)
 
