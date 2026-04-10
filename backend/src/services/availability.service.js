@@ -121,6 +121,29 @@ function masterCoversService(master, serviceObjectId) {
   )
 }
 
+/**
+ * If no masters exist for a branch, slot math yields zero capacity (all slots unavailable).
+ * Idempotent: creates default masters so production works without a manual seed step.
+ */
+async function ensureMinMastersForBranch(branchOid, branch, minimum) {
+  const n = Math.max(1, Math.floor(Number(minimum) || 1))
+  const active = await Master.countDocuments({
+    branchId: branchOid,
+    isActive: true,
+  })
+  if (active >= n) return
+
+  const branchName = branch?.name || "Салон"
+  for (let i = active; i < n; i++) {
+    await Master.create({
+      name: `Мастер ${i + 1} · ${branchName}`,
+      branchId: branchOid,
+      serviceIds: [],
+      isActive: true,
+    })
+  }
+}
+
 async function loadOverrideIntervals(masterId, branchObjectId, dateYmd) {
   const docs = await MasterAvailability.find({
     masterId,
@@ -185,15 +208,23 @@ function bookingToOccupancy(b, dateYmd) {
   let endMs
   const durMin = Number(b.serviceDuration) || 60
 
-  if (b.start instanceof Date && b.end instanceof Date) {
-    startMs = b.start.getTime()
-    endMs = b.end.getTime()
-  } else {
+  if (b.start != null && b.end != null) {
+    const st = new Date(b.start)
+    const en = new Date(b.end)
+    if (!Number.isNaN(st.getTime()) && !Number.isNaN(en.getTime())) {
+      startMs = st.getTime()
+      endMs = en.getTime()
+    }
+  }
+
+  if (startMs == null || endMs == null) {
     const tm = parseHHMM(b.time)
     if (tm == null) return null
     startMs = localMinutesToDate(dateYmd, tm).getTime()
     endMs = startMs + durMin * 60 * 1000
   }
+
+  if (!(endMs > startMs)) return null
 
   const masterIds = Array.isArray(b.masters)
     ? b.masters.map((id) => String(id))
@@ -344,6 +375,12 @@ export async function generateAvailableSlots({
 
   const svcOid = new mongoose.Types.ObjectId(serviceId)
 
+  await ensureMinMastersForBranch(
+    branchOid,
+    branch,
+    Math.max(required, 2)
+  )
+
   let masters = await Master.find({
     branchId: branchOid,
     isActive: true,
@@ -439,6 +476,12 @@ export async function assignMastersForSlot({
       : branchId
 
   const svcOid = new mongoose.Types.ObjectId(serviceId)
+
+  await ensureMinMastersForBranch(
+    branchOid,
+    branch,
+    Math.max(required, 2)
+  )
 
   let masters = await Master.find({
     branchId: branchOid,
