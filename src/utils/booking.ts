@@ -127,7 +127,9 @@ export const getBranchById = (
   branches: any[],
   branchId: string | null
 ) => {
-  return branches.find((b) => b._id === branchId)
+  if (!branchId || !Array.isArray(branches)) return undefined
+  const want = String(branchId)
+  return branches.find((b) => String(b?._id ?? b?.id ?? "") === want)
 }
 
 export const serviceDetails: Record<string, any> = {

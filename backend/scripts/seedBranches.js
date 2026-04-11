@@ -46,6 +46,16 @@ const seedBranches = async () => {
       )
     }
 
+    // Backfill slug on legacy documents (name matches seed but slug never set)
+    await Branch.updateMany(
+      { name: "Юнусабад", $or: [{ slug: { $exists: false } }, { slug: "" }] },
+      { $set: { slug: "yunusabad" } }
+    )
+    await Branch.updateMany(
+      { name: "Чиланзар", $or: [{ slug: { $exists: false } }, { slug: "" }] },
+      { $set: { slug: "chilanzar" } }
+    )
+
     const total = await Branch.countDocuments()
     console.log(`Branches upserted. Total branches in DB: ${total}`)
   } finally {
