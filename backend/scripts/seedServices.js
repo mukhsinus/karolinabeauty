@@ -1,12 +1,35 @@
 // backend/scripts/seedServices.js
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
 
 import Service from "../src/models/Service.js"
 
-dotenv.config()
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.resolve(__dirname, "../.env") })
 
-const MONGO = process.env.MONGODB_URI
+const CONNECT_OPTS = {
+  retryWrites: true,
+  w: "majority",
+}
+
+async function connectWithRetry(uri, attempt = 1) {
+  console.log("Connecting to Mongo...")
+  try {
+    await mongoose.connect(uri, CONNECT_OPTS)
+    console.log("Mongo connected")
+    console.log("Connected to Mongo")
+  } catch (err) {
+    console.error("Mongo connection error (full):", err)
+    if (attempt < 2) {
+      console.log("Retrying connection once...")
+      await new Promise((r) => setTimeout(r, 1000))
+      return connectWithRetry(uri, attempt + 1)
+    }
+    throw err
+  }
+}
 
 const servicesData = [
 
@@ -325,18 +348,55 @@ const servicesData = [
 
 async function seed() {
   try {
-    await mongoose.connect(MONGO)
-    console.log("Mongo connected")
+    console.log("MONGO URI:", process.env.MONGODB_URI?.slice(0, 30))
 
-    await Service.deleteMany()
-    console.log("Old services removed")
+    const uri = process.env.MONGODB_URI || process.env.MONGO_URI
+    if (
+      !uri ||
+      typeof uri !== "string" ||
+      (!uri.startsWith("mongodb://") && !uri.startsWith("mongodb+srv://"))
+    ) {
+      throw new Error(
+        "MONGODB_URI (or MONGO_URI) is missing or invalid. Expected mongodb:// or mongodb+srv://"
+      )
+    }
 
-    await Service.insertMany(servicesData)
+    await connectWithRetry(uri)
+
+    if (!Array.isArray(servicesData) || servicesData.length === 0) {
+      throw new Error("servicesData is empty — nothing to insert")
+    }
+    console.log("Services to insert:", servicesData.length)
+
+    console.log("Deleting old services...")
+    await Service.deleteMany({})
+
+    console.log("Seeding services...")
+    try {
+      await Service.insertMany(servicesData)
+    } catch (insertErr) {
+      console.error("insertMany failed (full error):", insertErr)
+      throw insertErr
+    }
+
     console.log(`Inserted ${servicesData.length} services`)
 
-    process.exit()
+    const count = await Service.countDocuments()
+    console.log("Total services in DB:", count)
+    if (count === 0) {
+      throw new Error("Seed finished but Service.countDocuments() is 0")
+    }
+
+    await mongoose.connection.close()
+    console.log("Mongo connection closed")
+    process.exit(0)
   } catch (error) {
-    console.error(error)
+    console.error("Seed failed (full error):", error)
+    try {
+      await mongoose.connection.close()
+    } catch (_) {
+      // ignore
+    }
     process.exit(1)
   }
 }
