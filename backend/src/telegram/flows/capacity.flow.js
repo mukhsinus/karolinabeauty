@@ -2,6 +2,8 @@
 
 import { setPayload, setStep } from "../core/session.js"
 import Service from "../../models/Service.js"
+import Branch from "../../models/Branch.js"
+import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
 import { pushNav, resetNav } from "../core/nav.js"
 import { formatDate } from "../utils/date.js"
 import { translateService } from "../utils/serviceI18n.js"
@@ -28,6 +30,12 @@ const safeErrorReply = async (ctx) => {
 
 const isValidObjectId = (id) =>
   typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id)
+
+async function loadSessionBranchForCapacity(ctx) {
+  const bid = ctx.session?.branchId || ctx.session?.payload?.capacity?.branchId
+  if (!bid || !isValidObjectId(String(bid))) return null
+  return Branch.findById(bid).select("slug name").lean()
+}
 const isDateISO = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s)
 
 const toISODate = (d) => d.toISOString().slice(0, 10)
@@ -151,7 +159,8 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
     })
 
     pushNav(ctx, { flow: "capacity", step: "level", params: { serviceId } })
-    return ctx.editMessageText("Выберите уровень:", levelsKeyboard())
+    const branch = await loadSessionBranchForCapacity(ctx)
+    return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
   } catch (error) {
     console.error("[CRM] selectCapacityService error:", error)
     return safeErrorReply(ctx)
@@ -160,9 +169,20 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
 
 export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
   try {
+    if (!["master", "top", "premium"].includes(serviceLevel)) return safeErrorReply(ctx)
+
+    const branch = await loadSessionBranchForCapacity(ctx)
+    if (!isPremiumLevelAllowedForBranch(branch, serviceLevel)) {
+      try {
+        await ctx.answerCbQuery("Премиум только в филиале Юнусабад", { show_alert: true })
+      } catch {}
+      setPayload(ctx, { flow: "capacity" })
+      setStep(ctx, STEPS.CRM_CAPACITY_LEVEL)
+      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
+    }
+
     setPayload(ctx, { flow: "capacity" })
     setStep(ctx, STEPS.CRM_CAPACITY_DATE)
-    if (!["master", "top", "premium"].includes(serviceLevel)) return safeErrorReply(ctx)
 
     setPayload(ctx, {
       capacity: {
@@ -259,7 +279,8 @@ export const backCapacity = async (ctx, { step }) => {
     }
 
     if (step === "level") {
-      return ctx.editMessageText("Выберите уровень:", levelsKeyboard())
+      const branch = await loadSessionBranchForCapacity(ctx)
+      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
     }
 
     if (step === "date") {

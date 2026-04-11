@@ -2,6 +2,7 @@
 
 import { Markup } from "telegraf"
 import { translateCategory, translateService } from "../utils/serviceI18n.js"
+import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
 
 export const CAPACITY_CB = {
   CATEGORY: "crm_capacity:category", // crm_capacity:category:<category>
@@ -40,13 +41,17 @@ export const servicesKeyboard = (services, lang = "ru") => {
   return Markup.inlineKeyboard(rows)
 }
 
-export const levelsKeyboard = () => {
-  return Markup.inlineKeyboard([
+/** branch: lean { slug, name } from DB — premium only at Yunusabad */
+export const levelsKeyboard = (branch) => {
+  const rows = [
     [Markup.button.callback("Мастер", `${CAPACITY_CB.LEVEL}:master`)],
-    [Markup.button.callback("Топ", `${CAPACITY_CB.LEVEL}:top`)],
-    [Markup.button.callback("Премиум", `${CAPACITY_CB.LEVEL}:premium`)],
-    [Markup.button.callback("⬅️ Назад", "crm_back:capacity_services")],
-  ])
+    [Markup.button.callback("Топ", `${CAPACITY_CB.LEVEL}:top`)]
+  ]
+  if (isPremiumLevelAllowedForBranch(branch, "premium")) {
+    rows.push([Markup.button.callback("Премиум", `${CAPACITY_CB.LEVEL}:premium`)])
+  }
+  rows.push([Markup.button.callback("⬅️ Назад", "crm_back:capacity_services")])
+  return Markup.inlineKeyboard(rows)
 }
 
 export const datesKeyboard = (dates) => {

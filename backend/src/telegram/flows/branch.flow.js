@@ -71,17 +71,26 @@ export const handleBranchSelect = async (ctx, branchId) => {
   try {
     ctx.session.branchId = branchId
 
+    const branch = await Branch.findById(branchId).select("slug name").lean()
+
     const booking = ctx.session?.payload?.booking
-    if (booking?.serviceLevel === "premium") {
-      const branch = await Branch.findById(branchId).select("slug").lean()
-      if (!isPremiumLevelAllowedForBranch(branch, "premium")) {
-        setPayload(ctx, {
-          booking: {
-            ...booking,
-            serviceLevel: null
-          }
-        })
-      }
+    if (booking?.serviceLevel === "premium" && !isPremiumLevelAllowedForBranch(branch, "premium")) {
+      setPayload(ctx, {
+        booking: {
+          ...booking,
+          serviceLevel: null
+        }
+      })
+    }
+
+    const capacity = ctx.session?.payload?.capacity
+    if (capacity?.serviceLevel === "premium" && !isPremiumLevelAllowedForBranch(branch, "premium")) {
+      setPayload(ctx, {
+        capacity: {
+          ...capacity,
+          serviceLevel: null
+        }
+      })
     }
 
     setStep(ctx, STEPS.ADMIN_PANEL)

@@ -89,7 +89,7 @@ const SERVICE_LEVELS = [
   { id: "premium", label: "Премиум" }
 ]
 
-/** branch: lean doc with slug (or null) — premium only when slug === yunusabad */
+/** branch: lean { slug, name } (or null) — premium only at Yunusabad (see branchPremium.util.js) */
 const filtersLevelKeyboard = (branch) => {
   const levels = SERVICE_LEVELS.filter((l) =>
     isPremiumLevelAllowedForBranch(branch, l.id)
@@ -103,7 +103,7 @@ const filtersLevelKeyboard = (branch) => {
 async function loadSessionBranchLean(ctx) {
   const bid = ctx.session?.branchId
   if (!bid || !isValidObjectId(String(bid))) return null
-  return Branch.findById(bid).select("slug").lean()
+  return Branch.findById(bid).select("slug name").lean()
 }
 
 const getNextDays = (count) => {
