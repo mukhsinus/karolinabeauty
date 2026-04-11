@@ -113,16 +113,6 @@ export const getSelectedService = (allServices: any[], serviceId: string) => {
   return allServices.find((s) => s.id === serviceId)
 }
 
-const PRICES = [
-  { level: "master", label: "Мастер", price: 200000 },
-  { level: "top", label: "Топ мастер", price: 300000 },
-  { level: "premium", label: "Премиум", price: 400000 }
-]
-
-export const getPriceByLevel = (level: string) => {
-  return PRICES.find((p) => p.level === level)
-}
-
 export const getBranchById = (
   branches: any[],
   branchId: string | null

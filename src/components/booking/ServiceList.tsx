@@ -33,7 +33,8 @@ const getLevelLabel = (level: string, t: (key: string) => string) => {
 }
 
 const getCurrencyByService = (service: any, t: (key: string) => string) => {
-  return service?.category === "hair" ? "USD" : t("services.currency")
+  if (service?.currency === "USD" || service?.category === "hair") return "USD"
+  return t("services.currency")
 }
 
 export default function ServiceList({

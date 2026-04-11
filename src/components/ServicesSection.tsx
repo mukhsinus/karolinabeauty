@@ -11,7 +11,21 @@ const formatPrice = (price: number) => {
 }
 
 const getCurrencyByService = (service: any, t: (key: string) => string) => {
-  return service?.category === "hair" ? "USD" : t("services.currency")
+  if (service?.currency === "USD" || service?.category === "hair") return "USD"
+  return t("services.currency")
+}
+
+const getDisplayPriceParts = (service: any) => {
+  const arr = Array.isArray(service?.prices) ? service.prices : []
+  const nums = arr
+    .map((p: { price?: number }) => Number(p.price))
+    .filter((n: number) => Number.isFinite(n))
+  if (nums.length === 0) {
+    return { isRange: false, min: service?.price, max: service?.price }
+  }
+  const min = Math.min(...nums)
+  const max = Math.max(...nums)
+  return { isRange: nums.length > 1 && min !== max, min, max }
 }
 
 // ✅ ПЕРЕВЕДЕНО НА i18n
@@ -231,7 +245,24 @@ const ServicesSection = () => {
                                   {t("services.from")}
                                 </span>
                               )}
-                              {formatPrice(service.price)}
+                              {(() => {
+                                const { isRange, min, max } =
+                                  getDisplayPriceParts(service)
+                                if (
+                                  isRange &&
+                                  typeof min === "number" &&
+                                  typeof max === "number"
+                                ) {
+                                  return (
+                                    <>
+                                      {formatPrice(min)} – {formatPrice(max)}
+                                    </>
+                                  )
+                                }
+                                return formatPrice(
+                                  typeof min === "number" ? min : service.price
+                                )
+                              })()}
                               <span className="text-xs text-muted-foreground ml-1">
                                 {getCurrencyByService(service, t)}
                               </span>
@@ -313,7 +344,32 @@ const ServicesSection = () => {
                     )}
 
                     <div className="text-lg font-semibold text-primary pt-2">
-                      {formatPrice(modalService.price)} {getCurrencyByService(modalService, t)}
+                      {(() => {
+                        const { isRange, min, max } =
+                          getDisplayPriceParts(modalService)
+                        if (
+                          isRange &&
+                          typeof min === "number" &&
+                          typeof max === "number"
+                        ) {
+                          return (
+                            <>
+                              {formatPrice(min)} – {formatPrice(max)}{" "}
+                              {getCurrencyByService(modalService, t)}
+                            </>
+                          )
+                        }
+                        return (
+                          <>
+                            {formatPrice(
+                              typeof min === "number"
+                                ? min
+                                : modalService.price
+                            )}{" "}
+                            {getCurrencyByService(modalService, t)}
+                          </>
+                        )
+                      })()}
                     </div>
 
                     <div className="pt-4 flex gap-3">

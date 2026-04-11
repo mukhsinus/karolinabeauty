@@ -11,6 +11,7 @@ import {
   assertServiceAllowsTime,
 } from "./availability.service.js";
 import { assertPremiumAllowedForBranch } from "../utils/branchPremium.util.js";
+import { findPriceForLevel } from "../utils/servicePrice.util.js";
 
 /*
 NORMALIZE PHONE
@@ -76,17 +77,16 @@ export const createBooking = async (payload) => {
 
   // цена
 
-  const levelPrice = Array.isArray(service.prices)
-    ? service.prices.find((p) => p.level === serviceLevel)
-    : null;
+  const levelPrice = findPriceForLevel(service, serviceLevel);
+
+  if (!levelPrice) {
+    throw new Error("Service level is not available for this service");
+  }
 
   const resolvedPrice =
     typeof price === "number" && !Number.isNaN(price)
       ? price
-      : levelPrice?.price ??
-        (Array.isArray(service.prices) && service.prices.length > 0
-          ? service.prices[0].price
-          : null);
+      : levelPrice.price;
 
   if (typeof resolvedPrice !== "number") {
     throw new Error("Service price is not defined");

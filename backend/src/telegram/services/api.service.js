@@ -3,6 +3,7 @@
 import Service from "../../models/Service.js"
 import Booking from "../../models/Booking.js"
 import Branch from "../../models/Branch.js"
+import { listActiveServices } from "../../services/services.service.js"
 
 const BUSINESS_TZ =
   process.env.BUSINESS_TIMEZONE ||
@@ -42,13 +43,15 @@ export const getTodayBookings = async () => {
   }
 }
 
-// ================= SERVICES =================
+// ================= SERVICES (same dataset as GET /api/services) =================
 
 export const getCategories = async () => {
   try {
-    return await Service.distinct("category", {
-      isActive: true
-    })
+    const rows = await listActiveServices()
+    const set = new Set(
+      rows.map((s) => s.category).filter((c) => c != null && String(c).length > 0)
+    )
+    return [...set].sort((a, b) => String(a).localeCompare(String(b)))
   } catch (error) {
     console.error("getCategories error:", error)
     throw error
@@ -57,12 +60,24 @@ export const getCategories = async () => {
 
 export const getServicesByCategory = async (category) => {
   try {
-    return await Service.find({
-      category,
-      isActive: true
-    }).lean()
+    const c = String(category || "")
+    const rows = await listActiveServices()
+    return rows.filter((s) => String(s.category) === c)
   } catch (error) {
     console.error("getServicesByCategory error:", error)
+    throw error
+  }
+}
+
+/** Active service by id from the public catalog (includes prices, currency). */
+export const getCatalogServiceById = async (id) => {
+  try {
+    if (!id) return null
+    const want = String(id)
+    const rows = await listActiveServices()
+    return rows.find((s) => String(s._id) === want) || null
+  } catch (error) {
+    console.error("getCatalogServiceById error:", error)
     throw error
   }
 }
@@ -78,17 +93,18 @@ export const getServiceById = async (id) => {
 
 export const updateServicePrice = async (id, price) => {
   try {
-    const updated = await Service.findByIdAndUpdate(
-      id,
-      { price },
-      { returnDocument: "after" }
-    ).lean()
-
-    if (!updated) {
+    const service = await Service.findById(id)
+    if (!service) {
       throw new Error("SERVICE_NOT_FOUND")
     }
-
-    return updated
+    if (!Array.isArray(service.prices) || service.prices.length === 0) {
+      throw new Error("SERVICE_NO_PRICES")
+    }
+    const idx = service.prices.findIndex((p) => p.level === "master")
+    const target = idx >= 0 ? idx : 0
+    service.prices[target].price = price
+    await service.save()
+    return service.toObject()
   } catch (error) {
     console.error("updateServicePrice error:", error)
     throw error

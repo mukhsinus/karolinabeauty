@@ -507,7 +507,7 @@ export async function assignMastersForSlot({
     .select("time serviceDuration masters start end")
     .lean()
 
-  occupancy = []
+  const occupancy = []
   for (const b of bookings) {
     const o = bookingToOccupancy(b, dateYmd)
     if (o) occupancy.push(o)

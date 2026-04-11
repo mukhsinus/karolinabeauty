@@ -3,6 +3,7 @@
 import { Markup } from "telegraf"
 import { translateCategory, translateService } from "../utils/serviceI18n.js"
 import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
+import { SERVICE_PRICE_LEVELS } from "../../constants/serviceLevels.js"
 
 export const CAPACITY_CB = {
   CATEGORY: "crm_capacity:category", // crm_capacity:category:<category>
@@ -28,11 +29,7 @@ export const categoriesKeyboard = (categories, lang = "ru") => {
 export const servicesKeyboard = (services, lang = "ru") => {
   const rows = services.slice(0, 30).map((s) => [
     Markup.button.callback(
-      (() => {
-        const result = translateService(s.nameKey, lang)
-        console.log({ lang, key: s.nameKey, result })
-        return result.slice(0, 60)
-      })(),
+      translateService(s.nameKey, lang).slice(0, 60),
       `${CAPACITY_CB.SERVICE}:${s._id}`
     )
   ])
@@ -41,15 +38,31 @@ export const servicesKeyboard = (services, lang = "ru") => {
   return Markup.inlineKeyboard(rows)
 }
 
-/** branch: lean { slug, name } from DB — premium only at Yunusabad */
-export const levelsKeyboard = (branch) => {
-  const rows = [
-    [Markup.button.callback("Мастер", `${CAPACITY_CB.LEVEL}:master`)],
-    [Markup.button.callback("Топ", `${CAPACITY_CB.LEVEL}:top`)]
-  ]
-  if (isPremiumLevelAllowedForBranch(branch, "premium")) {
-    rows.push([Markup.button.callback("Премиум", `${CAPACITY_CB.LEVEL}:premium`)])
+const LEVEL_LABEL = {
+  master: "Мастер",
+  top: "Топ",
+  premium: "Премиум",
+  promo: "Акция"
+}
+
+/** Levels follow each service's price tiers (from API catalog). */
+export const levelsKeyboard = (branch, service) => {
+  const tiers = Array.isArray(service?.prices) ? service.prices : []
+  let levels = [...new Set(tiers.map((p) => String(p.level || "").toLowerCase()))]
+  if (!levels.length) {
+    levels = [...SERVICE_PRICE_LEVELS]
   }
+  const ordered = SERVICE_PRICE_LEVELS.filter((lv) => levels.includes(lv))
+
+  const rows = []
+  for (const level of ordered) {
+    if (level === "premium" && !isPremiumLevelAllowedForBranch(branch, "premium")) {
+      continue
+    }
+    const label = LEVEL_LABEL[level] || level
+    rows.push([Markup.button.callback(label, `${CAPACITY_CB.LEVEL}:${level}`)])
+  }
+
   rows.push([Markup.button.callback("⬅️ Назад", "crm_back:capacity_services")])
   return Markup.inlineKeyboard(rows)
 }

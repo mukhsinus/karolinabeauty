@@ -17,8 +17,8 @@ const servicesData = [
   category: "lashes",
   duration: 120,
   prices: [
-    { level: "master", price: 200000 },
-    { level: "top", price: 300000 },
+    { level: "master", price: 250000 },
+    { level: "top", price: 350000 },
     { level: "premium", price: 400000 }
   ]
 },
@@ -27,7 +27,7 @@ const servicesData = [
   category: "lashes",
   duration: 120,
   prices: [
-    { level: "master", price: 250000 },
+    { level: "master", price: 300000 },
     { level: "top", price: 400000 }
   ]
 },
@@ -63,6 +63,7 @@ const servicesData = [
   duration: 30,
   prices: [
     { level: "master", price: 50000 },
+    { level: "top", price: 50000 },
     { level: "premium", price: 100000 }
   ]
 },
@@ -97,13 +98,6 @@ const servicesData = [
   category: "brows",
   duration: 60,
   prices: [{ level: "master", price: 100000 }]
-},
-
-{
-  nameKey: "services.brow_all_inclusive",
-  category: "brows",
-  duration: 90,
-  prices: [{ level: "premium", price: 300000 }]
 },
 
 {
@@ -157,12 +151,6 @@ const servicesData = [
   category: "nails",
   duration: 120,
   prices: [{ level: "master", price: 400000 }]
-},
-{
-  nameKey: "services.combo_promo",
-  category: "nails",
-  duration: 120,
-  prices: [{ level: "promo", price: 290000 }]
 },
 
 {
@@ -227,14 +215,23 @@ const servicesData = [
   prices: [{ level: "master", price: 50000 }]
 },
 
+// ✅ НОВАЯ УСЛУГА
+{
+  nameKey: "services.onycholysis_cleaning",
+  category: "nails",
+  duration: 30,
+  prices: [{ level: "master", price: 100000 }]
+},
+
 /* ================= HAIR ================= */
+// (без изменений)
 
 {
   nameKey: "services.hair_100g_work",
   category: "hair",
   duration: 180,
   currency: "USD",
-  prices: [{ level: "master", price: 50 }]
+  prices: [{ level: "master", price: 100 }]
 },
 
 {
@@ -242,35 +239,35 @@ const servicesData = [
   category: "hair",
   duration: 240,
   currency: "USD",
-  prices: [{ level: "master", price: 160 }]
+  prices: [{ level: "master", price: 200 }]
 },
 {
   nameKey: "services.hair_50_55",
   category: "hair",
   duration: 240,
   currency: "USD",
-  prices: [{ level: "master", price: 180 }]
+  prices: [{ level: "master", price: 220 }]
 },
 {
   nameKey: "services.hair_60_65",
   category: "hair",
   duration: 240,
   currency: "USD",
-  prices: [{ level: "master", price: 200 }]
+  prices: [{ level: "master", price: 240 }]
 },
 {
   nameKey: "services.hair_70_75",
   category: "hair",
   duration: 240,
   currency: "USD",
-  prices: [{ level: "master", price: 220 }]
+  prices: [{ level: "master", price: 260 }]
 },
 {
   nameKey: "services.hair_80_85",
   category: "hair",
   duration: 240,
   currency: "USD",
-  prices: [{ level: "master", price: 250 }]
+  prices: [{ level: "master", price: 300 }]
 },
 
 {
@@ -278,14 +275,14 @@ const servicesData = [
   category: "hair",
   duration: 180,
   currency: "USD",
-  prices: [{ level: "master", price: 75 }]
+  prices: [{ level: "master", price: 90 }]
 },
 {
   nameKey: "services.bio_80_90",
   category: "hair",
   duration: 180,
   currency: "USD",
-  prices: [{ level: "master", price: 90 }]
+  prices: [{ level: "master", price: 100 }]
 },
 
 /* ================= PERMANENT ================= */

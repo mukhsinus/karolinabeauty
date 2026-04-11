@@ -29,7 +29,6 @@ export function useBooking() {
   // ======================
 
   const { data: services = [], isLoading, error } = useServices()
-  console.log("SERVICES:", services)
 
   const { data: branches = [], isLoading: branchesLoading } = useBranches()
 
@@ -69,11 +68,6 @@ export function useBooking() {
     else setStep(4)
   }, [booking])
 
-  useEffect(() => {
-    console.log("STEP:", step)
-    console.log("BOOKING:", booking)
-  }, [step, booking])
-
   // ======================
   // DERIVED
   // ======================
@@ -108,7 +102,10 @@ export function useBooking() {
         : []
       if (prices.length === 0) return undefined
 
-      const match = prices.find((p) => p.level === level)
+      const lv = String(level || "").toLowerCase()
+      const match = prices.find(
+        (p) => String(p.level || "").toLowerCase() === lv
+      )
       if (match) return match
 
       if (prices.length === 1) return prices[0]

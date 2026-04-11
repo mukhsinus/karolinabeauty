@@ -1,8 +1,12 @@
 // backend/src/telegram/flows/capacity.flow.js
 
 import { setPayload, setStep } from "../core/session.js"
-import Service from "../../models/Service.js"
 import Branch from "../../models/Branch.js"
+import {
+  getCategories,
+  getServicesByCategory,
+  getCatalogServiceById
+} from "../services/api.service.js"
 import { isPremiumLevelAllowedForBranch } from "../../utils/branchPremium.util.js"
 import { pushNav, resetNav } from "../core/nav.js"
 import { formatDate } from "../utils/date.js"
@@ -10,6 +14,7 @@ import { translateService } from "../utils/serviceI18n.js"
 import { STEPS } from "../core/constants.js"
 
 import { getSlotCapacity, upsertSlotCapacity } from "../../services/capacity.service.js"
+import { isKnownPriceLevel } from "../../constants/serviceLevels.js"
 
 import {
   categoriesKeyboard,
@@ -60,7 +65,7 @@ const renderSummary = async (ctx) => {
     return safeErrorReply(ctx)
   }
 
-  const service = await Service.findById(serviceId).select("nameKey category").lean()
+  const service = await getCatalogServiceById(serviceId)
   const lang = ctx.session?.language || "ru"
   const capacity = await getSlotCapacity({ branchId, serviceId, serviceLevel, date })
   await ctx.editMessageText(
@@ -89,7 +94,7 @@ export const startCapacityFlow = async (ctx) => {
       }
     })
 
-    const categories = await Service.distinct("category", { isActive: true })
+    const categories = await getCategories()
     const sorted = (categories || []).map(String).sort((a, b) => a.localeCompare(b))
     if (!sorted.length) return ctx.reply("⚠️ Нет активных категорий")
 
@@ -124,18 +129,21 @@ export const selectCapacityCategory = async (ctx, { category }) => {
       }
     })
 
-    const services = await Service.find({ isActive: true, category: c })
-      .select("_id nameKey category")
-      .sort({ nameKey: 1 })
-      .lean()
+    const services = await getServicesByCategory(c)
+    const sortedServices = [...services].sort((a, b) =>
+      String(a.nameKey).localeCompare(String(b.nameKey))
+    )
 
-    if (!services?.length) {
+    if (!sortedServices?.length) {
       return ctx.editMessageText("⚠️ Нет услуг в этой категории")
     }
 
     pushNav(ctx, { flow: "capacity", step: "service", params: { category: c } })
     const lang = ctx.session?.language || "ru"
-    return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services, lang))
+    return ctx.editMessageText(
+      "Выберите услугу:",
+      servicesKeyboard(sortedServices, lang)
+    )
   } catch (error) {
     console.error("[CRM] selectCapacityCategory error:", error)
     return safeErrorReply(ctx)
@@ -160,7 +168,8 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
 
     pushNav(ctx, { flow: "capacity", step: "level", params: { serviceId } })
     const branch = await loadSessionBranchForCapacity(ctx)
-    return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
+    const svc = await getCatalogServiceById(serviceId)
+    return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch, svc))
   } catch (error) {
     console.error("[CRM] selectCapacityService error:", error)
     return safeErrorReply(ctx)
@@ -169,7 +178,7 @@ export const selectCapacityService = async (ctx, { serviceId }) => {
 
 export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
   try {
-    if (!["master", "top", "premium"].includes(serviceLevel)) return safeErrorReply(ctx)
+    if (!isKnownPriceLevel(serviceLevel)) return safeErrorReply(ctx)
 
     const branch = await loadSessionBranchForCapacity(ctx)
     if (!isPremiumLevelAllowedForBranch(branch, serviceLevel)) {
@@ -178,7 +187,9 @@ export const selectCapacityLevel = async (ctx, { serviceLevel }) => {
       } catch {}
       setPayload(ctx, { flow: "capacity" })
       setStep(ctx, STEPS.CRM_CAPACITY_LEVEL)
-      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
+      const sid = ctx.session?.payload?.capacity?.serviceId
+      const svc = sid ? await getCatalogServiceById(sid) : null
+      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch, svc))
     }
 
     setPayload(ctx, { flow: "capacity" })
@@ -270,17 +281,21 @@ export const backCapacity = async (ctx, { step }) => {
     if (step === "service") {
       const c = p.category
       if (!c) return startCapacityFlow(ctx)
-      const services = await Service.find({ isActive: true, category: c })
-        .select("_id nameKey category")
-        .sort({ nameKey: 1 })
-        .lean()
+      const services = await getServicesByCategory(c)
+      const sortedServices = [...services].sort((a, b) =>
+        String(a.nameKey).localeCompare(String(b.nameKey))
+      )
       const lang = ctx.session?.language || "ru"
-      return ctx.editMessageText("Выберите услугу:", servicesKeyboard(services, lang))
+      return ctx.editMessageText(
+        "Выберите услугу:",
+        servicesKeyboard(sortedServices, lang)
+      )
     }
 
     if (step === "level") {
       const branch = await loadSessionBranchForCapacity(ctx)
-      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch))
+      const svc = await getCatalogServiceById(p.serviceId)
+      return ctx.editMessageText("Выберите уровень:", levelsKeyboard(branch, svc))
     }
 
     if (step === "date") {

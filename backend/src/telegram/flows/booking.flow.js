@@ -86,8 +86,13 @@ const showNext7DayPicker = async (ctx) => {
 const SERVICE_LEVELS = [
   { id: "master", label: "Мастер" },
   { id: "top", label: "Топ" },
-  { id: "premium", label: "Премиум" }
+  { id: "premium", label: "Премиум" },
+  { id: "promo", label: "Акция" }
 ]
+
+const SERVICE_LEVEL_LABEL = Object.fromEntries(
+  SERVICE_LEVELS.map((l) => [l.id, l.label])
+)
 
 /** branch: lean { slug, name } (or null) — premium only at Yunusabad (see branchPremium.util.js) */
 const filtersLevelKeyboard = (branch) => {
@@ -372,7 +377,7 @@ export const showBookingList = async (ctx, { type, page }) => {
 
       const blocks = result.items.map((b) => {
         const lvl =
-          b.serviceLevel === "master" ? "Мастер" : b.serviceLevel === "top" ? "Топ" : "Премиум"
+          SERVICE_LEVEL_LABEL[b.serviceLevel] || String(b.serviceLevel || "-")
         return `📅 ${formatDate(b.date)}\n🕒 ${b.time}\n👤 ${b.name}\n💇 ${b.serviceName || "-"} (${lvl})\n💰 ${b.price}`
       })
       return `${header}\n\n${blocks.join("\n\n")}`

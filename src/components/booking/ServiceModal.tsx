@@ -12,6 +12,14 @@ interface Props {
   t: (key: string) => string
 }
 
+const defaultBookLevel = (service: { prices?: { level?: string }[] }) => {
+  const prices = service?.prices
+  if (!Array.isArray(prices) || prices.length === 0) return "master"
+  const m = prices.find((p) => p.level === "master")
+  if (m?.level) return m.level
+  return String(prices[0]?.level ?? "master")
+}
+
 export default function ServiceModal({
   modalService,
   setModalService,
@@ -25,7 +33,7 @@ export default function ServiceModal({
   const details = serviceDetails[modalService.nameKey] || {}
 
   const currency =
-    modalService?.category === "hair"
+    modalService?.currency === "USD" || modalService?.category === "hair"
       ? "USD"
       : t("services.currency")
 
@@ -71,7 +79,7 @@ export default function ServiceModal({
 
             <button
               onClick={() => {
-                selectService(modalService.id, "master")
+                selectService(modalService.id, defaultBookLevel(modalService))
                 setModalService(null)
               }}
               className="flex-1 bg-primary text-white py-3 rounded-full"

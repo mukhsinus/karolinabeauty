@@ -1,95 +1,76 @@
 // src/lib/servicesMapper.ts
 import { serviceCategories } from "@/data/services"
+import type { ServiceItem } from "@/data/services"
 
 interface DbService {
   _id: string
   nameKey: string
   category?: string
-  duration: number
-  // New backend shape
+  duration?: number
   prices?: Array<{
-    level: "master" | "top" | "premium" | "promo"
+    level: "master" | "top" | "premium" | "promo" | string
     price: number
   }>
-  // Legacy backend shape (kept for compatibility)
   price?: number
   isFrom?: boolean
   isPromo?: boolean
+  currency?: string
+}
+
+function mapDbServiceToItem(db: DbService): ServiceItem {
+  const id = String(db._id)
+  const prices =
+    Array.isArray(db.prices) && db.prices.length > 0
+      ? db.prices.map((p) => ({
+          level: String(p.level),
+          price: Number(p.price)
+        }))
+      : typeof db.price === "number"
+        ? [{ level: "master", price: db.price }]
+        : []
+
+  const masterPrice =
+    prices.find((p) => p.level === "master")?.price ??
+    prices[0]?.price ??
+    0
+
+  return {
+    id,
+    mongoId: id,
+    _id: id,
+    nameKey: db.nameKey,
+    category: db.category,
+    prices,
+    price: masterPrice,
+    duration: db.duration ?? 60,
+    isFrom: db.isFrom,
+    isPromo: db.isPromo === true,
+    currency: db.currency
+  }
 }
 
 export const mapServices = (dbServices: DbService[]) => {
+  const byCategory = new Map<string, DbService[]>()
+  for (const s of dbServices) {
+    const cat = s.category || ""
+    if (!cat) continue
+    if (!byCategory.has(cat)) byCategory.set(cat, [])
+    byCategory.get(cat)!.push(s)
+  }
 
-  const map = new Map(
-    dbServices.map(s => [s.nameKey, s])
-  )
+  for (const [, list] of byCategory) {
+    list.sort((a, b) => a.nameKey.localeCompare(b.nameKey))
+  }
 
-  return serviceCategories.map(category => ({
+  return serviceCategories.map((category) => {
+    const inCat = byCategory.get(category.id) || []
+    const mapped: ServiceItem[] = inCat.map(mapDbServiceToItem)
 
-    ...category,
-
-    groups: category.groups.map(group => ({
-
-      ...group,
-
-      services: group.services.map(service => {
-
-        const db = map.get(service.nameKey)
-
-        const dbPrices =
-          Array.isArray(db?.prices) && db?.prices.length > 0
-            ? db.prices
-            : typeof db?.price === "number"
-              ? [{ level: "master" as const, price: db.price }]
-              : null
-
-        const mappedPrices =
-          dbPrices ??
-          [
-            {
-              level: "master" as const,
-              price: service.price
-            }
-          ]
-
-        const masterPrice =
-          mappedPrices.find((p) => p.level === "master")?.price ??
-          mappedPrices[0]?.price ??
-          service.price
-
-        // ❌ если нет в БД — fallback
-        if (!db) {
-          return {
-            ...service,
-
-            id: service.id,              // UI id (из фронта)
-            mongoId: null,              // ❗ нет в базе
-
-            category: category.id,
-            prices: mappedPrices,
-            price: masterPrice,
-            isPromo: service.nameKey.includes("lamination")
-          }
-        }
-
-        // ✅ нормальный случай (есть в БД)
-        return {
-          ...service,
-          id: db._id || service.id, // fallback to front id if db._id is missing
-          mongoId: db._id,
-          _id: db._id,
-          category: db.category || category.id,
-          prices: mappedPrices,
-          price: masterPrice,
-          duration: db.duration ?? service.duration,
-          isFrom: db.isFrom,
-          isPromo:
-            db.isPromo === true ||
-            service.nameKey.includes("lamination")
-        }
-
-      })
-
-    }))
-
-  }))
+    return {
+      ...category,
+      groups: category.groups.map((group, idx) =>
+        idx === 0 ? { ...group, services: mapped } : { ...group, services: [] }
+      )
+    }
+  })
 }

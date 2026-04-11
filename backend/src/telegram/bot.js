@@ -382,7 +382,7 @@ bot.action(/crm_booking:filter_branch:([^:]+)/, async (ctx) => {
   return selectBookingBranchFilter(ctx, { branchId })
 })
 
-bot.action(/crm_booking:filter_level:(master|top|premium)/, async (ctx) => {
+bot.action(/crm_booking:filter_level:([a-z]+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const serviceLevel = ctx.match[1]
   return selectBookingLevelFilter(ctx, { serviceLevel })
@@ -520,7 +520,7 @@ bot.action(/crm_capacity:service:([^:]+)/, async (ctx) => {
   return selectCapacityService(ctx, { serviceId })
 })
 
-bot.action(/crm_capacity:level:(master|top|premium)/, async (ctx) => {
+bot.action(/crm_capacity:level:([a-z]+)/, async (ctx) => {
   if (!isAdmin(ctx)) return denyAdminAction(ctx)
   const serviceLevel = ctx.match[1]
   return selectCapacityLevel(ctx, { serviceLevel })

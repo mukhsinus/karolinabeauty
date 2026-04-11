@@ -23,7 +23,7 @@ const CapacitySchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["master", "top", "premium"],
+      enum: ["master", "top", "premium", "promo"],
       index: true,
     },
 

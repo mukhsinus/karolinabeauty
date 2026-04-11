@@ -21,6 +21,10 @@ import {
   getServiceById,
   updateServicePrice
 } from "../services/api.service.js"
+import {
+  getMinPriceFromService,
+  inferListingCurrency
+} from "../../utils/servicePrice.util.js"
 
 // ================= START =================
 
@@ -87,10 +91,14 @@ export const handleServiceSelect = async (ctx, serviceId) => {
 
     await ctx.answerCbQuery()
 
+    const min = getMinPriceFromService(service)
+    const cur = inferListingCurrency(service)
+    const uzUnit = cur === "USD" ? "USD" : "so'm"
+    const ruUnit = cur === "USD" ? "USD" : "сум"
     const text =
       ctx.session.language === "uz"
-        ? `Hozirgi narx: ${service.price} so'm\n\nYangi narxni kiriting`
-        : `Текущая цена: ${service.price} сум\n\nВведите новую цену`
+        ? `Hozirgi narx (min): ${min ?? "-"} ${uzUnit}\n\nYangi narxni kiriting`
+        : `Текущая цена (мин.): ${min ?? "-"} ${ruUnit}\n\nВведите новую цену`
 
     return ctx.reply(text)
 

@@ -19,19 +19,23 @@ router.patch("/services/:id/price", async (req, res) => {
       })
     }
 
-    const service = await Service.findByIdAndUpdate(
-      req.params.id,
-      { price },
-      { returnDocument: "after" }
-    )
-
-    if (!service) {
+    const doc = await Service.findById(req.params.id)
+    if (!doc) {
       return res.status(404).json({
         message: "Service not found"
       })
     }
+    if (!Array.isArray(doc.prices) || doc.prices.length === 0) {
+      return res.status(400).json({
+        message: "Service has no prices"
+      })
+    }
+    const idx = doc.prices.findIndex((p) => p.level === "master")
+    const target = idx >= 0 ? idx : 0
+    doc.prices[target].price = price
+    await doc.save()
 
-    return res.json(service)
+    return res.json(doc)
   } catch (error) {
     console.error("update price error:", error)
 

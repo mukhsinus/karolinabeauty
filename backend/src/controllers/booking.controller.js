@@ -102,6 +102,13 @@ export const createBooking = async (req, res) => {
       })
     }
 
+    if (error.message === "Service level is not available for this service") {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      })
+    }
+
     if (error.message?.includes("Premium master level is not available")) {
       return res.status(400).json({
         success: false,

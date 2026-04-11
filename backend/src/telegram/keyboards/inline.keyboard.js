@@ -1,5 +1,6 @@
 // src/telegram/keyboards/inline.keyboard.js
 import { Markup } from "telegraf"
+import { formatMoneyLabel } from "../../utils/servicePrice.util.js"
 
 // ================= BRANCHES =================
 
@@ -33,7 +34,7 @@ export const categoriesInline = (categories, t) => {
 export const servicesInline = (services, t) => {
   const buttons = services.map(s => [
     Markup.button.callback(
-      `${t(s.nameKey)} (${s.price} сум)`,
+      `${t(s.nameKey)} (${formatMoneyLabel(s)})`,
       `price_service:${s._id}`
     )
   ])
