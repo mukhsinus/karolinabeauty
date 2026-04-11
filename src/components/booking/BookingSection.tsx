@@ -144,6 +144,7 @@ export default function BookingSection() {
                   branch={branch}
                   isLoading={isLoading}
                   error={error}
+                  listTransitionKey={`${branchId}-${category}`}
                   formatPrice={(p: number) => formatPrice(p, lang)}
                   selectService={selectService}
                   setModalService={setModalService}

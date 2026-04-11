@@ -57,12 +57,16 @@ export default function CategoryTabs({
 
             <button
               key={cat.id}
+              type="button"
               onClick={() => selectCategory(cat.id)}
-              className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium transition-all
+              className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl border text-sm font-medium
+                transition-[transform,box-shadow,background-color,border-color,color] duration-200 ease-out
+                will-change-transform
+                hover:scale-[1.02] hover:shadow-md active:scale-[0.98]
               ${
                 category === cat.id
-                  ? "bg-primary text-white border-primary"
-                  : "bg-white border-border"
+                  ? "bg-primary text-white border-primary shadow-md"
+                  : "bg-white border-border hover:border-primary/35"
               }`}
             >
 
