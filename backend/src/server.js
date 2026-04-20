@@ -22,6 +22,7 @@ const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI
 const productionOrigins = [
   "https://karolinabeauty.uz",
   "https://www.karolinabeauty.uz",
+  "https://karolinabeauty.pages.dev",
 ]
 
 const defaultLocalOrigins = [
@@ -38,12 +39,27 @@ const allowedOrigins = [
   ...new Set([...productionOrigins, ...envOrigins, ...defaultLocalOrigins]),
 ]
 
+/**
+ * Cloudflare Pages previews: *.karolinabeauty.pages.dev (branch / deployment URLs).
+ */
+function isPatternAllowedOrigin(origin) {
+  try {
+    const { hostname } = new URL(origin)
+    if (hostname === "karolinabeauty.pages.dev") return true
+    if (hostname.endsWith(".karolinabeauty.pages.dev")) return true
+    return false
+  } catch {
+    return false
+  }
+}
+
 // CORS must run before route handlers
 app.use(
   cors({
     origin(origin, callback) {
       if (!origin) return callback(null, true)
       if (allowedOrigins.includes(origin)) return callback(null, true)
+      if (isPatternAllowedOrigin(origin)) return callback(null, true)
       console.warn("[CORS] Blocked origin:", origin)
       return callback(null, false)
     },
