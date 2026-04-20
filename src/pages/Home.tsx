@@ -116,7 +116,7 @@ const Home = () => {
                 {t("home.popular.lamination.desc")}
               </p>
               <div className="text-primary font-semibold text-lg mb-6">
-                {formatPrice(100000)} {t("services.currency")}
+                {formatPrice(150000)} {t("services.currency")}
               </div>
               <a href="/booking" className="bg-primary text-white px-6 py-3 rounded-full text-center">
                 {t("services.book")}
