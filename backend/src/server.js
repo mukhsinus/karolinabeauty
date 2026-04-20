@@ -40,6 +40,26 @@ const allowedOrigins = [
 ]
 
 /**
+ * Optional hostname suffixes (Railway: `CORS_HOST_SUFFIXES`), comma-separated.
+ * Each entry is matched with `hostname.endsWith(entry)` after normalizing to
+ * a leading dot (e.g. `example.com` → `.example.com`). Use for hosted previews
+ * without hard-coding vendor domains in the repo.
+ */
+const corsHostSuffixes = process.env.CORS_HOST_SUFFIXES
+  ? process.env.CORS_HOST_SUFFIXES.split(",")
+      .map((s) => {
+        const t = s.trim()
+        if (!t) return ""
+        return t.startsWith(".") ? t : `.${t}`
+      })
+      .filter(Boolean)
+  : []
+
+function hostnameMatchesCorsSuffixes(hostname) {
+  return corsHostSuffixes.some((suffix) => hostname.endsWith(suffix))
+}
+
+/**
  * Cloudflare Pages previews: *.karolinabeauty.pages.dev (branch / deployment URLs).
  */
 function isPatternAllowedOrigin(origin) {
@@ -47,6 +67,7 @@ function isPatternAllowedOrigin(origin) {
     const { hostname } = new URL(origin)
     if (hostname === "karolinabeauty.pages.dev") return true
     if (hostname.endsWith(".karolinabeauty.pages.dev")) return true
+    if (hostnameMatchesCorsSuffixes(hostname)) return true
     return false
   } catch {
     return false
