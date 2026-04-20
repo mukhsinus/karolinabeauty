@@ -11,7 +11,8 @@ import {
   getCategoryServices,
   parseServiceKey,
   getSelectedService,
-  getBranchById
+  getBranchById,
+  filterSlotsAfterNow
 } from "@/utils/booking"
 
 export interface BookingState {
@@ -118,10 +119,31 @@ export function useBooking() {
   const { data: availabilityData, isLoading: availabilityLoading } =
     useAvailability(branchId, serviceId, level, booking.date)
 
-  const availabilitySlots =
-    availabilityData?.type === "slots" ? availabilityData.slots : []
+  const availabilitySlotsRaw =
+    booking.date && availabilityData?.type === "slots"
+      ? availabilityData.slots
+      : []
+
+  const availabilitySlots = useMemo(
+    () => filterSlotsAfterNow(booking.date, availabilitySlotsRaw),
+    [booking.date, availabilitySlotsRaw]
+  )
 
   const isManualAvailability = availabilityData?.type === "manual"
+
+  useEffect(() => {
+    if (availabilityLoading || !booking.time) return
+    if (availabilityData?.type !== "slots") return
+    const row = availabilitySlots.find((s) => s.time === booking.time)
+    if (!row || !row.available) {
+      setBooking((b) => (b.time ? { ...b, time: "" } : b))
+    }
+  }, [
+    availabilityLoading,
+    booking.time,
+    availabilitySlots,
+    availabilityData?.type
+  ])
 
   const isVipSelected = useMemo(() => {
     if (!booking.time) return false

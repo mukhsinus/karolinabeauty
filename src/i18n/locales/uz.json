@@ -184,7 +184,12 @@
   "booking.slots_hint": "Erta (10:00 gacha) va kechki (19:00 dan) vaqtlar VIP bo'lishi mumkin. Kulrang vaqt band.",
   "booking.loading_slots": "Bo'sh vaqtlar yuklanmoqda…",
   "booking.slot_unavailable": "Band",
+  "booking.no_slots_today": "Bugun bo‘sh vaqt qolmagan. Boshqa sanani tanlang yoki keyinroq qayting.",
+  "booking.no_slots_day": "Tanlangan sana uchun bo‘sh vaqt yo‘q. Boshqa sanani tanlang.",
   "booking.premium_not_at_branch": "Premium darajasi bu filialda mavjud emas. Boshqa daraja yoki filialni tanlang.",
+  "booking.lashes_classic_title": "Kiprik uzaytirish",
+  "booking.lashes_pick_level_hint": "Usta darajasini tanlang",
+  "booking.lashes_more_services": "Boshqa xizmatlar",
 
   "contacts.address": "Manzil",
   "contacts.instagram": "Instagram",

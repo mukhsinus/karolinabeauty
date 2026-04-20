@@ -185,7 +185,12 @@
     "booking.slots_hint": "Early (before 10:00) and late (from 19:00) slots are VIP where applicable. Grey slots are unavailable.",
     "booking.loading_slots": "Loading available times…",
     "booking.slot_unavailable": "Unavailable",
+    "booking.no_slots_today": "No free slots left for today. Pick another date or try again later.",
+    "booking.no_slots_day": "No free slots for this date. Please choose another day.",
     "booking.premium_not_at_branch": "Premium tier is not available at this salon. Choose another level or branch.",
+    "booking.lashes_classic_title": "Eyelash extensions",
+    "booking.lashes_pick_level_hint": "Choose a master level",
+    "booking.lashes_more_services": "Other services",
 
     "contacts.address": "Address",
     "contacts.instagram": "Instagram",

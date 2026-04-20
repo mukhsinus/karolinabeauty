@@ -2,6 +2,7 @@
 
 import { Clock } from "lucide-react"
 import type { AvailabilitySlot } from "@/lib/api"
+import { isYmdTodayInBookingTz } from "@/utils/booking"
 
 interface Props {
   slots: AvailabilitySlot[]
@@ -48,6 +49,12 @@ export default function TimeSelector({
       {isLoading ? (
         <div className="text-sm text-muted-foreground mb-14">
           {t("booking.loading_slots")}
+        </div>
+      ) : slots.length === 0 ? (
+        <div className="text-sm text-muted-foreground mb-14 py-4 px-2 border border-dashed rounded-xl">
+          {isYmdTodayInBookingTz(booking.date)
+            ? t("booking.no_slots_today")
+            : t("booking.no_slots_day")}
         </div>
       ) : (
         <div className="grid grid-cols-4 md:grid-cols-6 gap-3 mb-14">

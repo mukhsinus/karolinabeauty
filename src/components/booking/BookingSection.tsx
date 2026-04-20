@@ -149,6 +149,7 @@ export default function BookingSection() {
                   selectService={selectService}
                   setModalService={setModalService}
                   t={t}
+                  category={category}
                 />
               ) : (
                 <div className="mb-6 p-4 border rounded-xl flex justify-between items-center">

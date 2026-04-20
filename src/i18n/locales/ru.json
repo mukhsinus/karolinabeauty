@@ -186,7 +186,12 @@
   "booking.slots_hint": "Ранние (до 10:00) и поздние (с 19:00) слоты — VIP, где это применимо. Серые слоты недоступны.",
   "booking.loading_slots": "Загрузка свободного времени…",
   "booking.slot_unavailable": "Недоступно",
+  "booking.no_slots_today": "На сегодня свободных слотов нет. Выберите другую дату или зайдите позже.",
+  "booking.no_slots_day": "На выбранную дату нет свободных слотов. Выберите другую дату.",
   "booking.premium_not_at_branch": "Уровень «премиум» недоступен в этом филиале. Выберите другой филиал.",
+  "booking.lashes_classic_title": "Наращивание",
+  "booking.lashes_pick_level_hint": "Выберите уровень мастера",
+  "booking.lashes_more_services": "Другие услуги",
 
   "contacts.address": "Адрес",
   "contacts.instagram": "Instagram",

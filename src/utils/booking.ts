@@ -1,16 +1,67 @@
 // src/utils/booking.ts
 
+/** Salon calendar & slot math (Uzbekistan, no DST). */
+export const BOOKING_TIMEZONE = "Asia/Tashkent"
+
+/** Calendar YYYY-MM-DD in BOOKING_TIMEZONE for a given instant. */
+export function formatYmdInBookingTz(instant: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: BOOKING_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(instant)
+}
+
+function addCalendarDaysYmd(ymd: string, delta: number): string {
+  const [y, m, d] = ymd.split("-").map(Number)
+  const t = Date.UTC(y, m - 1, d + delta, 12, 0, 0, 0)
+  return formatYmdInBookingTz(new Date(t))
+}
+
+/**
+ * Next `count` selectable days starting with **today** (in BOOKING_TIMEZONE).
+ * Avoids `toISOString().split("T")[0]` UTC drift.
+ */
 export const getNextDays = (count: number) => {
   const days: string[] = []
-  const today = new Date()
-
-  for (let i = 1; i <= count; i++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() + i)
-    days.push(d.toISOString().split("T")[0])
+  let ymd = formatYmdInBookingTz(new Date())
+  for (let i = 0; i < count; i++) {
+    days.push(ymd)
+    ymd = addCalendarDaysYmd(ymd, 1)
   }
-
   return days
+}
+
+/** UTC ms for slot start: wall clock in Tashkent on calendar day `ymd`. */
+export function parseSlotInstantUtcMs(ymd: string, timeHHmm: string): number {
+  const [Y, M, D] = ymd.split("-").map(Number)
+  const [hStr, mStr] = timeHHmm.split(":")
+  const h = Number(hStr)
+  const mi = Number(mStr ?? 0)
+  return Date.UTC(Y, M - 1, D, h - 5, mi, 0, 0)
+}
+
+export function isYmdTodayInBookingTz(
+  ymd: string,
+  now: Date = new Date()
+): boolean {
+  return ymd === formatYmdInBookingTz(now)
+}
+
+/**
+ * For **today** only: drop slots whose start time is not strictly after `now`.
+ * Other dates: unchanged (server is source of truth).
+ */
+export function filterSlotsAfterNow<T extends { time: string }>(
+  ymd: string,
+  slots: T[],
+  now: Date = new Date()
+): T[] {
+  if (!ymd || !Array.isArray(slots) || slots.length === 0) return slots
+  if (!isYmdTodayInBookingTz(ymd, now)) return slots
+  const nowMs = now.getTime()
+  return slots.filter((s) => parseSlotInstantUtcMs(ymd, s.time) > nowMs)
 }
 
 export const isVipTime = (time: string) => {
@@ -19,8 +70,10 @@ export const isVipTime = (time: string) => {
 }
 
 export const generateTimeSlots = (date: string) => {
-  const d = new Date(date)
-  const isWeekend = d.getDay() === 0 || d.getDay() === 6
+  const [y, m, d] = date.split("-").map(Number)
+  /** Noon Tashkent ≈ 07:00 UTC same civil date → weekday matches salon calendar */
+  const weekday = new Date(Date.UTC(y, m - 1, d, 7, 0, 0, 0)).getUTCDay()
+  const isWeekend = weekday === 0 || weekday === 6
 
   const start = isWeekend ? 10 : 9
   const end = isWeekend ? 22 : 21
@@ -35,12 +88,17 @@ export const generateTimeSlots = (date: string) => {
   return slots
 }
 
-export const formatDate = (d: string, lang: string) =>
-  new Date(d).toLocaleDateString(lang, {
+export const formatDate = (d: string, lang: string) => {
+  const [y, m, day] = d.split("-").map(Number)
+  if (!y || !m || !day) return d
+  const instant = new Date(Date.UTC(y, m - 1, day, 12, 0, 0, 0))
+  return instant.toLocaleDateString(lang === "ru" ? "ru-RU" : lang, {
     weekday: "short",
     day: "numeric",
-    month: "short"
+    month: "short",
+    timeZone: BOOKING_TIMEZONE
   })
+}
 
 export const formatPrice = (price: number, lang: string) => {
   if (typeof price !== "number" || isNaN(price)) return "-"

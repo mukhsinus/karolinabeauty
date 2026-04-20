@@ -96,7 +96,7 @@ const servicesData = [
   category: "lashes",
   duration: 60,
   prices: [
-    { level: "promo", price: 100000 },
+    { level: "promo", price: 150000 },
     { level: "premium", price: 300000 }
   ]
 },
@@ -104,7 +104,7 @@ const servicesData = [
   nameKey: "services.lash_lamination_plus",
   category: "lashes",
   duration: 75,
-  prices: [{ level: "promo", price: 150000 }]
+  prices: [{ level: "promo", price: 200000 }]
 },
 
 /* ================= BROWS ================= */
