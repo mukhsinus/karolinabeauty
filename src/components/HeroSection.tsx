@@ -22,7 +22,7 @@ const HeroSection = () => {
 
     <section
       id="hero-section"
-      className="relative w-full min-h-[100svh] flex items-center overflow-hidden"
+      className="hero-viewport hero-safe-area relative w-full flex items-stretch overflow-x-hidden"
     >
 
       {/* BACKGROUND */}
@@ -40,7 +40,7 @@ const HeroSection = () => {
           <img
             src={heroImage}
             alt={t("hero.alt")}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover object-center"
             loading="eager"
           />
         </picture>
@@ -56,9 +56,9 @@ const HeroSection = () => {
 
       {/* CONTENT */}
 
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full min-h-full flex flex-col justify-center">
 
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="hero-mobile-content max-w-7xl mx-auto w-full px-6 pt-20 pb-10 sm:pt-24 sm:pb-12 md:py-0">
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -73,7 +73,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-6"
+              className="font-display text-[clamp(2rem,9.5vw,2.65rem)] sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-4 sm:mb-6"
             >
               {t("hero.title")}
             </motion.h1>
@@ -85,7 +85,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.8 }}
-              className="text-white/80 text-lg md:text-xl font-light mb-10 max-w-xl"
+              className="text-white/80 text-base sm:text-lg md:text-xl font-light mb-7 sm:mb-10 max-w-xl"
             >
               {t("hero.tagline")}
             </motion.p>

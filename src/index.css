@@ -94,3 +94,32 @@
     box-shadow: var(--shadow-elevated);
   }
 }
+
+/* iOS dynamic viewport + safe-area support (hero section) */
+.hero-viewport {
+  min-height: 100vh; /* old browsers fallback */
+  min-height: 100svh; /* stable viewport */
+}
+
+@supports (height: 100dvh) {
+  .hero-viewport {
+    min-height: 100dvh; /* dynamic viewport on modern iOS */
+  }
+}
+
+.hero-safe-area {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 430px) {
+  .hero-safe-area {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 2px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+  }
+
+  .hero-mobile-content {
+    padding-top: 4.5rem;
+    padding-bottom: 1rem;
+  }
+}
