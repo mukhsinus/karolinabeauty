@@ -106,6 +106,8 @@ app.use("/api/admin", adminRoutes)
 // Aliases when VITE_API_URL points at API root without /api (fixes 404 on /services, /branches)
 app.use("/services", servicesRoutes)
 app.use("/branches", branchesRoutes)
+app.use("/availability", availabilityRoutes)
+app.use("/bookings", bookingRoutes)
 
 app.use((err, req, res, next) => {
   console.error("Server error:", err)
@@ -123,7 +125,9 @@ const REGISTERED_ROUTES = [
   "GET /api/branches  (JSON array)",
   "GET /services       (alias → same as /api/services)",
   "GET /branches       (alias → same as /api/branches)",
+  "GET /availability   (alias → same as /api/availability)",
   "GET /api/availability",
+  "POST /bookings      (alias → same as /api/bookings)",
   "POST /api/bookings",
   "PATCH /api/admin/*",
 ]
