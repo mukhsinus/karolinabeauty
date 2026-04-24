@@ -5,9 +5,37 @@ import { useLanguage } from "@/i18n/LanguageContext"
 import { useServices } from "@/hooks/useServices"
 import { motion, AnimatePresence } from "framer-motion"
 
-const formatPrice = (price: number) => {
-  if (typeof price !== "number" || isNaN(price)) return "-";
-  return price.toLocaleString("ru-RU");
+const formatPrice = (price: number, lang: string) => {
+  if (typeof price !== "number" || isNaN(price)) return "-"
+  const locale =
+    lang === "uz" ? "uz-UZ" : lang === "en" ? "en-US" : "ru-RU"
+  return price.toLocaleString(locale)
+}
+
+const LASHES_STRUCTURED_NAME_KEYS = new Set([
+  "services.classic_extension",
+  "services.led_extension",
+  "services.lashes_2_3d",
+  "services.author_effect",
+  "services.lashes_4_6d",
+  "services.hollywood"
+])
+
+function priceAtLevel(
+  service: { prices?: Array<{ level?: string; price?: number }> } | undefined,
+  level: string
+): number | undefined {
+  if (!service?.prices?.length) return undefined
+  const lv = level.toLowerCase()
+  const row = service.prices.find(
+    (p) => String(p.level ?? "").toLowerCase() === lv
+  )
+  const n = Number(row?.price)
+  return Number.isFinite(n) ? n : undefined
+}
+
+function findServiceByKey(services: any[], nameKey: string) {
+  return services.find((s) => s.nameKey === nameKey)
 }
 
 const getCurrencyByService = (service: any, t: (key: string) => string) => {
@@ -123,9 +151,201 @@ const MagneticCard = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
+function LashTierCard({
+  label,
+  price,
+  service,
+  lang,
+  t,
+  motionIndex,
+  setModalService
+}: {
+  label: string
+  price: number | undefined
+  service: any
+  lang: string
+  t: (key: string) => string
+  motionIndex: number
+  setModalService: (s: any) => void
+}) {
+  const cur = service
+    ? getCurrencyByService(service, t)
+    : t("services.currency")
+  const canOpen = Boolean(service)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: motionIndex * 0.04 }}
+    >
+      <MagneticCard>
+        <div className="group bg-card rounded-2xl p-6 md:p-7 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-xl h-full flex flex-col justify-between min-h-[132px]">
+          <p className="text-lg font-medium mb-4">{label}</p>
+          <div className="flex items-end justify-between gap-3 flex-wrap">
+            <span className="text-primary font-semibold text-2xl">
+              {typeof price === "number" ? formatPrice(price, lang) : "—"}
+              <span className="text-xs text-muted-foreground ml-1 font-normal">
+                {cur}
+              </span>
+            </span>
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <button
+                type="button"
+                disabled={!canOpen}
+                onClick={() => {
+                  if (!canOpen) return
+                  setModalService(
+                    typeof price === "number" && Number.isFinite(price)
+                      ? { ...service, _servicesUiPrice: price }
+                      : service
+                  )
+                }}
+                className="text-xs text-muted-foreground underline disabled:opacity-40"
+              >
+                {t("common.details")}
+              </button>
+              <a
+                href="/booking"
+                className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
+              >
+                {t("services.book")}
+              </a>
+            </div>
+          </div>
+        </div>
+      </MagneticCard>
+    </motion.div>
+  )
+}
+
+function LashesStructuredGrid({
+  services,
+  lang,
+  t,
+  setModalService
+}: {
+  services: any[]
+  lang: string
+  t: (key: string) => string
+  setModalService: (s: any) => void
+}) {
+  const classic = findServiceByKey(services, "services.classic_extension")
+  const led = findServiceByKey(services, "services.led_extension")
+  const v23 = findServiceByKey(services, "services.lashes_2_3d")
+  const author = findServiceByKey(services, "services.author_effect")
+  const v46 = findServiceByKey(services, "services.lashes_4_6d")
+  const hollywood = findServiceByKey(services, "services.hollywood")
+
+  let motionIndex = 0
+
+  const block3Rows: {
+    service: any
+    price: number | undefined
+    labelKey: string
+  }[] = []
+  if (classic) {
+    block3Rows.push({
+      service: classic,
+      price: priceAtLevel(classic, "premium"),
+      labelKey: "services.classic_extension"
+    })
+  }
+  for (const svc of [v23, author, v46, hollywood]) {
+    if (!svc) continue
+    block3Rows.push({
+      service: svc,
+      price: priceAtLevel(svc, "premium"),
+      labelKey: svc.nameKey
+    })
+  }
+
+  return (
+    <div className="space-y-16 md:space-y-20 max-w-5xl mx-auto">
+      {classic && (
+        <section>
+          <h4 className="font-display text-xl md:text-2xl font-semibold text-center mb-8">
+            {t("services.classic_extension")}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            <LashTierCard
+              label={t("services.basic_master")}
+              price={priceAtLevel(classic, "master")}
+              service={classic}
+              lang={lang}
+              t={t}
+              motionIndex={motionIndex++}
+              setModalService={setModalService}
+            />
+            <LashTierCard
+              label={t("services.top_master_regina")}
+              price={priceAtLevel(classic, "top")}
+              service={classic}
+              lang={lang}
+              t={t}
+              motionIndex={motionIndex++}
+              setModalService={setModalService}
+            />
+          </div>
+        </section>
+      )}
+
+      {led && (
+        <section>
+          <h4 className="font-display text-xl md:text-2xl font-semibold text-center mb-8">
+            {t("services.led_extension")}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            <LashTierCard
+              label={t("services.basic_master")}
+              price={priceAtLevel(led, "master")}
+              service={led}
+              lang={lang}
+              t={t}
+              motionIndex={motionIndex++}
+              setModalService={setModalService}
+            />
+            <LashTierCard
+              label={t("services.top_master_regina")}
+              price={priceAtLevel(led, "top")}
+              service={led}
+              lang={lang}
+              t={t}
+              motionIndex={motionIndex++}
+              setModalService={setModalService}
+            />
+          </div>
+        </section>
+      )}
+
+      {block3Rows.length > 0 && (
+        <section>
+          <h4 className="font-display text-xl md:text-2xl font-semibold text-center mb-8">
+            {t("services.premium_master")}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {block3Rows.map((row) => (
+              <LashTierCard
+                key={row.service.id + row.labelKey}
+                label={t(row.labelKey)}
+                price={row.price}
+                service={row.service}
+                lang={lang}
+                t={t}
+                motionIndex={motionIndex++}
+                setModalService={setModalService}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  )
+}
+
 const ServicesSection = () => {
 
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const { data: services, isLoading, error } = useServices()
 
   const [activeCategory, setActiveCategory] = useState(
@@ -213,91 +433,128 @@ const ServicesSection = () => {
           transition={{ duration: 0.4 }}
           className="space-y-24"
         >
-          {activeCat?.groups.map((group) => (
-            <div key={group.id}>
-              <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
-                {t(group.titleKey)}
-              </h3>
+          {activeCat?.groups.map((group) => {
+            const isLashesLayout =
+              activeCategory === "lashes" &&
+              Array.isArray(group.services) &&
+              group.services.length > 0
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+            const remainingLashServices = isLashesLayout
+              ? group.services.filter(
+                  (s: { nameKey?: string }) =>
+                    !LASHES_STRUCTURED_NAME_KEYS.has(String(s?.nameKey ?? ""))
+                )
+              : group.services
 
-                {group.services.map((service, index) => (
-                  <motion.div
-                    key={service.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <MagneticCard>
-                      <div className="group bg-card rounded-2xl p-6 md:p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
+            const renderDefaultServiceCard = (
+              service: (typeof group.services)[0],
+              index: number
+            ) => (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <MagneticCard>
+                  <div className="group bg-card rounded-2xl p-6 md:p-8 border border-border hover:border-primary/40 transition-all duration-300 hover:shadow-2xl">
+                    <div className="flex flex-col justify-between h-full">
+                      <p className="text-lg font-medium mb-6">
+                        {t(service.nameKey)}
+                      </p>
 
-                        <div className="flex flex-col justify-between h-full">
-
-                          <p className="text-lg font-medium mb-6">
-                            {t(service.nameKey)}
-                          </p>
-
-                          <div className="flex items-center justify-between">
-
-                            <span className="text-primary font-semibold text-2xl">
-                              {service.isFrom && (
-                                <span className="text-muted-foreground text-sm mr-1">
-                                  {t("services.from")}
-                                </span>
-                              )}
-                              {(() => {
-                                const { isRange, min, max } =
-                                  getDisplayPriceParts(service)
-                                if (
-                                  isRange &&
-                                  typeof min === "number" &&
-                                  typeof max === "number"
-                                ) {
-                                  return (
-                                    <>
-                                      {formatPrice(min)} – {formatPrice(max)}
-                                    </>
-                                  )
-                                }
-                                return formatPrice(
-                                  typeof min === "number" ? min : service.price
-                                )
-                              })()}
-                              <span className="text-xs text-muted-foreground ml-1">
-                                {getCurrencyByService(service, t)}
-                              </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-primary font-semibold text-2xl">
+                          {service.isFrom && (
+                            <span className="text-muted-foreground text-sm mr-1">
+                              {t("services.from")}
                             </span>
+                          )}
+                          {(() => {
+                            const { isRange, min, max } =
+                              getDisplayPriceParts(service)
+                            if (
+                              isRange &&
+                              typeof min === "number" &&
+                              typeof max === "number"
+                            ) {
+                              return (
+                                <>
+                                  {formatPrice(min, lang)} –{" "}
+                                  {formatPrice(max, lang)}
+                                </>
+                              )
+                            }
+                            return formatPrice(
+                              typeof min === "number" ? min : service.price,
+                              lang
+                            )
+                          })()}
+                          <span className="text-xs text-muted-foreground ml-1">
+                            {getCurrencyByService(service, t)}
+                          </span>
+                        </span>
 
-                            <div className="flex flex-col items-end gap-2">
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setModalService(service)}
+                            className="text-xs text-muted-foreground underline"
+                          >
+                            {t("common.details")}
+                          </button>
 
-                              <button
-                                onClick={() => setModalService(service)}
-                                className="text-xs text-muted-foreground underline"
-                              >
-                                {t("common.details")}
-                              </button>
-
-                              <a
-                                href="/booking"
-                                className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
-                              >
-                                {t("services.book")}
-                              </a>
-
-                            </div>
-
-                          </div>
-
+                          <a
+                            href="/booking"
+                            className="opacity-0 group-hover:opacity-100 transition text-sm font-medium text-primary"
+                          >
+                            {t("services.book")}
+                          </a>
                         </div>
-
                       </div>
-                    </MagneticCard>
-                  </motion.div>
-                ))}
+                    </div>
+                  </div>
+                </MagneticCard>
+              </motion.div>
+            )
 
+            return (
+              <div key={group.id}>
+                <h3 className="font-display text-2xl md:text-3xl font-semibold text-center mb-12">
+                  {t(group.titleKey)}
+                </h3>
+
+                {isLashesLayout ? (
+                  <>
+                    <LashesStructuredGrid
+                      services={group.services}
+                      lang={lang}
+                      t={t}
+                      setModalService={setModalService}
+                    />
+                    {remainingLashServices.length > 0 && (
+                      <>
+                        <p className="text-sm font-medium text-muted-foreground text-center mt-20 mb-8">
+                          {t("booking.lashes_more_services")}
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+                          {remainingLashServices.map((service, index) =>
+                            renderDefaultServiceCard(service, index)
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+                    {group.services.map((service, index) =>
+                      renderDefaultServiceCard(service, index)
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </motion.div>
 
       </div>
@@ -345,6 +602,18 @@ const ServicesSection = () => {
 
                     <div className="text-lg font-semibold text-primary pt-2">
                       {(() => {
+                        const ui = modalService._servicesUiPrice
+                        if (
+                          typeof ui === "number" &&
+                          Number.isFinite(ui)
+                        ) {
+                          return (
+                            <>
+                              {formatPrice(ui, lang)}{" "}
+                              {getCurrencyByService(modalService, t)}
+                            </>
+                          )
+                        }
                         const { isRange, min, max } =
                           getDisplayPriceParts(modalService)
                         if (
@@ -354,7 +623,8 @@ const ServicesSection = () => {
                         ) {
                           return (
                             <>
-                              {formatPrice(min)} – {formatPrice(max)}{" "}
+                              {formatPrice(min, lang)} –{" "}
+                              {formatPrice(max, lang)}{" "}
                               {getCurrencyByService(modalService, t)}
                             </>
                           )
@@ -364,7 +634,8 @@ const ServicesSection = () => {
                             {formatPrice(
                               typeof min === "number"
                                 ? min
-                                : modalService.price
+                                : modalService.price,
+                              lang
                             )}{" "}
                             {getCurrencyByService(modalService, t)}
                           </>
