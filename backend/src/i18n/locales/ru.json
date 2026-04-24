@@ -24,7 +24,7 @@
   "home.popular.title": "Популярные услуги",
   "home.popular.subtitle": "Самые востребованные процедуры",
 
-  "home.popular.lashes.title": "Классическое наращивание",
+  "home.popular.lashes.title": "Обычное наращивание",
   "home.popular.lashes.desc": "Натуральный эффект и долговечный результат",
 
   "home.popular.lamination.title": "Ламинирование ресниц",
@@ -62,7 +62,7 @@
   "services.top_master_regina": "ТОП мастер",
   "services.premium_master_karolina": "Премиум мастер",
 
-  "services.classic_extension": "Классическое наращивание",
+  "services.classic_extension": "Обычное наращивание",
   "services.led_extension": "LED наращивание",
   "services.colored_lashes": "Цветные ресницы",
   "services.lash_removal": "Снятие ресниц",
@@ -70,6 +70,7 @@
   "services.classic": "Классика",
   "services.lashes_2_3d": "2–3D объём",
   "services.author_effect": "Авторский эффект",
+  "services.hollywood": "Голливуд",
   "services.lashes_4_6d": "4–6D объём",
 
   "services.lash_lamination": "Ламинирование ресниц",

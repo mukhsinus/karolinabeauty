@@ -48,18 +48,18 @@ const staggerMs = 40
 /** Classic (non-LED) extension rows — volumes share one booking card */
 const LASH_CLASSIC_EXTENSION_NAME_KEYS = new Set([
   "services.classic_extension",
-  "services.classic",
   "services.lashes_2_3d",
   "services.author_effect",
-  "services.lashes_4_6d"
+  "services.lashes_4_6d",
+  "services.hollywood"
 ])
 
 const LASH_CLASSIC_ORDER = [
   "services.classic_extension",
-  "services.classic",
   "services.lashes_2_3d",
   "services.author_effect",
-  "services.lashes_4_6d"
+  "services.lashes_4_6d",
+  "services.hollywood"
 ]
 
 function isLashLedService(service: any) {

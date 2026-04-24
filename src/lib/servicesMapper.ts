@@ -2,6 +2,9 @@
 import { serviceCategories } from "@/data/services"
 import type { ServiceItem } from "@/data/services"
 
+/** Same as backend EXCLUDED_PUBLIC_NAME_KEYS — hide duplicate even if API/cache is stale. */
+const EXCLUDED_FROM_CATALOG_NAME_KEYS = new Set(["services.classic"])
+
 interface DbService {
   _id: string
   nameKey: string
@@ -52,6 +55,7 @@ function mapDbServiceToItem(db: DbService): ServiceItem {
 export const mapServices = (dbServices: DbService[]) => {
   const byCategory = new Map<string, DbService[]>()
   for (const s of dbServices) {
+    if (EXCLUDED_FROM_CATALOG_NAME_KEYS.has(String(s?.nameKey ?? ""))) continue
     const cat = s.category || ""
     if (!cat) continue
     if (!byCategory.has(cat)) byCategory.set(cat, [])

@@ -24,7 +24,7 @@
   "home.popular.title": "Mashhur xizmatlar",
   "home.popular.subtitle": "Mijozlarimiz eng ko'p tanlaydigan xizmatlar",
 
-  "home.popular.lashes.title": "Klassik kiprik uzaytirish",
+  "home.popular.lashes.title": "Oddiy kiprik uzaytirish",
   "home.popular.lashes.desc": "Tabiiy ko'rinish va uzoq muddatli natija",
 
   "home.popular.lamination.title": "Kiprik laminatsiyasi",
@@ -61,7 +61,7 @@
   "services.top_master_regina": "TOP usta",
   "services.premium_master_karolina": "Premium usta",
 
-  "services.classic_extension": "Klassik kiprik uzaytirish",
+  "services.classic_extension": "Oddiy kiprik uzaytirish",
   "services.led_extension": "LED kiprik uzaytirish",
   "services.colored_lashes": "Rangli kipriklar",
   "services.lash_removal": "Kiprik olib tashlash",
@@ -69,6 +69,7 @@
   "services.classic": "Klassika",
   "services.lashes_2_3d": "2–3D hajm",
   "services.author_effect": "Muallif effekti",
+  "services.hollywood": "Gollivud",
   "services.lashes_4_6d": "4–6D hajm",
 
   "services.lash_lamination": "Kiprik laminatsiyasi",

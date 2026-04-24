@@ -24,7 +24,7 @@
   "home.popular.title": "Popular services",
   "home.popular.subtitle": "Our clients' most requested treatments",
 
-  "home.popular.lashes.title": "Classic eyelash extension",
+  "home.popular.lashes.title": "Regular eyelash extension",
   "home.popular.lashes.desc": "Natural look and long-lasting result",
 
   "home.popular.lamination.title": "Lash lamination",
@@ -62,7 +62,7 @@
     "services.top_master_regina": "Top master",
     "services.premium_master_karolina": "Premium master",
 
-    "services.classic_extension": "Classic eyelash extension",
+    "services.classic_extension": "Regular eyelash extension",
     "services.led_extension": "LED eyelash extension",
     "services.colored_lashes": "Colored lashes",
     "services.lash_removal": "Lash removal",
@@ -70,6 +70,7 @@
     "services.classic": "Classic",
     "services.lashes_2_3d": "2–3D volume",
     "services.author_effect": "Signature effect",
+    "services.hollywood": "Hollywood",
     "services.lashes_4_6d": "4–6D volume",
 
     "services.lash_lamination": "Lash lamination",

@@ -56,12 +56,6 @@ const servicesData = [
 },
 
 {
-  nameKey: "services.classic",
-  category: "lashes",
-  duration: 120,
-  prices: [{ level: "premium", price: 400000 }]
-},
-{
   nameKey: "services.lashes_2_3d",
   category: "lashes",
   duration: 150,
@@ -78,6 +72,12 @@ const servicesData = [
   category: "lashes",
   duration: 180,
   prices: [{ level: "premium", price: 600000 }]
+},
+{
+  nameKey: "services.hollywood",
+  category: "lashes",
+  duration: 150,
+  prices: [{ level: "premium", price: 700000 }]
 },
 
 {
