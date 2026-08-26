@@ -5,11 +5,24 @@ import { Link } from "react-router-dom";
 import { Phone, Mail, Send, Instagram, MapPin } from "lucide-react";
 import { useState } from "react";
 
+const TELEGRAM = {
+  friendship: {
+    label: "Дружба",
+    username: "@kbeautyroom",
+    url: "https://t.me/kbeautyroom",
+  },
+  yunusabad: {
+    label: "Юнусабад",
+    username: "@kbeautyroom_yunusobod",
+    url: "https://t.me/kbeautyroom_yunusobod",
+  },
+} as const;
+
 const Footer = () => {
   const { t } = useLanguage();
 
-  // 🔥 state для modal
   const [isPhoneOpen, setIsPhoneOpen] = useState(false);
+  const [isTelegramOpen, setIsTelegramOpen] = useState(false);
 
   return (
     <footer className="relative mt-24">
@@ -73,7 +86,6 @@ const Footer = () => {
 
                 <div className="flex flex-col gap-5 text-sm">
 
-                  {/* 🔥 PHONE → теперь button */}
                   <button
                     onClick={() => setIsPhoneOpen(true)}
                     className="flex items-center gap-3 group text-left"
@@ -94,17 +106,15 @@ const Footer = () => {
                     </span>
                   </a>
 
-                  <a
-                    href="https://t.me/radionkhusainov"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 group"
+                  <button
+                    onClick={() => setIsTelegramOpen(true)}
+                    className="flex items-center gap-3 group text-left"
                   >
                     <Send size={16} className="opacity-60 group-hover:opacity-100 transition" />
                     <span className="group-hover:text-primary transition">
                       {t("footer.contacts.telegram")}
                     </span>
-                  </a>
+                  </button>
 
                   <a
                     href="https://instagram.com/karolinabeautyroom"
@@ -124,7 +134,7 @@ const Footer = () => {
 
           </div>
 
-          {/* MOBILE (НЕ ТРОГАЕМ) */}
+          {/* MOBILE */}
           <div className="md:hidden flex flex-col items-center text-center">
 
             <h3 className="font-display text-2xl font-semibold mb-2">
@@ -178,9 +188,14 @@ const Footer = () => {
             </div>
 
             <div className="flex gap-3">
-              <a href="https://t.me/radionkhusainov" target="_blank" rel="noopener noreferrer" className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40">
+              <button
+                type="button"
+                onClick={() => setIsTelegramOpen(true)}
+                className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40"
+                aria-label={t("footer.contacts.telegram")}
+              >
                 <Send size={18} />
-              </a>
+              </button>
 
               <a href="https://instagram.com/karolinabeautyroom" target="_blank" rel="noopener noreferrer" className="w-11 h-11 flex items-center justify-center rounded-full border border-border bg-secondary/40">
                 <Instagram size={18} />
@@ -197,7 +212,7 @@ const Footer = () => {
 
       </div>
 
-      {/* 🔥 MODAL (ТОЛЬКО ДЕСКТОП) */}
+      {/* PHONE MODAL (DESKTOP) */}
       {isPhoneOpen && (
         <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center">
 
@@ -245,6 +260,52 @@ const Footer = () => {
                   {t("contacts.call")}
                 </a>
               </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* TELEGRAM MODAL */}
+      {isTelegramOpen && (
+        <div className="flex fixed inset-0 z-50 items-center justify-center px-4">
+
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setIsTelegramOpen(false)}
+          />
+
+          <div className="relative bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl">
+
+            <h3 className="font-display text-lg font-semibold text-center mb-6">
+              {t("contacts.telegram")}
+            </h3>
+
+            <div className="flex flex-col gap-4">
+
+              {Object.values(TELEGRAM).map((branch) => (
+                <div
+                  key={branch.username}
+                  className="flex items-center justify-between border border-border rounded-xl px-4 py-3"
+                >
+                  <div className="text-left">
+                    <div className="text-sm font-medium">{branch.label}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {branch.username}
+                    </div>
+                  </div>
+
+                  <a
+                    href={branch.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs px-3 py-1.5 rounded-full bg-primary text-white"
+                  >
+                    {t("contacts.write")}
+                  </a>
+                </div>
+              ))}
 
             </div>
 
