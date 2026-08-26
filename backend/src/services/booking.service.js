@@ -21,6 +21,40 @@ const normalizePhone = (phone) => {
   return phone.replace(/[^\d+]/g, "");
 };
 
+const DUPLICATE_CLIENT_BOOKING = "Duplicate client booking";
+
+/** Same client + same service + same slot (in-flight, single process). */
+const inflightClientSlots = new Map();
+
+const clientSlotKey = ({ phone, branchId, serviceId, serviceLevel, date, time }) =>
+  [
+    phone,
+    String(branchId),
+    String(serviceId),
+    String(serviceLevel || "").toLowerCase(),
+    date,
+    time
+  ].join("|");
+
+const runLockedClientSlot = async (key, fn) => {
+  while (inflightClientSlots.has(key)) {
+    await inflightClientSlots.get(key).catch(() => {});
+  }
+
+  let release;
+  const gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  inflightClientSlots.set(key, gate);
+
+  try {
+    return await fn();
+  } finally {
+    inflightClientSlots.delete(key);
+    release();
+  }
+};
+
 /*
 CREATE BOOKING
 */
@@ -45,6 +79,31 @@ export const createBooking = async (payload) => {
   if (!serviceLevel) {
     throw new Error("Service level is required");
   }
+
+  const normalizedPhone = normalizePhone(phone);
+  const dupKey = clientSlotKey({
+    phone: normalizedPhone,
+    branchId,
+    serviceId,
+    serviceLevel,
+    date,
+    time
+  });
+
+  return runLockedClientSlot(dupKey, async () => {
+    const existing = await Booking.findOne({
+      phone: normalizedPhone,
+      branchId,
+      serviceId: String(serviceId),
+      serviceLevel,
+      date,
+      time,
+      status: "confirmed"
+    }).lean();
+
+    if (existing) {
+      throw new Error(DUPLICATE_CLIENT_BOOKING);
+    }
 
   // проверяем филиал
 
@@ -170,6 +229,7 @@ export const createBooking = async (payload) => {
   }
 
   return booking;
+  });
 };
 
 

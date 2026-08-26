@@ -106,7 +106,11 @@ export const createBooking = async (data: {
   const json = await res.json()
 
   if (!res.ok) {
-    throw new Error(json.message || "Booking failed")
+    const error = new Error(json.message || "Booking failed") as Error & {
+      code?: string
+    }
+    if (json.code) error.code = json.code
+    throw error
   }
 
   return json

@@ -14,6 +14,10 @@ import {
   getBranchById,
   filterSlotsAfterNow
 } from "@/utils/booking"
+import {
+  clearJustCompletedBooking,
+  hasJustCompletedBooking
+} from "@/utils/bookingGuard"
 
 export interface BookingState {
   service: string
@@ -50,7 +54,7 @@ export function useBooking() {
   const [step, setStep] = useState(1)
 
   const [modalService, setModalService] = useState<any | null>(null)
-  const [confirmed, setConfirmed] = useState(false)
+  const [confirmed, setConfirmed] = useState(() => hasJustCompletedBooking())
 
   // ======================
   // EFFECTS
@@ -241,6 +245,17 @@ export function useBooking() {
     }))
   }
 
+  const resetForAnotherBooking = () => {
+    clearJustCompletedBooking()
+    setConfirmed(false)
+    setBooking((b) => ({
+      ...b,
+      service: "",
+      date: "",
+      time: ""
+    }))
+  }
+
   // ======================
   // SUBMIT
   // ======================
@@ -311,6 +326,7 @@ export function useBooking() {
     resetService,
     resetDate,
     resetTime,
+    resetForAnotherBooking,
 
     buildPayload
   }

@@ -178,8 +178,14 @@
     "booking.name": "Your name",
     "booking.phone": "Phone",
     "booking.confirm_booking": "Confirm booking",
+    "booking.submitting": "Sending your booking…",
     "booking.success": "Booking confirmed",
     "booking.success_message": "We will contact you shortly.",
+    "booking.already_hint": "No need to submit the form again — your booking is already received.",
+    "booking.already_title": "You're already booked",
+    "booking.already_message": "This appointment is already confirmed. To book a different service, choose it and complete a new booking.",
+    "booking.book_another": "Book another service",
+    "booking.got_it": "Got it",
 
     "booking.details": "Your details",
     "booking.manual_contact": "This service is scheduled with the administrator. Please contact the salon.",
@@ -261,7 +267,6 @@
     "booking.level": "Level",
     "booking.vip": "VIP",
 
-    "contacts.phone.value": "+998 93 129 99 55",
     "contacts.instagram.value": "@karolinabeautyroom",
     "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
 

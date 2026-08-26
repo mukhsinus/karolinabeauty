@@ -8,6 +8,7 @@ interface Props {
   setPhone: (phone: string) => void
 
   handleConfirm: () => void
+  isSubmitting?: boolean
 
   t: (key: string) => string
 }
@@ -17,6 +18,7 @@ export default function BookingForm({
   setName,
   setPhone,
   handleConfirm,
+  isSubmitting = false,
   t
 }: Props) {
 
@@ -39,7 +41,8 @@ export default function BookingForm({
           placeholder={t("booking.name")}
           value={booking.name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-border bg-background rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+          disabled={isSubmitting}
+          className="w-full border border-border bg-background rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition disabled:opacity-60"
         />
 
         <input
@@ -47,14 +50,18 @@ export default function BookingForm({
           placeholder={t("booking.phone")}
           value={booking.phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full border border-border bg-background rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+          disabled={isSubmitting}
+          className="w-full border border-border bg-background rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition disabled:opacity-60"
         />
 
         <button
+          type="button"
           onClick={handleConfirm}
-          className="w-full bg-primary text-white py-3 rounded-full transition hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+          className="w-full bg-primary text-white py-3 rounded-full transition hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60 disabled:hover:scale-100"
         >
-          {t("booking.confirm_booking")}
+          {isSubmitting ? t("booking.submitting") : t("booking.confirm_booking")}
         </button>
 
       </div>

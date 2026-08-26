@@ -116,6 +116,14 @@ export const createBooking = async (req, res) => {
       })
     }
 
+    if (error.message === "Duplicate client booking") {
+      return res.status(409).json({
+        success: false,
+        code: "DUPLICATE_BOOKING",
+        message: error.message
+      })
+    }
+
     if (error.message.includes("Time slot already booked")) {
       return res.status(409).json({
         success: false,

@@ -1,12 +1,20 @@
 // src/components/booking/BookingSection.tsx
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useLanguage } from "@/i18n/LanguageContext"
 import { createBooking } from "@/lib/api"
 import { Check } from "lucide-react"
 
 import { useBooking } from "@/hooks/useBooking"
 import { formatDate, formatPrice } from "@/utils/booking"
+import {
+  bookingFingerprint,
+  hasCompletedBooking,
+  isDuplicateBookingError,
+  rememberCompletedBooking,
+  setJustCompletedBooking
+} from "@/utils/bookingGuard"
+import AlreadyBookedDialog from "@/components/booking/AlreadyBookedDialog"
 
 import BranchSelector from "@/components/booking/BranchSelector"
 import CategoryTabs from "@/components/booking/CategoryTabs"
@@ -66,36 +74,85 @@ export default function BookingSection() {
     resetService,
     resetDate,
     resetTime,
+    resetForAnotherBooking,
 
     buildPayload
   } = useBooking()
 
+  const [alreadyOpen, setAlreadyOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const submitLock = useRef(false)
+
+  const handleBookAnother = () => {
+    submitLock.current = false
+    setIsSubmitting(false)
+    setAlreadyOpen(false)
+    resetForAnotherBooking()
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
   const handleConfirm = async () => {
+    if (submitLock.current || isSubmitting) return
+
     const payload = buildPayload()
     if (!payload) return
+
+    const fingerprint = bookingFingerprint(payload)
+    if (hasCompletedBooking(fingerprint)) {
+      setAlreadyOpen(true)
+      return
+    }
+
+    submitLock.current = true
+    setIsSubmitting(true)
 
     try {
       await createBooking({
         ...payload,
         serviceName: t(payload.serviceName)
       })
+      rememberCompletedBooking(fingerprint)
+      setJustCompletedBooking()
       setConfirmed(true)
     } catch (error: any) {
+      submitLock.current = false
+      setIsSubmitting(false)
+
+      if (isDuplicateBookingError(error)) {
+        rememberCompletedBooking(fingerprint)
+        setAlreadyOpen(true)
+        return
+      }
+
       alert(error.message)
     }
   }
 
   if (confirmed) {
     return (
-      <section className="py-32">
-        <div className="max-w-xl mx-auto text-center">
-          <Check className="mx-auto mb-6 text-primary" size={42} />
-          <h3 className="text-3xl font-display mb-3">
-            {t("booking.success")}
-          </h3>
-          <p className="text-muted-foreground">
-            {t("booking.success_message")}
-          </p>
+      <section className="py-24 md:py-32">
+        <div className="max-w-md mx-auto px-4">
+          <div className="rounded-3xl border border-border bg-card p-8 md:p-10 text-center shadow-elevated animate-fade-in">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary animate-check-pop">
+              <Check size={40} strokeWidth={2.4} />
+            </div>
+            <h3 className="text-3xl font-display mb-3">
+              {t("booking.success")}
+            </h3>
+            <p className="text-muted-foreground mb-2">
+              {t("booking.success_message")}
+            </p>
+            <p className="text-sm text-muted-foreground mb-8">
+              {t("booking.already_hint")}
+            </p>
+            <button
+              type="button"
+              onClick={handleBookAnother}
+              className="w-full rounded-full border border-border py-3 text-sm transition hover:bg-secondary/50"
+            >
+              {t("booking.book_another")}
+            </button>
+          </div>
         </div>
       </section>
     )
@@ -241,6 +298,7 @@ export default function BookingSection() {
                   setName={setName}
                   setPhone={setPhone}
                   handleConfirm={handleConfirm}
+                  isSubmitting={isSubmitting}
                   t={t}
                 />
               )}
@@ -270,6 +328,13 @@ export default function BookingSection() {
         setModalService={setModalService}
         selectService={selectService}
         formatPrice={(p: number) => formatPrice(p, lang)}
+        t={t}
+      />
+
+      <AlreadyBookedDialog
+        open={alreadyOpen}
+        onOpenChange={setAlreadyOpen}
+        onBookAnother={handleBookAnother}
         t={t}
       />
 

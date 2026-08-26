@@ -177,8 +177,14 @@
   "booking.name": "Ismingiz",
   "booking.phone": "Telefon",
   "booking.confirm_booking": "Yozilishni tasdiqlash",
+  "booking.submitting": "Yozuv yuborilmoqda…",
   "booking.success": "Yozilish tasdiqlandi",
   "booking.success_message": "Tasdiqlash uchun siz bilan bog‘lanamiz.",
+  "booking.already_hint": "Formani qayta yuborish shart emas — yozuv allaqachon qabul qilindi.",
+  "booking.already_title": "Siz allaqachon yozilgansiz",
+  "booking.already_message": "Bu yozuv allaqachon rasmiylashtirilgan. Boshqa xizmat kerak bo‘lsa — uni tanlab, alohida yoziling.",
+  "booking.book_another": "Boshqa xizmatga yozilish",
+  "booking.got_it": "Tushunarli",
 
   "booking.details": "Ma'lumotlaringiz",
   "booking.manual_contact": "Bu xizmat administrator orqali yoziladi. Salon bilan bog'laning.",
@@ -261,7 +267,6 @@
   "booking.vip": "VIP",
 
 
-  "contacts.phone.value": "+998 93 129 99 55",
   "contacts.instagram.value": "@karolinabeautyroom",
   "contacts.instagram.url": "https://instagram.com/karolinabeautyroom",
 
